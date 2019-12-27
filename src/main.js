@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import 'babel-polyfill'
 import echarts  from 'echarts';
+import 'element-ui/lib/theme-chalk/index.css';
 import elementUI from 'element-ui';
 import './styles/index.scss'
 import './icons'

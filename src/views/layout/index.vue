@@ -1,5 +1,5 @@
 <template>
-	<el-container>
+	<!-- <el-container>
 	  <el-header> 
 	  <router-link to="/">Home</router-link> |<icon-svg icon-class="tupianBG" />
       <router-link to="/about">About</router-link>
@@ -14,15 +14,15 @@
 			<router-view/>
 		</el-main>
 	  </el-container>
-	</el-container>
-<!-- <div class="warp space-between">
+	</el-container> -->
+<div class="warpBox">
 	<div class="nav">
 		<nav-bar></nav-bar>
 	</div>
 	<div class="content col">
 		<router-view/>
 	</div>
-  </div> -->
+  </div>
 </template>
 
 <script>
@@ -36,9 +36,17 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
-	.warp{
-		
-	
+<style scoped="scoped" lang="scss">
+	.warpBox{
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: space-between;
+		background: sandybrown;
+		padding: 0 20px;
+		.content{
+			padding-left: 20px;
+		}
 	}
 </style>
