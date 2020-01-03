@@ -129,7 +129,9 @@ div:focus{
         height: 0;
     }
 }
-
+.el-scrollbar__wrap{
+    overflow-x: hidden;
+}
 .row,.flex {
     display: flex;
 }

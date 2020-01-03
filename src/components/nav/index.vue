@@ -10,13 +10,15 @@
 					<div>info</div>
 				</div>
 			</div>
-			<el-scrollbar style='max-height: 500px;'>
+			
 				<div class="nav">
-					<div class="nav-item center"  :class="item.isActive:'active':''" v-for="(item,index) in nav":key='index' @click="goto(item.path)">
-						<span >{{item.title}}</span>
+					<div class="nav-item center" :class="{'active':item.isActive}"  v-for="(item,index) in nav" 
+					:key='index' @click="goto(item.path)">
+					<div >{{item.title}}</div>
+						
 					</div>
 				</div>
-			</el-scrollbar>
+			
 		
 	</div>
 
@@ -44,18 +46,24 @@
 		},
 		watch:{
 			$route(value){
-				this.nav.map(item =>{
+				// console.log(value)
+				let nav = [...this.nav];
+				console.log(this)
+				nav.map(item =>{
 					if(item.path == value.name){
 						item.isActive = true
 					}else{
 						item.isActive = false
 					}
 				})
-				console.log(value)
+				// console.log(this.nav,'1111')
+				// this.$set(this,this.nav,nav)
+				console.log(this.nav,'22')
 			}
 		},
 		created() {
-			this.nav = this.initNav(this.nav)
+			this.nav = this.initNav(this.nav);
+			console.log(this.nav)
 		},
 		methods:{
 			goto(path){
@@ -64,10 +72,16 @@
 				})
 			},
 			initNav(arr){
-				arr.map(item =>{
-					item.isActive = false;
-				})
-				console.log(arr)
+				let route = this.$route.name
+				arr.forEach(item => {
+					if(item.path == route){
+						this.$set(item,'isActive',true)
+					}else{
+						this.$set(item,'isActive',false)
+					}
+					
+				});
+				
 				return arr
 			},
 		},
@@ -99,7 +113,7 @@
 		}
 		.active{
 			background: #E6A23C;
-			color: #ff;
+			color: #fff;
 		}
 		.nav-item:hover{
 			background:#E6A23C;

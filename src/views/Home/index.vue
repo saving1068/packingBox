@@ -4,6 +4,7 @@
 			<div id="from" class="chartBox">
 				
 			</div>
+			
 		</div>
 		
 	</div>

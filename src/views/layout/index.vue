@@ -1,28 +1,29 @@
 <template>
-	<!-- <el-container>
+	<el-container style="padding:0 20px;" >
 	  <el-header> 
 	  <router-link to="/">Home</router-link> |<icon-svg icon-class="tupianBG" />
       <router-link to="/about">About</router-link>
 	  </el-header>
 	  <el-container>
-	    <el-aside width="200px">
-			
-			<nav-bar></nav-bar>
-		</el-aside>
+		  <el-scrollbar style='max-height: 500px;'>
+			<el-aside width='200px'>
+				
+				<nav-bar></nav-bar>
+			</el-aside>
+		</el-scrollbar>
 	    <el-main>
-			content
 			<router-view/>
 		</el-main>
 	  </el-container>
-	</el-container> -->
-<div class="warpBox">
+	</el-container>
+<!-- <div class="warpBox">
 	<div class="nav">
 		<nav-bar></nav-bar>
 	</div>
 	<div class="content col">
 		<router-view/>
 	</div>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -42,7 +43,7 @@ export default {
 		width: 100%;
 		height: 100%;
 		display: flex;
-		justify-content: space-between;
+		justify-content: center;
 		background: sandybrown;
 		padding: 0 20px;
 		.content{
