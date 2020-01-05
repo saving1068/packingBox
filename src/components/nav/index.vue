@@ -91,8 +91,9 @@
 <style scoped lang="scss">
 	.warp{
 		width: 200px;
+		background: #fff;
+		color: #326af5;
 		.mine-info{
-			background: rgb(179, 216, 255);
 			.image{
 				width: 50px;
 				height: 50px;
@@ -105,18 +106,18 @@
 		}
 		.nav{
 			height: 100%;
-			background: rgb(250, 236, 216);
+			
 		}
 			
 		.nav-item{
 			height: 50px;
 		}
 		.active{
-			background: #E6A23C;
+			background: #326af5;
 			color: #fff;
 		}
 		.nav-item:hover{
-			background:#E6A23C;
+			background:#326af5;
 			color: #fff;
 			cursor: pointer;
 		}

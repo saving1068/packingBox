@@ -1,21 +1,17 @@
 <template>
-	<el-container style="padding:0 20px;" >
-	  <el-header> 
-	  <router-link to="/">Home</router-link> |<icon-svg icon-class="tupianBG" />
-      <router-link to="/about">About</router-link>
-	  </el-header>
-	  <el-container>
+	  <el-container style="padding:0 20px;">
 		  <el-scrollbar style='max-height: 500px;'>
 			<el-aside width='200px'>
-				
 				<nav-bar></nav-bar>
 			</el-aside>
 		</el-scrollbar>
-	    <el-main>
-			<router-view/>
+	    <el-main style="background:#eef1f6;padding:0 0 0 20px;">
+			<el-header style="background:#fff;"> 
+				<myhead></myhead>	
+			</el-header>
+			<router-view  style="background:#fff;margin-top:20px"/>
 		</el-main>
 	  </el-container>
-	</el-container>
 <!-- <div class="warpBox">
 	<div class="nav">
 		<nav-bar></nav-bar>
@@ -29,11 +25,12 @@
 <script>
 // @ is an alias to /src
 import navBar from '@/components/nav'
+import myhead from '@/components/head'
 import '@/icons/svg/tupianBG.svg'
 export default {
   name: 'home',
   components: {
-    navBar
+    navBar,myhead
   }
 }
 </script>
