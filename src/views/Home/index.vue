@@ -1,9 +1,10 @@
 <template>
 	<div class="warp">
 		<div class="chartList">
-			<div id="from" class="chartBox">
-				
+			<div class="center">
+				<div id="from" class="chartBox"></div>
 			</div>
+			
 			
 		</div>
 		
@@ -103,7 +104,7 @@
 
 <style scoped="scoped" lang="scss">
 	.chartBox{
-		width: 800px;
+		width: 80%;
 		height: 400px;
 	}
 </style>

@@ -1,10 +1,12 @@
 <template>
 	  <el-container style="padding:0 20px;">
-		  <el-scrollbar style='max-height: 500px;'>
+		 
 			<el-aside width='200px'>
+				 
 				<nav-bar></nav-bar>
+			
 			</el-aside>
-		</el-scrollbar>
+		
 	    <el-main style="background:#eef1f6;padding:0 0 0 20px;">
 			<el-header style="background:#fff;"> 
 				<myhead></myhead>	

@@ -150,6 +150,11 @@ div:focus{
 	justify-content: space-between;
 	align-items: center;
 }
+.space-around{
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
 
 .justify-content-center {
     justify-content: center;

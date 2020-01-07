@@ -34,6 +34,11 @@ const routes = [
 				path: '/power',
 				name: 'power',
 				component:() => import('@/views/power'),
+			},
+			{
+				path: '/role',
+				name: 'role',
+				component:() => import('@/views/role'),
 			}
 		]
 	}
