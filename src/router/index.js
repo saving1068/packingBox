@@ -26,6 +26,11 @@ const routes = [
 				component:() => import('@/views/Home'),
 			},
 			{
+				path:"placeOrder",
+				name: 'placeOrder',
+				component:() => import('@/views/placeOrder'),
+			},
+			{
 				path: '/order',
 				name: 'order',
 				component:() => import('@/views/order'),
@@ -34,7 +39,12 @@ const routes = [
 				path: '/power',
 				name: 'power',
 				component:() => import('@/views/power'),
-			}
+			},
+			{
+				path: '/role',
+				name: 'role',
+				component:() => import('@/views/role'),
+			},
 		]
 	},
 	{
@@ -73,8 +83,9 @@ const router = new VueRouter({
   
   routes
 })
-router.beforeEachh((to, from, next) => {
-	console.log(to,from,next)
-	// ...
-  })
+// console.log(router)
+// router.beforeEachh((to, from, next) => {
+// 	console.log(to,from,next)
+// 	// ...
+//   })
 export default router

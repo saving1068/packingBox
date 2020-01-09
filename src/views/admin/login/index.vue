@@ -81,7 +81,7 @@
 			}
 
 			return {
-				loaded: false,
+				loaded: true,
 				tabIndex:0,
 				ifgetCode:false,
 				seconds:60,
@@ -250,7 +250,7 @@
 				
 				
 			},
-			initCanvas: canvasRenter,
+			// initCanvas: canvasRenter,
 			tabChange(index) {
 				this.tabIndex = index;
 			},

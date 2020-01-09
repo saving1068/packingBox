@@ -12,11 +12,30 @@
 			</div>
 			
 				<div class="nav">
-					<div class="nav-item center" :class="{'active':item.isActive}"  v-for="(item,index) in nav" 
-					:key='index' @click="goto(item.path)">
-					<div >{{item.title}}</div>
-						
+					 <el-scrollbar style='max-height: 500px;'>
+					<div class="nav-item " v-for="(item,index) in nav" 
+					:key='index' >
+						<div class='parent center' :class="{'active':item.isActive}" @click="goTo(item)">
+							<span>{{item.title}}</span>
+							<div class="icon" v-if="item.son">
+								<i class="el-icon-arrow-up" v-if="item.ifShowSon"></i>
+								<i class="el-icon-arrow-down" v-else></i>
+							</div>
+						</div>
+						<div class="son" 
+							:class="{'showSon':item.ifShowSon}"
+						>
+						<div class="son-item center" 
+						 @click="goToSon(sonItem)"
+						 v-for="(sonItem,sonIndex) in item.son" 
+						:key="sonIndex"
+						 :class="{'active':sonItem.isActive}">
+							<span>{{sonItem.title}}</span>
+						</div>
+							
+						</div>
 					</div>
+					</el-scrollbar>
 				</div>
 			
 		
@@ -34,55 +53,97 @@
 					path:'home'
 					},
 					{
+						title:'我要订单',
+						path:'placeOrder'
+					},
+					{
 					title:'订单',
 					path:'order'
 					},
 					{
 					title:'权限',
-					path:'power'
+					son:[
+						{title:"角色",path:"role"},
+						{title:'角色页面',path:'power'}
+					]
 					}
 				]
 			}
 		},
 		watch:{
 			$route(value){
+				this.selectNav(value.name)
 				// console.log(value)
-				let nav = [...this.nav];
-				console.log(this)
-				nav.map(item =>{
-					if(item.path == value.name){
-						item.isActive = true
-					}else{
-						item.isActive = false
-					}
-				})
-				// console.log(this.nav,'1111')
-				// this.$set(this,this.nav,nav)
-				console.log(this.nav,'22')
 			}
 		},
 		created() {
-			this.nav = this.initNav(this.nav);
-			console.log(this.nav)
+			this.initNav(this.nav);
+			console.log(this.nav,1111)
+		},
+		mounted(){
+			let routeName = this.$route.name;
+			this.selectNav(routeName)
 		},
 		methods:{
-			goto(path){
+			goToSon(item){
+				console.log(item)
 				this.$router.push({
-					name:path
+					name:item.path
+				}).catch(err => {
+					err
 				})
 			},
-			initNav(arr){
-				let route = this.$route.name
-				arr.forEach(item => {
+			goTo(item){
+				if(item.path){
+					this.$router.push({
+					name:item.path
+					}).catch(err => {err})
+				}else{
+					item.ifShowSon = true;
+				}
+				
+			},
+			selectNav(route){
+				this.nav.forEach(item =>{
+					item.isActive = false;
 					if(item.path == route){
-						this.$set(item,'isActive',true)
+						item.isActive = true;
+						return
 					}else{
-						this.$set(item,'isActive',false)
+						if(item.son){
+							item.ifShowSon = false;
+							item.son.map(sonItem =>{
+								sonItem.isActive = false;
+								
+								if(sonItem.path == route){
+									sonItem.isActive = true;
+									item.ifShowSon = true;
+									console.log(item)
+								}
+							})
+						}
 					}
+				})
+				console.log(this.nav,2222)
+			},
+			initNav(arr){
+				
+				arr.forEach(item => {
+					this.$set(item,'isActive',false)
+					if(item.son){
+						this.$set(item,'ifShowSon',false)
+						item.son.forEach(sonItem =>{
+							this.$set(sonItem,'isActive',false)
+						})
+					}
+					// if(item.path == route){/
+					// 	this.$set(item,'isActive',true)
+					// }else{
+					// 	this.$set(item,'isActive',false)
+					// }
 					
 				});
 				
-				return arr
 			},
 		},
 	}
@@ -106,20 +167,33 @@
 		}
 		.nav{
 			height: 100%;
-			
+			transition: all 5s;
 		}
 			
 		.nav-item{
-			height: 50px;
+			.parent{
+				height: 50px;
+			}
+			.son{
+				height: 0px;
+				overflow: hidden;
+			}
+			.showSon{
+				height: auto;
+			}
+			.son-item{
+				height: 50px;
+			}
+			.center:hover{
+			background:#326af5;
+			color: #fff;
+			cursor: pointer;
+		}
 		}
 		.active{
 			background: #326af5;
 			color: #fff;
 		}
-		.nav-item:hover{
-			background:#326af5;
-			color: #fff;
-			cursor: pointer;
-		}
+		
 	}
 </style>
