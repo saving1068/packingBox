@@ -1,14 +1,19 @@
 import axios from 'axios'
-import qs from 'qs'
+// import qs from 'qs'
 import { Message, Notification } from 'element-ui'
 import router from '@/router'
 import store from '@/store'
 
+// console.log(process.env,1111111111111111111111)
+
 // 创建axios实例
 const service = axios.create({
-    baseURL: process.env.BASE_API, // api的base_url
+    baseURL:process.env.NODE_ENV == 'development' ?'/api/':'/', // api的base_url
     timeout: 30000, // 请求超时时间,
-    // headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    headers: {
+        //  'X-Requested-With': 'XMLHttpRequest'
+        // token:1111
+         }
 })
 
 axios.defaults.withCredentials = true
@@ -16,7 +21,8 @@ axios.defaults.withCredentials = true
 // request请求拦截器
 service.interceptors.request.use(
     config => {
-        config.data = qs.stringify(config.data || {})
+        // config.data = qs.stringify(config.data || {})
+        config.data = config.data || {}
         config.method = config.method || 'post'
         
         return config
@@ -29,16 +35,16 @@ service.interceptors.request.use(
 // respone拦截器
 service.interceptors.response.use(
     response => {
-        const {resultCode, content, errorMsg} = response.data
+        const {returnCode, content, returnMsg} = response.data
 
 
         // console.log('router.currentRoute+++',router.currentRoute)
         
         // success
-        if(resultCode == 1){
+        if(returnCode == 200){
 			
             return content
-        }else if(resultCode == 999){
+        }else if(returnCode == 999){
             store.dispatch('clearUserInfo')
             console.log('登录态 <<<______>>> %c "已失效啦"',"color:red")
             const href = location.href
@@ -50,7 +56,7 @@ service.interceptors.response.use(
             return Promise.reject(response.data)
         }else{
 			if(response.config.url.indexOf('welfare/eachWelfareStatus')== -1){
-				const errorTxt = errorMsg || '操作失败'
+				const errorTxt = returnMsg || '操作失败'
 				console.log(errorTxt)
 				errorTip(errorTxt)
 				return Promise.reject(response.data)

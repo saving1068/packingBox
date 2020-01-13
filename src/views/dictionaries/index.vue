@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import {listDic,updateDic,deleteDic,detailDic,deleteItemDic,updateItemDic} from '@/api/admin'
 export default {
     data(){
         return{
@@ -47,7 +48,13 @@ export default {
                 }
         }
     },
+    created(){
+        this.getList()
+    },
     methods:{
+        async getList(){
+            let res = await listDic()
+        },
         addItem(){
             if(this.ifAdd){
                 console.log(this.item)
@@ -66,7 +73,9 @@ export default {
     .data{
         padding-top:20px; 
         .data-list{
-      
+           
+                width: 250px;
+            
         }
        
     }

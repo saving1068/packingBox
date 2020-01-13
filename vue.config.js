@@ -1,4 +1,4 @@
-console.log(process.env.VUE_APP_URL)
+console.log(process.env.BASE_API)
 
 const path = require('path')
 module.exports = {
@@ -45,6 +45,7 @@ module.exports = {
 		if (process.env.NODE_ENV === 'production') {
 			// 为生产环境修改配置...
 		} else {
+			process.env.BASE_API = '/api/'
 			// 为开发环境修改配置...
 		}
 	},
@@ -88,16 +89,16 @@ module.exports = {
 	devServer: {
 		proxy: {
 			'/api': {
-				target: 'http://wearewwx.com:8080',
-				ws: true,
+				target: 'http://wearewwx.com:8080/',
+				// ws: true,
 				changeOrigin: true,
 				pathRewrite: {
 					'^/api': '/'
 				}
 			},
-			'/foo': {
-				target: '<other_url>'
-			}
+			// '/foo': {
+			// 	target: '<other_url>'
+			// }
 		}
 	}
 }
