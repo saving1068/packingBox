@@ -10,7 +10,7 @@
 				<myhead></myhead>	
 			</el-header>
 			<transition name="el-fade-in-linear">
-				<router-view  style="background:#fff;margin-top:20px"/>
+				<router-view  style="background:#fff;margin-top:20px;padding:20px;"/>
 			</transition>
 			
 		</el-main>

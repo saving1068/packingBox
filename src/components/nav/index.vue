@@ -66,7 +66,11 @@
 						{title:"角色",path:"role"},
 						{title:'角色页面',path:'power'}
 					]
-					}
+					},
+					{
+					title:'系统字典管理',
+					path:'dictionaries'
+					},
 				]
 			}
 		},

@@ -45,6 +45,11 @@ const routes = [
 				name: 'role',
 				component:() => import('@/views/role'),
 			},
+			{
+				path: '/dictionaries',
+				name: 'dictionaries',
+				component:() => import('@/views/dictionaries'),
+			}
 		]
 	},
 	{

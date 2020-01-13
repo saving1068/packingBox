@@ -88,7 +88,7 @@ module.exports = {
 	devServer: {
 		proxy: {
 			'/api': {
-				target: '<url>',
+				target: 'http://wearewwx.com:8080',
 				ws: true,
 				changeOrigin: true,
 				pathRewrite: {
