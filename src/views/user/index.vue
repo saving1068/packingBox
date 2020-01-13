@@ -8,10 +8,10 @@
         
             <ul class="data-list">
                 <el-scrollbar >
-               <li class="item space-between" v-for="(item,index) in list" :key="index">
-                   <div>{{item.name}}</div>
-                   <div>{{item.infp}}</div>
-                   <div>{{item.key}}</div>
+               <li class="item space-between">
+                   <div>name</div>
+                   <div>info</div>
+                   <div>key</div>
                     <el-button type="primary" size="mini">修改</el-button>
                     <el-button type="danger" size="mini">删除</el-button>
                 </li> 
@@ -32,7 +32,6 @@
            </el-form>
         </div>
       </div>
-
   </div>
 </template>
 
@@ -46,17 +45,7 @@ export default {
                 name:'',
                 info:"",
                 key:'',
-                },
-            list:[
-                {
-                    name:'1',
-                    info:"2",
-                    key:1,
                 }
-            ],
-            choiseItem:{
-
-            }
         }
     },
     created(){
@@ -64,11 +53,7 @@ export default {
     },
     methods:{
         async getList(){
-            let obj = {
-                sign:"1",
-                name:"2"
-            }
-            let res = await listDic(obj)
+            let res = await listDic()
         },
         addItem(){
             if(this.ifAdd){

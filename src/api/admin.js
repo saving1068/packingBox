@@ -4,7 +4,7 @@ const updateDic = (params) => { //新增更新字典
     return request({
         url: '/dic/update',
         method: 'POST',
-        params
+        data:params
     });
 }
 
@@ -25,8 +25,8 @@ const detailDic = (params) => { //字典详情
 const listDic = (params) => { //字典列表
     return request({
         url: '/dic/list',
-        method: 'get',
-        params
+        method: 'POST',
+        data:params
     });
 }
 const deleteItemDic = (params) => { //删除字典数据
@@ -40,7 +40,7 @@ const updateItemDic = (params) => { //更新字典数据
     return request({
         url: '/dic/value/update',
         method: 'POST',
-        params
+        data:params
     });
 }
 

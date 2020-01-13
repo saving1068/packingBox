@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import qs from 'qs'
+import qs from 'qs'
 import { Message, Notification } from 'element-ui'
 import router from '@/router'
 import store from '@/store'
@@ -11,6 +11,7 @@ const service = axios.create({
     baseURL:process.env.NODE_ENV == 'development' ?'/api/':'/', // api的base_url
     timeout: 30000, // 请求超时时间,
     headers: {
+        "Content-type":"application/json"
         //  'X-Requested-With': 'XMLHttpRequest'
         // token:1111
          }
