@@ -4,16 +4,16 @@ import { Message, Notification } from 'element-ui'
 import router from '@/router'
 import store from '@/store'
 
-// console.log(process.env,1111111111111111111111)
+console.log(store.state.token,111111111111111)
 
 // 创建axios实例
 const service = axios.create({
-    baseURL:process.env.NODE_ENV == 'development' ?'/api/':'/', // api的base_url
+    baseURL:process.env.VUE_APP_BASE_URL, // api的base_url
     timeout: 30000, // 请求超时时间,
     headers: {
-        "Content-type":"application/json"
+        "Content-type":"application/json",
         //  'X-Requested-With': 'XMLHttpRequest'
-        // token:1111
+        'token':store.state.token?store.state.token:''
          }
 })
 
@@ -36,7 +36,7 @@ service.interceptors.request.use(
 // respone拦截器
 service.interceptors.response.use(
     response => {
-        const {returnCode, content, returnMsg} = response.data
+        const {returnCode, data, returnMsg} = response.data
 
 
         // console.log('router.currentRoute+++',router.currentRoute)
@@ -44,9 +44,9 @@ service.interceptors.response.use(
         // success
         if(returnCode == 200){
 			
-            return content
-        }else if(returnCode == 999){
-            store.dispatch('clearUserInfo')
+            return response.data
+        }else if(returnCode == 500){
+            store.commit('clearToken')
             console.log('登录态 <<<______>>> %c "已失效啦"',"color:red")
             const href = location.href
             
@@ -88,7 +88,7 @@ function errorTip(errTxt){
     Message({
         message: errTxt,
         type: 'error',
-        duration: 2 * 1000
+        duration: 1 * 1000
     })
 	return
 }
