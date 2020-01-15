@@ -284,10 +284,11 @@
 						})
 						this.loginForm.account = '';this.loginForm.password = '';
 						this.loginForm.verCode = '';
-						console.log(info)
+						// console.log(info)
 						this.$store.commit('setToken',info)
-
-						console.log(this.$store)
+						sessionStorage.setItem('token', info.token);
+						// console.log(token,222)
+						// console.log(this.$store)
 						this.$message.success('登录成功')
 						this.$loading.hide()
 						this.goTo('home');

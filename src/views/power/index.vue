@@ -1,96 +1,169 @@
 <template>
-	<div>
-		<el-tree
-  :data="data"
-  show-checkbox
-  default-expand-all
-  node-key="id"
-  ref="tree"
-  highlight-current
-  :props="defaultProps">
-</el-tree>
+	<div class="warp" v-loading='loading'>
+    <div class="btn">
+        <el-button type="primary" @click="addItem" icon="el-icon-edit">新增</el-button>
+    </div>
+    <div class="data">
+      <el-table
+        :data="list"
+        fit
+        @row-click='showParent'
+        align="center"
+        style="width: 100%"
+      >
+        <el-table-column
+                        prop="description"
+                        label="内容"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="url"
+                        label="地址"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        align="right"
+                        width="150px"
+                        >
+                        <template slot="header" slot-scope="scope">
+                            <el-input
+                                size="mini"
+                                v-model="searchDicValue"
+                                @input="searchDic"
+                                placeholder="输入关键字搜索">
+                            </el-input>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button type="primary" @click.stop="addItem(scope.row)" size="mini">修改</el-button>
+                            <el-button type="danger" @click.stop="delteItem(scope.row)" size="mini">删除</el-button>
+                        </template>
+                        
+                    </el-table-column>
+      </el-table>
+    </div>
+    <el-dialog
+       width="50%"
+        center
+      :visible.sync="addMune"
+      :before-close="closeEdit"
+    >
+      <el-form label-width="100px">
+               <el-form-item label="内容:">
+                   <el-input  v-model="addMuneInfo.description"></el-input>
+               </el-form-item>
+               <el-form-item label="地址:">
+                   <el-input  v-model="addMuneInfo.url"></el-input>
+               </el-form-item>
+                <el-form-item label="编号:">
+                   <el-input  v-model="addMuneInfo.type"></el-input>
+               </el-form-item>
+                 
+           </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeEdit">取 消</el-button>
+                <el-button type="primary" @click="addSure">确 定</el-button>
+            </span>
 
-<div class="buttons">
-  <el-button @click="getCheckedNodes">通过 node 获取</el-button>
-  <el-button @click="getCheckedKeys">通过 key 获取</el-button>
-  <el-button @click="setCheckedNodes">通过 node 设置</el-button>
-  <el-button @click="setCheckedKeys">通过 key 设置</el-button>
-  <el-button @click="resetChecked">清空</el-button>
-</div>
+    </el-dialog>
 	</div>
 </template>
 
 <script>
+  import {
+    byUserMenu,
+    userMenu,
+    updataMenu,
+    deleteMenu,
+    menuList
+} from '@/api/menu'
+let initMuneValue = {
+  description:'',
+  url:'',
+  type:''
+}
   export default {
+    created(){
+      this.getList({})
+    },
     methods: {
-      getCheckedNodes() {
-        console.log(this.$refs.tree.getCheckedNodes());
+      async getList(obj){
+        try {
+          this.loading = true;
+          let res = await menuList(obj);
+          this.list = res.data;
+       
+        } catch (error) {
+          
+        }
+        this.loading = false;
       },
-      getCheckedKeys() {
-        console.log(this.$refs.tree.getCheckedKeys());
+      closeEdit(){
+        this.$confirm('取消新增, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                this.addMune = false;
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
       },
-      setCheckedNodes() {
-        this.$refs.tree.setCheckedNodes([{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 9,
-          label: '三级 1-1-1'
-        }]);
+      addSure(){
+        this.$confirm('是否确认添加页面?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(async () => {
+                   let res=  await updataMenu(this.addMuneInfo)
+                  this.$message.success(res.returnMsg)
+                  this.getList({})
+                  this.addMune = false;
+                  
+                }).catch((e) => {
+                
+                       
+            });
       },
-      setCheckedKeys() {
-        this.$refs.tree.setCheckedKeys([3]);
+      addItem(item){
+        if(item){//修改
+          this.addMuneInfo = {...item};
+        }else{//新增
+          this.addMuneInfo = {...initMuneValue};
+        };
+        this.addMune = true;
+
       },
-      resetChecked() {
-        this.$refs.tree.setCheckedKeys([]);
+      searchDic(value){
+
+      },
+      showParent(item){
+
+      },
+      delteItem(item){
+
       }
     },
-
     data() {
       return {
-        data: [{
-          id: 1,
-          label: '一级 1',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        }, {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
+        list:[],
+        addMune:false,
+        searchDicValue:'',
+        addMuneInfo:{},
+        loading:false
       };
     }
   };
 </script>
 
-<style>
+<style lang="scss" scoped>
+    .btn{
+        text-align: left;
+       
+    }
+    .data{
+       padding-top:20px; 
+    }
 </style>

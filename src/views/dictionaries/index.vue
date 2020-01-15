@@ -1,7 +1,7 @@
 <template>
-  <div class="warp">
+  <div class="warp" v-loading='loading'>
       <div class="btn">
-          <el-button type="primary" @click="addItem" icon="el-icon-edit">{{ifAdd?'完成':'新增'}}</el-button>
+          <el-button type="primary" @click="addItem" icon="el-icon-edit">新增</el-button>
       </div>
       
       <div class="data space-between">
@@ -11,7 +11,7 @@
                     <el-table
                     :data="list"
                     fit
-                    
+                    @row-click='showParent'
                     align="center"
                     style="width: 100%">
                     <el-table-column
@@ -28,14 +28,17 @@
                         align="right"
                         width="150px"
                         >
-                        <template slot="header">
+                        <template slot="header" slot-scope="scope">
                             <el-input
-                            size="mini"
-                            placeholder="输入关键字搜索"/>
+                                size="mini"
+                                v-model="searchDicValue"
+                                @input="searchDic"
+                                placeholder="输入关键字搜索">
+                            </el-input>
                         </template>
                         <template slot-scope="scope">
-                            <el-button type="primary" @click="ifChnageItem(scope.row)" size="mini">修改</el-button>
-                            <el-button type="danger" size="mini">删除</el-button>
+                            <el-button type="primary" @click.stop="addItem(scope.row)" size="mini">修改</el-button>
+                            <el-button type="danger" @click.stop="delteItem(scope.row)" size="mini">删除</el-button>
                         </template>
                         
                     </el-table-column>
@@ -49,21 +52,23 @@
                  </el-scrollbar>
             <!-- </ul> -->
        
-        <div class="item-info" v-show="ifChnage">
+        <div class="item-info" v-show="sonShow">
             <div class="btn">
                 <el-button type="primary" @click="ifItemAddValue()" icon="el-icon-edit">新增</el-button>
             </div>
                 <el-scrollbar >
                      <el-table
-                    :data="itemList"
+                    :data="sonList"
+                     align="center"
+                     fit
                     style="width: 100%">
                     <el-table-column
-                        prop="name"
-                        label="名字"
-                        width="180">
+                        prop="sign"
+                        label="标识"
+                       >
                     </el-table-column>
                     <el-table-column
-                        prop="info"
+                        prop="value"
                         label="内容"
                         >
                     </el-table-column>
@@ -74,9 +79,12 @@
                      <el-table-column
                         align="center"
                          label="操作"
+                         width="150px"
                         >
+                        <template slot-scope="scope">
                             <el-button type="primary" @click="ifItemAddValue(scope.row)" size="mini">修改</el-button>
-                            <el-button type="danger" size="mini">删除</el-button>                   
+                            <el-button type="danger" @click="delteSon(scope.row)"  size="mini">删除</el-button>   
+                        </template>                
                     </el-table-column>
                     </el-table>
                 </el-scrollbar>
@@ -90,6 +98,9 @@
             :before-close="itemAddClose"
         >
              <el-form label-width="100px">
+                <!-- <el-form-item label="标识:">
+                   <el-input  v-model="itemChangeInfo.sign"></el-input>
+               </el-form-item> -->
                <el-form-item label="key:">
                    <el-input  v-model="itemChangeInfo.key"></el-input>
                </el-form-item>
@@ -109,7 +120,7 @@
       <!-- 新增字典 -->
         <el-dialog
             title="新增字典"
-            :visible.sync="ifItemChange"
+            :visible.sync="parentChange"
             width="30%"
             center
             :before-close="addClose">
@@ -144,15 +155,10 @@ export default {
     
     data(){
         return{
-            ifAdd:false,
-            ifChnage:false,
-            ifItemChange:false,
+            sonShow:false,
+            parentChange:false,
             ifItemAdd:false,
-            item:{
-                name:'',
-                info:"",
-                key:'',
-                },
+            searchDicValue:'',
             itemChangeInfo:{
                 key:"",
                 value:''
@@ -161,51 +167,99 @@ export default {
                 name:'',
                 sign:''
             },
-            itemList:[],
+            sonList:[],
             list:[
                 
             ],
             choiseItem:{
 
-            }
+            },
+            selectParentId:'',
+            loading:false
         }
     },
     created(){
         this.getList({})
     },
     methods:{
+        searchDic(value){
+            console.log(value)
+            let obj ={
+                name:value
+                // sign:value
+            }
+            this.getList(obj)
+        },
         ifItemAddValue(item){
+            console.log(item)
             if(item){
-                this.itemChangeInfo = {...initItemChangeInfo,pId:item.id}    
+                this.itemChangeInfo = {...item,pId:this.selectParentId}    
             }else{
-                this.itemChangeInfo = {...initItemChangeInfo}    
+                this.itemChangeInfo = {...initItemChangeInfo,pId:this.selectParentId}    
             }
            
             this.ifItemAdd = true;
         },
-        itemAddSure(){
-            let tips = this.itemChangeInfo.id?'是否确认修改字典?':'是否确认新增字典?';
-            let success = this.itemChangeInfo.id?'修改字典成功?':'新增字典成功?';
+        delteSon(item){
+            let tips = '是否确认删除字典';
+            let success = '删除字典成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(async() => {
                     try {
-                        if(this.addItemInfo.id){//修改
-                            let obj = {
-                                ...this.addItemInfo,
-                              
-                            }
-                            await updateItemDic(this.addItemInfo);
-                        }else{//新增
-                            console.log(this.addItemInfo)
-                            await updateDic(this.addItemInfo);
-                           
-                        }
-
+                        await deleteItemDic({id:item.id})
+                    let obj = {
+                            id:this.selectParentId,
+                    }
+                    let res = await detailDic(obj);
+                    this.sonList = res.data;
+                          
                          this.$message.success(success);
-                         this.ifAdd = false;
+                        
+                    } catch (error) {
+                        
+                    }
+                    
+                
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+            
+        },
+        itemAddSure(){
+            let tips = this.itemChangeInfo.id?'是否确认修改字典?':'是否确认新增字典?';
+            let success = this.itemChangeInfo.id?'修改字典成功':'新增字典成功';
+            this.$confirm(tips, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(async() => {
+                    try {
+                        // if(this.itemChangeInfo.id){//修改
+                        //     let obj = {
+                        //         ...this.addItemInfo,
+                              
+                        //     }
+                            await updateItemDic(this.itemChangeInfo);
+                        // }else{//新增
+                        //     console.log(this.addItemInfo)
+                        //     await updateDic(this.addItemInfo);
+                           
+                        // }
+                        let obj = {
+                             id:this.selectParentId,
+                        }
+                        let res = await detailDic(obj);
+                        this.sonList = res.data;
+                        
+                        this.$message.success(success);
+                        
+                        this.ifItemAdd = false;
                     } catch (error) {
                         
                     }
@@ -236,14 +290,37 @@ export default {
 
         },
         async getList(obj){
+            try {
+                this.loading = true;
+                 let res = await listDic(obj)
+                this.list = res.data;
+            } catch (error) {
+                
+            }
+           this.loading = false;
+            // console.log(res)
+        },
+        async showParent(row, column, event){
+            console.log(row)
+            try {
+                let obj = {
+                    id:row.id,
+                    sign:row.sign
+                }
+                this.selectParentId = row.id;
+                let res = await detailDic(obj);
+                this.sonList = res.data;
+                this.sonShow = true;
+            } catch (error) {
+                
+            }
             
-            let res = await listDic(obj)
-            this.list = res.data;
-            console.log(res)
+
+
         },
         addSure(){
             let tips = this.addItemInfo.id?'是否确认修改字典?':'是否确认新增字典?';
-            let success = this.addItemInfo.id?'修改字典成功?':'新增字典成功?';
+            let success = this.addItemInfo.id?'修改字典成功':'新增字典成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -257,9 +334,9 @@ export default {
                             await updateDic(this.addItemInfo);
                            
                         }
-
+                            this.getList({})
                          this.$message.success(success);
-                         this.ifAdd = false;
+                         this.parentChange = false;
                     } catch (error) {
                         
                     }
@@ -279,7 +356,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-         this.ifAdd = false;
+         this.parentChange = false;
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -287,21 +364,40 @@ export default {
           });          
         });
         },
-         ifChnageItem(item){
-            if(this.ifChnage){
-                console.log(item)
-            }else{
-                this.ifChnage = true;
-            }
-        },
-        addItem(){
-            if(this.ifAdd){
-                console.log(this.item)
-            }else{
-                this.addItemInfo = {...initAddItemInfo}
-                this.ifAdd = true;
+        delteItem(item){
+             let tips = '是否确认删除字典';
+            let success = '删除字典成功';
+            this.$confirm(tips, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(async() => {
+                    try {
+                        await deleteDic({id:item.id})
+                        
+                            this.getList({})
+                         this.$message.success(success);
+                        
+                    } catch (error) {
+                        
+                    }
+                    
                 
+                }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+                });
+
+        },
+        addItem(item){
+            if(item){
+                this.addItemInfo = {...item}
+            }else{
+                 this.addItemInfo = {...initAddItemInfo}
             }
+            this.parentChange = true;
         }
     }
 }

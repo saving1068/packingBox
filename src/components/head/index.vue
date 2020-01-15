@@ -16,12 +16,12 @@
             <div class="avatar">
                 <el-avatar  size="small" src="../../assets/logo.png"></el-avatar>
             </div>
-            <el-dropdown szie="mini">
+            <el-dropdown szie="mini" @command="signOut">
             <span class="el-dropdown-link">
                 下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-menu slot="dropdown" >
+                <el-dropdown-item >退出登录</el-dropdown-item>
             </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -32,6 +32,15 @@
         data(){
             return{
                 searchValue:""
+            }
+        },
+        methods:{
+            signOut(value){
+                console.log(value)
+                this.$store.commit('clearToken')
+                this.$router.replace({
+                    name:"admin"
+                }).catch(err => {err})
             }
         }
     }

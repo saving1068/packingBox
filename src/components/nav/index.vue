@@ -65,7 +65,7 @@
 					son:[
 						{title:"角色",path:"role"},
 						{title:"用户",path:"user"},
-						{title:'角色页面',path:'power'}
+						{title:'菜单页面',path:'power'}
 					]
 					},
 					{
