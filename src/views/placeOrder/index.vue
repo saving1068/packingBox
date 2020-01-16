@@ -115,64 +115,67 @@
       <div class="facialTissue">
           <div class="space-between">
               <div class="h1">面纸</div> 
-            <el-button type="primary" @click="addItem" icon="el-icon-edit">新增</el-button>
+            <el-button type="primary" @click="addItem(0)" icon="el-icon-edit">新增</el-button>
           </div>
          
          <el-form size='mini' inline label-width="100px" style="padding:20px">
-            <el-form-item label="面纸供应商:"  class="form-inline">
-               <el-select  placeholder="请选择">
-                <el-option
-                v-for="item in printingHandle"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key">
-                </el-option>
-            </el-select>
-            </el-form-item>
-            <el-form-item label="面纸型号:"  class="form-inline">
-               <el-select  placeholder="请选择">
-                <el-option
-                v-for="item in printingHandle"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key">
-                </el-option>
-            </el-select>
-            </el-form-item>
-            <el-form-item label="面纸长:"  class="form-inline">
-                <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
-                <span>123</span>
-            </el-form-item>
-            <el-form-item label="面纸宽:"  class="form-inline">
-                <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
-                <span>123</span>
-            </el-form-item>
-            <el-form-item label="面纸单价:"  class="form-inline">
-                <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
-                <span>123</span>
-            </el-form-item>
-            <el-form-item label="面纸数量:"  class="form-inline">
-                <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input>
-            </el-form-item>
-            <el-form-item label="面纸成本:"  class="form-inline">
-                <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
-                <span>123</span>
-            </el-form-item>
-            <el-form-item label="面纸类型:"  class="form-inline">
-                <el-input  placeholder="请输入面纸类型"></el-input>
-            </el-form-item>
-            <el-form-item label="面纸克数:"  class="form-inline">
-                <el-input  placeholder="请输入面纸克数"></el-input>
-            </el-form-item>
-            <el-form-item label="面纸单价:"  class="form-inline">
-                <el-input  placeholder="请输入面纸单价"></el-input>
-            </el-form-item>
+             <el-form-item label="面纸">
+                 <el-form-item label="面纸供应商:"  class="form-inline">
+                    <el-select  placeholder="请选择">
+                        <el-option
+                        v-for="item in printingHandle"
+                        :key="item.key"
+                        :label="item.value"
+                        :value="item.key">
+                        </el-option>
+                    </el-select>
+                    </el-form-item>
+                    <el-form-item label="面纸型号:"  class="form-inline">
+                    <el-select  placeholder="请选择">
+                        <el-option
+                        v-for="item in printingHandle"
+                        :key="item.key"
+                        :label="item.value"
+                        :value="item.key">
+                        </el-option>
+                    </el-select>
+                    </el-form-item>
+                    <el-form-item label="面纸长:"  class="form-inline">
+                        <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
+                        <span>123</span>
+                    </el-form-item>
+                    <el-form-item label="面纸宽:"  class="form-inline">
+                        <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
+                        <span>123</span>
+                    </el-form-item>
+                    <el-form-item label="面纸单价:"  class="form-inline">
+                        <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
+                        <span>123</span>
+                    </el-form-item>
+                    <el-form-item label="面纸数量:"  class="form-inline">
+                        <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input>
+                    </el-form-item>
+                    <el-form-item label="面纸成本:"  class="form-inline">
+                        <!-- <el-input v-model="finishedInfo.height" placeholder="请输入成品高"></el-input> -->
+                        <span>123</span>
+                    </el-form-item>
+                    <el-form-item label="面纸类型:"  class="form-inline">
+                        <el-input  placeholder="请输入面纸类型"></el-input>
+                    </el-form-item>
+                    <el-form-item label="面纸克数:"  class="form-inline">
+                        <el-input  placeholder="请输入面纸克数"></el-input>
+                    </el-form-item>
+                    <el-form-item label="面纸单价:"  class="form-inline">
+                        <el-input  placeholder="请输入面纸单价"></el-input>
+                    </el-form-item>
+             </el-form-item>
+            
         </el-form>
       </div>
       <div class="facialTissue">
           <div class="space-between">
               <div class="h1">坑纸</div> 
-            <el-button type="primary" @click="addItem" icon="el-icon-edit">新增</el-button>
+            <el-button type="primary" @click="addItem(1)" icon="el-icon-edit">新增</el-button>
           </div>
          
          <el-form size='mini' inline label-width="100px" style="padding:20px">

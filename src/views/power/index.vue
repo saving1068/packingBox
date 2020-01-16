@@ -20,7 +20,13 @@
                         prop="url"
                         label="地址"
                         >
+                        
                     </el-table-column>
+                    <el-table-column
+                        prop="sort"
+                        label="排序"
+                        >
+                    </el-table-column>                        
                     <el-table-column
                         align="right"
                         width="150px"
@@ -57,6 +63,9 @@
                 <el-form-item label="编号:">
                    <el-input  v-model="addMuneInfo.type"></el-input>
                </el-form-item>
+               <el-form-item label="菜单排序:">
+                   <el-input  v-model="addMuneInfo.sort"></el-input>
+               </el-form-item>
                  
            </el-form>
             <span slot="footer" class="dialog-footer">
@@ -79,7 +88,8 @@
 let initMuneValue = {
   description:'',
   url:'',
-  type:''
+  type:'',
+  sort:''
 }
   export default {
     created(){
@@ -143,7 +153,20 @@ let initMuneValue = {
 
       },
       delteItem(item){
-
+        this.$confirm('是否确认删除页面?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(async () => {
+                   let res=  await deleteMenu({id:item.id})
+                  this.$message.success(res.returnMsg)
+                  this.getList({})
+                  
+                }).catch((e) => {
+                
+                       
+            });
+        deleteMenu
       }
     },
     data() {

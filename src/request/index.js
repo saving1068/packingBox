@@ -6,7 +6,7 @@ import store from '@/store'
 
 console.log(store,111111111111111)
 let token = sessionStorage.getItem('token');
-console.log(token,222)
+console.log(token,2222)
 
 // 创建axios实例
 const service = axios.create({
@@ -15,7 +15,7 @@ const service = axios.create({
     headers: {
         "Content-type":"application/json",
         //  'X-Requested-With': 'XMLHttpRequest'
-        'token':store.state.token?store.state.token:token
+        'token':token
          }
 })
 console.log(sessionStorage.getItem('token'),222)

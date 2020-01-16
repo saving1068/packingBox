@@ -60,14 +60,14 @@
 					title:'订单',
 					path:'order'
 					},
-					{
-					title:'权限',
-					son:[
+					// {
+					// title:'权限',
+					// son:[
 						{title:"角色",path:"role"},
 						{title:"用户",path:"user"},
-						{title:'菜单页面',path:'power'}
-					]
-					},
+						{title:'菜单页面',path:'power'},
+					// ]
+					// },
 					{
 					title:'系统字典管理',
 					path:'dictionaries'
