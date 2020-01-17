@@ -291,7 +291,24 @@
 						// console.log(this.$store)
 						this.$message.success('登录成功')
 						this.$loading.hide()
-						this.goTo('home');
+							const {
+								query
+							} = this.$route
+					
+							
+								// 返回上一页
+								if (query.redirect) {
+									this.$router.push({
+										path: query.redirect || '/home'
+									})
+								} else {
+									this.$router.push({
+										name: 'index'
+									})
+								}
+					
+		
+						// this.goTo('home');
 
 						// 动态路由菜单
 						// const menus = await getUserResource()
@@ -307,28 +324,7 @@
 						// 	// this.btnLoading = false
 						// 	this.$loading.hide()
 					
-						// 	const {
-						// 		query
-						// 	} = this.$route
-					
-							// 已完善过商户信息
-							// if (userInfo.status === 1) {
-							// 	// 返回上一页
-							// 	if (query.redirect) {
-							// 		this.$router.push({
-							// 			path: query.redirect || '/index'
-							// 		})
-							// 	} else {
-							// 		this.$router.push({
-							// 			name: 'index'
-							// 		})
-							// 	}
-							// } else {
-							// 	this.$router.push({
-							// 		name: 'account'
-							// 	})
-							// }
-						// })
+						
 					
 					} catch (error) {
 						console.log(error)

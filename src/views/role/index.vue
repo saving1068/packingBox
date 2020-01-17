@@ -88,6 +88,7 @@
             default-expand-all
             node-key="id"
             ref="tree"
+            :default-checked-keys='itemPowerList'
             highlight-current
             :props="defaultProps">
           </el-tree>
@@ -130,7 +131,7 @@ import {
 } from '@/api/menu'
 let addItemInfo = {
   name:'',description:'',sort:'',
-  perList:[]
+  pids:[]
 }
   export default {
     created(){
@@ -159,13 +160,13 @@ let addItemInfo = {
                 }).then(async() => {
                     try {
                       console.log(this.$refs.tree.getCheckedNodes())
-                      this.addItemInfo.perList = [];
+                      this.addItemInfo.pids = [];
                       this.$refs.tree.getCheckedNodes().forEach(item =>{
-                           this.addItemInfo.perList.push(item.id)
+                           this.addItemInfo.pids.push(item.id)
                       })
                      
                       //  console.log(this.addItemInfo)
-                     if(this.addItemInfo.perList.length != 0&&this.addItemInfo.name
+                     if(this.addItemInfo.pids.length != 0&&this.addItemInfo.name
                      &&this.addItemInfo.description
                      &&this.addItemInfo.sort
                      ){
@@ -236,9 +237,19 @@ let addItemInfo = {
                 });          
                 });
       },
-        addItem(item){
+        async addItem(item){
           if(item){
-            this.addItemInfo = {...item}
+            console.log(item)
+           let res =  await roleDetail({id:item.roleId})
+           let perList = [];
+           res.data.perList.forEach(item =>{
+             perList.push(item.id)
+           })
+
+            this.itemPowerList = perList;
+            console.log(this.itemPowerList)
+           console.log(res)
+            this.addItemInfo = {...res.data}
           }else{
             this.addItemInfo = {...addItemInfo}
            
@@ -301,6 +312,7 @@ let addItemInfo = {
         list:[],
         initMenuList:[],
         treeData:[],
+        itemPowerList:[],
         defaultProps: {
           // children: 'children',
           label: 'description'

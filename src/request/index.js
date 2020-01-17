@@ -4,22 +4,22 @@ import { Message, Notification } from 'element-ui'
 import router from '@/router'
 import store from '@/store'
 
-console.log(store,111111111111111)
 let token = sessionStorage.getItem('token');
-console.log(token,2222)
 
+console.log(sessionStorage.getItem('token'),222)
 // 创建axios实例
 const service = axios.create({
     baseURL:process.env.VUE_APP_BASE_URL, // api的base_url
     timeout: 30000, // 请求超时时间,
     headers: {
         "Content-type":"application/json",
-        //  'X-Requested-With': 'XMLHttpRequest'
+        //  'X-Requested-With': 'XMLHtx`tpRequest'
         'token':token
          }
 })
-console.log(sessionStorage.getItem('token'),222)
 
+// axios.defaults.headers.common["token"] = token?token:'';
+console.log(axios.defaults)
 axios.defaults.withCredentials = true
 
 // request请求拦截器
@@ -48,7 +48,7 @@ service.interceptors.response.use(
         if(returnCode == 200){
 			
             return response.data
-        }else if(returnCode == 1){
+        }else if(returnCode == 400||returnCode == 'EXPIRY'){
             store.commit('clearToken')
             console.log('登录态 <<<______>>> %c "已失效啦"',"color:red")
             const href = location.href
