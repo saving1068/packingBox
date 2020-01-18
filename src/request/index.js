@@ -7,6 +7,7 @@ import store from '@/store'
 let token = sessionStorage.getItem('token');
 
 console.log(sessionStorage.getItem('token'),222)
+
 // 创建axios实例
 const service = axios.create({
     baseURL:process.env.VUE_APP_BASE_URL, // api的base_url
@@ -14,11 +15,13 @@ const service = axios.create({
     headers: {
         "Content-type":"application/json",
         //  'X-Requested-With': 'XMLHtx`tpRequest'
-        'token':token
+        // 'token':window.sessionStorage.getItem('token')
          }
+         
 })
 
-// axios.defaults.headers.common["token"] = token?token:'';
+axios.defaults.headers.common["token"] = token?token:'';
+// debugger
 console.log(axios.defaults)
 axios.defaults.withCredentials = true
 
@@ -26,9 +29,9 @@ axios.defaults.withCredentials = true
 service.interceptors.request.use(
     config => {
         // config.data = qs.stringify(config.data || {})
+        config.headers.token = window.sessionStorage.getItem('token'); 
         config.data = config.data || {}
         config.method = config.method || 'post'
-        
         return config
     }, error => {
         console.log('error>>>>>>>>>>',error) // for debug

@@ -180,7 +180,7 @@ let addItemInfo = {
                         this.addItemInfo = {}
                             this.getList({})
                          this.$message.success(success);
-                         this.parentChange = false;
+                         this.roleChange = false;
                        
                      }else{
                        return this.$message.warning('请为该角色填写所有信息')
@@ -193,10 +193,7 @@ let addItemInfo = {
                     
                 
                 }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });          
+                
                 });
       },
       async searchRole(row, column, event){

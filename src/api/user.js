@@ -1,5 +1,6 @@
 import request from '@/request'
-const login = (params) => { //登录
+const login = (params) => { //登录--+
+    console.log(request)
     return request({
         url: '/user/login',
         method: 'POST',
