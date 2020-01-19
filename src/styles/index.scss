@@ -149,13 +149,14 @@ div:focus{
 .center{
 	display: flex;
 	justify-content: center;
-	align-items: center;
+    align-items: center;
+    flex-wrap:wrap;
 }
 .space-between{
 	display: flex;
 	justify-content: space-between;
     align-items: center;
-    
+    flex-wrap:wrap;
 }
 
 .justify-content-center {

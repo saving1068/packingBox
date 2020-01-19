@@ -13,23 +13,24 @@
                     align="center"
                     style="width: 100%">
                     <el-table-column
-                        prop="account"
-                        label="账号"
+                        prop="name"
+                        label="客户名称"
                         >
                     </el-table-column>
+                     <el-table-column
+                        prop="address"
+                        label="客户地址"
+                        >
+                    </el-table-column>
+                    
                     <el-table-column
-                        prop="contactName"
+                        prop="contact"
                         label="联系人"
                         >
                     </el-table-column>
                     <el-table-column
-                        prop="contactPhone"
-                        label="手机号码"
-                        >
-                    </el-table-column>
-                    <el-table-column
-                        prop="roleList"
-                        label="用户"
+                        prop="contactNumber"
+                        label="联系人电话"
                         >
                     </el-table-column>
                     <el-table-column
@@ -47,7 +48,6 @@
                         <template slot-scope="scope">
                             <el-button type="primary" @click.stop="addItem(scope.row)" size="mini">修改</el-button>
                             <el-button type="danger" @click.stop="delteItem(scope.row)" size="mini">删除</el-button>
-                            <el-button type="warning" @click.stop="reset(scope.row)" size="mini">重置密码</el-button>
                         </template>
                         
                     </el-table-column>
@@ -67,49 +67,30 @@
         </div> -->
         
       </div>
-      <!-- 新增用户 -->
+      <!-- 新增客户 -->
         <el-dialog
            
-            title="新增用户"
-            :visible.sync="userChange"
-            width="50%"
+            title="新增客户"
+            :visible.sync="customerChange"
+            width="400px"
             center
             :before-close="addClose">
-              <div class="space-between">
+              <div class="center">
                 <el-form label-width="80px"  size='mini'>
-               <el-form-item label="账号:">
-                   <el-input  v-model="addItemInfo.account"></el-input>
+               <el-form-item label="客户名称:">
+                   <el-input  v-model="addItemInfo.name"></el-input>
                </el-form-item>
-               <el-form-item label="密码:" v-if="addItemInfo.id">
-                    <el-checkbox v-model="addItemInfo.ifChangePassword">是否修改密码</el-checkbox>
-                   <el-input :disabled='!addItemInfo.ifChangePassword'  v-model="addItemInfo.password"></el-input>
-               </el-form-item>
-               <el-form-item label="密码:" v-else>
-                   <el-input  v-model="addItemInfo.password"></el-input>
+                <el-form-item label="客户地址:">
+                   <el-input  v-model="addItemInfo.address"></el-input>
                </el-form-item>
                <el-form-item label="联系人:">
-                   <el-input  v-model="addItemInfo.contactName"></el-input>
+                   <el-input  v-model="addItemInfo.contact"></el-input>
                </el-form-item>
-                <el-form-item label="手机号码:">
-                   <el-input  v-model="addItemInfo.contactPhone"></el-input>
+                <el-form-item label="联系号码:">
+                   <el-input  v-model="addItemInfo.contactNumber"></el-input>
                </el-form-item>
                  
-           </el-form>
-           <div>
-              <div>角色</div>
-                <el-tree
-                    :data="initroleList"
-                    show-checkbox
-                    default-expand-all
-                    node-key="roleId"
-                    ref="tree"
-                    :default-checked-keys='itemPowerList'
-                    highlight-current
-                    :props="defaultProps">
-                </el-tree>
-              </div>
-               
-            
+           </el-form> 
            </div>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="addClose">取 消</el-button>
@@ -137,21 +118,15 @@
 </template>
 
 <script>
-import {
-   accountUpdate,resetUser,accountDetail,accountList,delteAccount
-} from '@/api/user'
-import {
-  roleList
-} from '@/api/role'
+import {updataCustomer,customerDetail,deleteCustomer,customerList} from '@/api/customer'
+
 let addItemInfo = {
-  account:'',contactName:'',contactPhone:'',
-  roles:[],password:'',ifChangePassword:true,
+ contact:'',contactNumber:'',name:'',address:''
 }
   export default {
     created(){
       this.loading = true;
       this.getList()
-      this.roleList()
       this.loading = false;
     },
     methods: {
@@ -161,47 +136,31 @@ let addItemInfo = {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.userChange = false;
+          this.customerChange = false;
         }).catch(() => {
                 
         });
       },
       addSure(){
-        let tips = this.addItemInfo.id?'是否确认修改用户?':'是否确认新增用户?';
-            let success = this.addItemInfo.id?'修改用户成功':'新增用户成功';
+        let tips = this.addItemInfo.id?'是否确认修改客户?':'是否确认新增客户?';
+            let success = this.addItemInfo.id?'修改客户成功':'新增客户成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(async() => {
                     try {
-                      console.log(this.$refs.tree.getCheckedNodes())
-                      this.addItemInfo.roles = [];
-                      this.$refs.tree.getCheckedNodes().forEach(item =>{
-                          console.log(item)
-                           this.addItemInfo.roles.push(item.roleId)
-                      })
                      
                       //  console.log(this.addItemInfo)
-                     if(this.addItemInfo.roles.length != 0&&this.addItemInfo.account
-                     &&this.addItemInfo.contactName
-                     &&this.addItemInfo.contactPhone
+                     if(this.addItemInfo.name
+                     &&this.addItemInfo.contactNumber
+                     &&this.addItemInfo.contact
                      ){
-                       if(this.addItemInfo.id){
-                          if(this.addItemInfo.ifChangePassword){
-                            if(!this.addItemInfo.password){
-                              return this.$message.warning('请为该用户填写密码')
-                            }
-                       }
-                       }else{
-                         if(!this.addItemInfo.password){
-                              return this.$message.warning('请为该用户填写密码')
-                            }
-                       }
+                       
                       
                        console.log(this.addItemInfo)
                        // if(this.addItemInfo.id){//修改
-                            await accountUpdate(this.addItemInfo);
+                            await updataCustomer(this.addItemInfo);
                         // }else{//新增
                             
                             // await updataRole(this.addItemInfo);
@@ -210,10 +169,10 @@ let addItemInfo = {
                         this.addItemInfo = {}
                             this.getList({})
                          this.$message.success(success);
-                         this.userChange = false;
+                         this.customerChange = false;
                        
                      }else{
-                       return this.$message.warning('请为该用户填写所有信息')
+                       return this.$message.warning('请为该客户填写所有信息')
                      }
                     
                         
@@ -237,40 +196,17 @@ let addItemInfo = {
         }
        
       },
-      reset(item){
-        let tips = '是否确认重置用户密码';
-            let success = '重置用户密码成功';
-            this.$confirm(tips, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-                }).then(async() => {
-                    try {
-                        await resetUser({id:item.id})
-                        
-                        this.getList({})
-                        this.$message.success(success);
-                        
-                    } catch (error) {
-                        
-                    }
-                    
-                
-                }).catch(() => {
-                
-                });
-      },
       delteItem(item){
         console.log(item)
-          let tips = '是否确认删除用户';
-            let success = '删除用户成功';
+          let tips = '是否确认删除客户';
+            let success = '删除客户成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(async() => {
                     try {
-                        await delteAccount({id:item.id})
+                        await deleteCustomer({id:item.id})
                         
                             this.getList({})
                          this.$message.success(success);
@@ -287,98 +223,34 @@ let addItemInfo = {
         async addItem(item){
           if(item){
             // console.log(item)
-           let res =  await accountDetail({id:item.id})
-           console.log(res)
-           let roles = [];
-           res.data.roles.forEach(item =>{
-             roles.push(item.roleId)
-           })
-
-            this.itemPowerList = roles;
-            console.log(this.itemPowerList)
-           
-            this.addItemInfo = {...res.data,ifChangePassword:false}
+           let res =  await customerDetail({id:item.id})
+           let {contact,contactNumber,name,address,id} = {...res.data}
+            this.addItemInfo =  {contact,contactNumber,name,address,id}
           }else{
             this.addItemInfo = {...addItemInfo}
            
           }
            console.log(this.addItemInfo)
-          this.userChange =true;
+          this.customerChange =true;
         },
         showParent(){
 
         },
     async getList(){
-      let res = await accountList();
-      res.data.map(item =>{
-        item.roleList = '';
-      })
-
+      let res = await customerList();
       this.list = res.data;
-       
-      this.list.map(item =>{
-        let roleList =[];
-       item.roles.map(roleItem =>{
-         roleList.push(roleItem.name);
-        //  console.log(roleItem,'roleItem')
-       })
-         item.roleList = roleList.length >0? roleList.join(','):'';
-      })
-      
-      console.log(this.list,221);
       },
-    async roleList(){
-      let res = await roleList()
-      this.initroleList = res.data
-      console.log(res,22222);
-    },
-
-
-
-
-
-
-
-      getCheckedNodes() {
-        console.log(this.$refs.tree.getCheckedNodes());
-      },
-      getCheckedKeys() {
-        console.log(this.$refs.tree.getCheckedKeys());
-      },
-      setCheckedNodes() {
-        this.$refs.tree.setCheckedNodes([{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 9,
-          label: '三级 1-1-1'
-        }]);
-      },
-      setCheckedKeys() {
-        this.$refs.tree.setCheckedKeys([3]);
-      },
-      resetChecked() {
-        this.$refs.tree.setCheckedKeys([]);
-      }
     },
 
     data() {
       return {
         loading:false,
         searchRoleValue:'',
-        sonShow:false,
-        userChange:false,
+        customerChange:false,
         addItemInfo:{
-          ifChangePassword:false
         },
         list:[],
-        initroleList:[],
         treeData:[],
-        itemPowerList:[],
-        defaultProps: {
-          // children: 'children',
-          label: 'name'
-        }
       };
     }
   };

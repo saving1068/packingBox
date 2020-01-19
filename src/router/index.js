@@ -54,6 +54,16 @@ const routes = [
 				path: '/dictionaries',
 				name: 'dictionaries',
 				component:() => import('@/views/dictionaries'),
+			},
+			{//供应商
+				path: '/supplier',
+				name: 'supplier',
+				component:() => import('@/views/supplier'),
+			},
+			{//客户
+				path: '/customer',
+				name: 'customer',
+				component:() => import('@/views/customer'),
 			}
 		]
 	},

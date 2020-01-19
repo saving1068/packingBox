@@ -20,7 +20,7 @@ const service = axios.create({
          
 })
 
-axios.defaults.headers.common["token"] = token?token:'';
+// axios.defaults.headers.common["token"] = token?token:'';
 // debugger
 console.log(axios.defaults)
 axios.defaults.withCredentials = true
@@ -30,6 +30,12 @@ service.interceptors.request.use(
     config => {
         // config.data = qs.stringify(config.data || {})
         config.headers.token = window.sessionStorage.getItem('token'); 
+        // if(config.url== '/user/reset' ){
+        //    config.headers['Content-type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        //     console.log(config,config.url== '/user/reset' )
+        // }
+        // console.log(config)
+        // debugger
         config.data = config.data || {}
         config.method = config.method || 'post'
         return config

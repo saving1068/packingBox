@@ -53,7 +53,7 @@
 					path:'home'
 					},
 					{
-						title:'我要订单',
+						title:'我下订单',
 						path:'placeOrder'
 					},
 					{
@@ -72,6 +72,15 @@
 					title:'系统字典管理',
 					path:'dictionaries'
 					},
+					{
+					title:'客户管理',
+					path:'customer'
+					},
+					{
+					title:'供应商管理',
+					path:'supplier'
+					}
+					
 				]
 			}
 		},
