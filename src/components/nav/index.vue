@@ -79,7 +79,11 @@
 					{
 					title:'供应商管理',
 					path:'supplier'
-					}
+					},
+					{
+					title:'费用管理',
+					path:'cost'
+					},
 					
 				]
 			}

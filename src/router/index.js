@@ -64,7 +64,12 @@ const routes = [
 				path: '/customer',
 				name: 'customer',
 				component:() => import('@/views/customer'),
-			}
+			},
+			{//费用
+				path: '/cost',
+				name: 'cost',
+				component:() => import('@/views/cost'),
+			},
 		]
 	},
 	{

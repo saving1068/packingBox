@@ -1,4 +1,5 @@
-console.log(process.env.BASE_API)
+console.log(process.env.VUE_APP_BASE_URL)
+console.log(process.env)
 
 const path = require('path')
 module.exports = {
