@@ -125,9 +125,8 @@ let addItemInfo = {
 }
   export default {
     created(){
-      this.loading = true;
+     
       this.getList()
-      this.loading = false;
     },
     methods: {
       addClose(){
@@ -238,8 +237,10 @@ let addItemInfo = {
 
         },
     async getList(){
+       this.loading = true;
       let res = await supplierList();
       this.list = res.data;
+       this.loading = false;
       },
     },
 

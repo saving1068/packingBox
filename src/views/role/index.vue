@@ -4,8 +4,7 @@
           <el-button type="primary" @click="addItem()" icon="el-icon-edit">新增</el-button>
       </div>
       <div class="data space-between">
-        <div class="table">
-          <el-scrollbar >
+        <div class="table" style="width:600px;">
                     <el-table
                     :data="list"
                     fit
@@ -46,7 +45,6 @@
                         
                     </el-table-column>
                     </el-table>
-                 </el-scrollbar>
         </div>
         <div class="tree" v-show="sonShow">
           <el-tree
@@ -134,9 +132,11 @@ let addItemInfo = {
   pids:[]
 }
   export default {
-    created(){
-      this.getList()
-      this.menuList()
+    async created(){
+      this.loading = true;
+     await this.getList()
+     await this.menuList()
+     this.loading = false;
     },
     methods: {
       addClose(){

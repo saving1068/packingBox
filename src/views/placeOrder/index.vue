@@ -1,12 +1,13 @@
 <template>
   <div class="warp" v-loading='loading'>
-    <el-form size="mini" inline label-width="100px">
+    <div class="from">
+      <el-form size="mini" inline label-width="100px" >
       <el-form-item label="箱形:" class="form-inline">
-        <el-select v-model="basicData.caseType" placeholder="请选择">
+        <el-select v-model="basicData.caseType" placeholder="请选择" @change="caseChange">
           <el-option
             v-for="item in boxTypeList"
-            :key="item.key"
-            :label="item.value"
+            :key="item.id"
+            :label="item.caseName"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -293,7 +294,7 @@
         <div class="h1">印刷</div> 
       </div>
       <el-form size="mini" inline label-width="120px" style="padding:20px">
-        <el-form-item label="印刷厂家:" class="form-inline">
+        <el-form-item label="印刷厂家:" >
          <el-select v-model="printing.spId" placeholder="请选择">
             <el-option
             v-for="item in spId"
@@ -303,7 +304,7 @@
             </el-option>
         </el-select>
         </el-form-item>
-        <el-form-item label="印刷机类型:" class="form-inline">
+        <el-form-item label="印刷机类型:" >
           <el-select v-model="printing.printType" placeholder="请选择">
             <el-option
             v-for="item in printingList"
@@ -313,7 +314,7 @@
             </el-option>
           </el-select>
         </el-form-item>   
-        <el-form-item label="印刷费用:" class="form-inline-big">
+        <el-form-item label="印刷费用:">
           <el-input v-model.number="printing.psCost" placeholder="印刷费用"></el-input>
         </el-form-item>
       </el-form>
@@ -363,12 +364,14 @@
       <el-button type="primary" @click="takeOrder">我要下单({{totalCost}})</el-button>
     </div>
 
+    </div>
+    
     <el-dialog
-      title="提示"
+      title="我要下单"
       :visible.sync="orderInfo"
       width="80%"
       :before-close="handleClose">
-        <el-form inline size="mini">
+        <el-form inline size="mini" label-width="120px" >
            <el-form-item label="产品名字:" >
              <el-input v-model="basicData.odName" placeholder="请输入产品名字"></el-input>
            </el-form-item>
@@ -378,16 +381,16 @@
                 v-for="item in userList"
                 :key="item.id"
                 :label="item.contactName"
-                :value="item.key"
+                :value="item.id"
               ></el-option>
             </el-select>
            </el-form-item>
            <el-form-item label="产品规格:" >
              <el-input v-model="basicData.productGuige" placeholder="请输入产品规格"></el-input>
            </el-form-item>
-           <el-form-item label="合同编号:">
+           <!-- <el-form-item label="合同编号:">
              <el-input v-model="basicData.contractNumber" placeholder="请输入合同编号"></el-input>
-           </el-form-item>
+           </el-form-item> -->
             <el-form-item label="客户合同编号:">
              <el-input v-model="basicData.ctContractNumber" placeholder="请输入客户合同编号"></el-input>
            </el-form-item>
@@ -397,11 +400,11 @@
                 v-for="item in userList"
                 :key="item.id"
                 :label="item.contactName"
-                :value="item.key"
+                :value="item.id"
               ></el-option>
             </el-select>
            </el-form-item>
-           <el-form-item label="客户:" class="form-inline">
+           <el-form-item label="客户:" >
              <el-select placeholder="请选择" v-model="basicData.customerId">
               <el-option
                 v-for="item in customer"
@@ -411,7 +414,7 @@
               ></el-option>
             </el-select>
            </el-form-item>
-           <el-form-item label="订单日期:" class="form-inline">
+           <el-form-item label="订单日期:" >
             <el-date-picker
               v-model="basicData.odSetdate"
               type="date"
@@ -419,7 +422,7 @@
               placeholder="订单日期">
             </el-date-picker>
            </el-form-item>
-           <el-form-item label="交货日期:" class="form-inline">
+           <el-form-item label="交货日期:">
              <el-date-picker
               v-model="basicData.odFinishdate"
               type="date"
@@ -431,19 +434,21 @@
         </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="sureOrder">确 定</el-button>
+        <el-button type="primary" :loading="sureLoding"  @click="sureOrder">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- <el-backtop target=".page-component__scroll .el-scrollbar__wrap"></el-backtop> -->
   </div>
 </template>
 
 <script>
-import { dictApi } from "@/utils";
+import { dictApi ,finishedInfoFormula} from "@/utils";
 import {updataOrder} from '@/api/order'
 import { costList} from '@/api/cost'
 import {supplierList} from '@/api/supplier'
 import {accountList} from '@/api/user'
 import {customerList} from '@/api/customer'
+import {boxList} from '@/api/box'
 export default {
   data() {
     return {
@@ -459,7 +464,7 @@ export default {
         printColor: "", //印刷颜色,
         printDealType: "", //印后处理
         packageRequire: "", //包装要求
-        contractNumber:'',//合同编号
+        // contractNumber:'',//合同编号
         ctContractNumber:'',//客户合同编号
         customerId:'',//客户ID
         merchandiserId:"",//跟单员ID,
@@ -473,11 +478,11 @@ export default {
         totalCost:0,
       },
       boxTypeList: [],
-      tappingList: [],
-      beerNum: [],
+      tappingList: [],//加工工序
+      beerNum: [],//啤板拼数
       paperCount: [],
-      printingColor: [],
-      printingHandle: [],
+      printingColor: [],//印刷颜色
+      printingHandle: [],//印后处理
       printingList:[],
       packAsk: [],
       paperNum:[],
@@ -503,9 +508,11 @@ export default {
         psArea:0,//平方价
         psUnitPrice:0,//单价
         psCount:0,//数量
-        psCost:0//成本
+        psCost:0,//成本
+        psType:2
       },
       printing:{//印刷
+        psType:1
       },
       processingCost:{//加工
         psUnitPrice:0,
@@ -522,6 +529,7 @@ export default {
       loading:false,
       userList:[],//用户
       customer:[],//客户
+      sureLoding:false
     };
   },
   created() {
@@ -561,24 +569,25 @@ export default {
                     this.facialTissue[this.facialChoiseIndex].mtCost = (this.facialTissue[this.facialChoiseIndex].mtCount*mtUnitPrice).toFixed(3)/1;
 
                     // 表面 加工费
-                    let facialLength =0; let facialWidth = 0;
-                      this.facialTissue.forEach(item =>{
-                        facialLength += item.mtLength;
-                        facialWidth += item.mtWidth;
-                      })
-                      this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001).toFixed(3)/1;
-                      let psUnitPrice,psCount,psCostBase,psCost,psType,area;
-                      area = ((Number(facialWidth)*Number(facialLength))/1000000);//面积
-                      psCount = this.basicData.odCount;//数量
+                    this.processing()
+                    // let facialLength =0; let facialWidth = 0;
+                    //   this.facialTissue.forEach(item =>{
+                    //     facialLength += item.mtLength;
+                    //     facialWidth += item.mtWidth;
+                    //   })
+                    //   this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001).toFixed(3)/1;
+                    //   let psUnitPrice,psCount,psCostBase,psCost,psType,area;
+                    //   area = ((Number(facialWidth)*Number(facialLength))/1000000);//面积
+                    //   psCount = this.basicData.odCount;//数量
                     
-                      let paperNum = this.paperNum.find(item => item.id==this.basicData.paperCount)
-                      //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
-                      psCostBase = paperNum.value.split('/')[1];//加工费计费基准
-                      psUnitPrice = Number(psCostBase)*Number(area);//加工单价
-                      psCost = psUnitPrice*psCount;//人工费用
-                      this.processingCost = {
-                        area,psCount,psCostBase,psUnitPrice,psCost
-                      }
+                    //   let paperNum = this.paperNum.find(item => item.id==this.basicData.paperCount)
+                    //   //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
+                    //   psCostBase = paperNum.value.split('/')[1];//加工费计费基准
+                    //   psUnitPrice = Number(psCostBase)*Number(area);//加工单价
+                    //   psCost = psUnitPrice*psCount;//人工费用
+                    //   this.processingCost = {
+                    //     area,psCount,psCostBase,psUnitPrice,psCost
+                    //   }
                     
                 }
                 if(this.tunnelTissue.length !=0){
@@ -594,7 +603,8 @@ export default {
                     length = length-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
                     let kT  = this.kT.find(item => item.id == this.tunnelTissue[this.tunnelChoiseIndex].mtModel);
                     let mtUnitPrice = 0;
-                    mtUnitPrice = ((Number(length*height)/1000000)*(Number(kT.unitPrice)/1000)*(Number(kT.gram)/1000)).toFixed(3)/1;
+                    mtUnitPrice =  Number(height)*Number(length)*Number(kT.unitPrice).toFixed(3)/1;
+                    // mtUnitPrice = ((Number(length*height)/1000000)*(Number(kT.unitPrice)/1000)*(Number(kT.gram)/1000)).toFixed(3)/1;
                     this.tunnelTissue.map(item =>{
                       item.mtLength = length;//坑纸长
                       item.mtHeight = height;//坑纸宽
@@ -612,24 +622,25 @@ export default {
         basicData:{
           handler(value){
             if(this.facialTissue.length !=0){
-              let facialLength =0; let facialWidth = 0;
-                this.facialTissue.forEach(item =>{
-                  facialLength += item.mtLength;
-                  facialWidth += item.mtWidth;
-                })
-                // this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001)
-                let psUnitPrice,psCount,psCostBase,psCost,psType,area;
-                area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
-                psCount = value.odCount;//数量
+              this.processing()
+              // let facialLength =0; let facialWidth = 0;
+              //   this.facialTissue.forEach(item =>{
+              //     facialLength += item.mtLength;
+              //     facialWidth += item.mtWidth;
+              //   })
+              //   // this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001)
+              //   let psUnitPrice,psCount,psCostBase,psCost,psType,area;
+              //   area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
+              //   psCount = value.odCount;//数量
                
-                let paperNum = this.paperNum.find(item => item.id==value.paperCount)
-                //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
-                psCostBase = paperNum.value.split('/')[1];//加工费计费基准
-                psUnitPrice = Number(psCostBase)*Number(area);//加工单价
-                psCost = psUnitPrice*psCount;//人工费用
-                this.processingCost = {
-                  area,psCount,psCostBase,psUnitPrice,psCost
-                }
+              //   let paperNum = this.paperNum.find(item => item.id==value.paperCount)
+              //   //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
+              //   psCostBase = paperNum.value.split('/')[1];//加工费计费基准
+              //   psUnitPrice = Number(psCostBase)*Number(area);//加工单价
+              //   psCost = psUnitPrice*psCount;//人工费用
+              //   this.processingCost = {
+              //     area,psCount,psCostBase,psUnitPrice,psCost
+              //   }
             }
           },
           deep:true
@@ -654,7 +665,7 @@ export default {
         processingCost = this.processingCost.psCost;
         let totalCost  = (Number(facialTissueCost)+Number(tunnelTissueCost)+Number(otherCost)+printingCost+surfaceCost+processingCost).toFixed(3);
         console.log(totalCost,'totalCost','面子：'+facialTissueCost,"坑子:"+tunnelTissueCost,'其他：'+otherCost,'印刷费：'+printingCost,'表面：'+surfaceCost,'加工：'+processingCost)
-        return totalCost||0
+        return isNaN(totalCost)?0:totalCost
       }
     },
   methods: {
@@ -667,8 +678,38 @@ export default {
           this.basicData.maters = [...this.facialTissue,...this.tunnelTissue];
           this.basicData.processcosts = [...this.other,this.printing,this.processingCost,this.surface];
           this.basicData.totalCost = this.totalCost;
-          console.log(this.basicData)
-          await updataOrder(this.basicData)
+          this.basicData.pdLength = this.finishedInfo.pdLength;
+          this.basicData.pdWidth = this.finishedInfo.pdWidth;
+          this.basicData.pdHigth = this.finishedInfo.pdHigth;
+          console.log()
+          let flag = true;
+          for(let key in this.basicData){
+            if(this.basicData[key]){
+              flag = true
+            }else{
+              flag = false
+              console.log(key,this.basicData[key])
+            }
+          }
+          if(!flag){
+            console.log(flag)
+            return this.$message.warning("请填写所有信息")
+          }
+          try {
+             this.sureLoding = true;
+            await updataOrder(this.basicData)
+            this.$message.success('下单成功');
+            this.$router.push({
+            name:'order'
+            }).catch(err => {err})
+            this.orderInfo = false;
+          } catch (error) {
+            
+          }
+          // console.log(this.basicData)
+         
+          this.sureLoding = false;
+          
         }).catch(() => {
                 
         });
@@ -706,7 +747,8 @@ export default {
       },
     async dict() {
       this.loading = true;
-      this.boxTypeList = await dictApi("boxType");
+      let boxTypeList = await boxList();
+      this.boxTypeList = boxTypeList.data;
       this.tappingList = await dictApi("tapping");
       this.beerNum = await dictApi("beerNum");
       this.paperNum = await dictApi("paperNum");
@@ -775,20 +817,57 @@ export default {
       let height = this.tunnelTissue[this.tunnelChoiseIndex].mtHeight;
       let length = this.tunnelTissue[this.tunnelChoiseIndex].mtLength;
       let mtUnitPrice = 0;
-      mtUnitPrice = ((Number(length*height)/1000000)*(Number(kT.unitPrice)/1000)*(Number(kT.gram)/1000)).toFixed(3)/1;
+      // mtUnitPrice = ((Number(length*height)/1000000)*(Number(kT.unitPrice)/1000)*(Number(kT.gram)/1000)).toFixed(3)/1;
+      mtUnitPrice =  Number(height)*Number(length)*Number(kT.unitPrice).toFixed(3)/1;
+      console.log(Number(height),Number(length),Number(kT.unitPrice))
       this.tunnelTissue[this.tunnelChoiseIndex].mtUnitPrice = mtUnitPrice;
       this.tunnelTissue[this.tunnelChoiseIndex].gram = kT.gram;
 
     },
+    caseChange(value){
+      console.log(value,2222)
+      let formula = this.boxTypeList.find(item => item.id==value);
+      if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength){
+        this.facialTissue[this.facialChoiseIndex].mtWidth = finishedInfoFormula(formula.widthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+        this.facialTissue[this.facialChoiseIndex].mtLength = finishedInfoFormula(formula.lengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+      }
+      
+    },
+    processing(){
+        let facialLength =0; let facialWidth = 0;
+                this.facialTissue.forEach(item =>{
+                  facialLength += item.mtLength;
+                  facialWidth += item.mtWidth;
+                })
+
+                // 表面 加工费
+                this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001).toFixed(3)/1
+                let psUnitPrice,psCount,psCostBase,psCost,psType,area;
+                area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
+                psCount = this.basicData.odCount;//数量
+               
+                let paperNum = this.paperNum.find(item => item.id==this.basicData.paperCount)
+                //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
+                psCostBase = paperNum.value.split('/')[1];//加工费计费基准
+                psUnitPrice = (Number(psCostBase)*Number(area)).toFixed(3)/1;//加工单价
+                psCost = (psUnitPrice*psCount).toFixed(3)/1;//人工费用
+                this.processingCost = {
+                  area,psCount,psCostBase,psUnitPrice,psCost,psType:0
+                }
+    },
     addItem(type){
         if(type == 0){//面纸
         console.log(this.finishedInfo)
-            if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength&&this.basicData.odCount&&this.basicData.paperCount){
+            if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength&&this.basicData.odCount&&this.basicData.paperCount&&this.basicData.caseType){
                 let width,length,mtUnitPrice;
-                length = ((Number(this.finishedInfo.pdLength)*2 + Number(this.finishedInfo.pdWidth)*2)+5);
-                width = (Number(this.finishedInfo.pdHigth)+Number(this.finishedInfo.pdWidth)+5);
+                let formula = this.boxTypeList.find(item => item.id==this.basicData.caseType) 
+                console.log(formula)
+                length = finishedInfoFormula(formula.lengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+                width = finishedInfoFormula(formula.widthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+                // length = ((Number(this.finishedInfo.pdLength)*2 + Number(this.finishedInfo.pdWidth)*2)+5);
+                // width = (Number(this.finishedInfo.pdHigth)+Number(this.finishedInfo.pdWidth)+5);
                 mtUnitPrice = 0;
-    
+                
                 let facialTissueInfo = {
                     spId:'',//供应商
                     mtModel:'',//面纸类型and面纸型号
@@ -803,28 +882,31 @@ export default {
                 }
 
                 this.facialTissue.push(facialTissueInfo);
-                let facialLength =0; let facialWidth = 0;
-                this.facialTissue.forEach(item =>{
-                  facialLength += item.mtLength;
-                  facialWidth += item.mtWidth;
-                })
-                this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001).toFixed(3)/1
-                let psUnitPrice,psCount,psCostBase,psCost,psType,area;
-                area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
-                psCount = this.basicData.odCount;//数量
+                this.processing()
+                // let facialLength =0; let facialWidth = 0;
+                // this.facialTissue.forEach(item =>{
+                //   facialLength += item.mtLength;
+                //   facialWidth += item.mtWidth;
+                // })
+
+                // // 表面 加工费
+                // this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001).toFixed(3)/1
+                // let psUnitPrice,psCount,psCostBase,psCost,psType,area;
+                // area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
+                // psCount = this.basicData.odCount;//数量
                
-                let paperNum = this.paperNum.find(item => item.id==this.basicData.paperCount)
-                //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
-                psCostBase = paperNum.value.split('/')[1];//加工费计费基准
-                psUnitPrice = (Number(psCostBase)*Number(area)).toFixed(3)/1;//加工单价
-                psCost = psUnitPrice*psCount;//人工费用
-                this.processingCost = {
-                  area,psCount,psCostBase,psUnitPrice,psCost
-                }
+                // let paperNum = this.paperNum.find(item => item.id==this.basicData.paperCount)
+                // //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
+                // psCostBase = paperNum.value.split('/')[1];//加工费计费基准
+                // psUnitPrice = (Number(psCostBase)*Number(area)).toFixed(3)/1;//加工单价
+                // psCost = psUnitPrice*psCount;//人工费用
+                // this.processingCost = {
+                //   area,psCount,psCostBase,psUnitPrice,psCost
+                // }
                 // console.log(this.processingCost,'this.processingCost')
 
             }else{
-                return this.$message.warning('请完成填写成品高，成品宽，成品宽，订单数量，纸层数的信息')
+                return this.$message.warning('请完成填写箱型,成品高，成品宽，成品宽，订单数量，纸层数的信息')
             }
         }else if(type == 1){//坑纸
           if(this.facialTissue.length == 0 ){
@@ -839,6 +921,7 @@ export default {
             })
              height = height-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
             length = length-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
+            // mtUnitPrice = Number(height)*Number(length);
               // debugger
               let tunnelTissueInfo = {
                     spId:'',//供应商

@@ -10,8 +10,9 @@ console.log(sessionStorage.getItem('token'),222)
 
 // 创建axios实例
 const service = axios.create({
-    baseURL:process.env.VUE_APP_BASE_URL, // api的base_url
+    baseURL:process.env.NODE_ENV === 'production' ? 'http://wearewwx.com:8080' : '/api/', // api的base_url
     timeout: 30000, // 请求超时时间,
+    withCredentials:true,
     headers: {
         "Content-type":"application/json",
         //  'X-Requested-With': 'XMLHtx`tpRequest'
@@ -23,11 +24,12 @@ const service = axios.create({
 // axios.defaults.headers.common["token"] = token?token:'';
 // debugger
 console.log(axios.defaults)
-axios.defaults.withCredentials = true
+// axios.defaults.withCredentials = true
 
 // request请求拦截器
 service.interceptors.request.use(
     config => {
+        console.log(config)
         // config.data = qs.stringify(config.data || {})
         config.headers.token = window.sessionStorage.getItem('token'); 
         // if(config.url== '/user/reset' ){

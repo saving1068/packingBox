@@ -13,24 +13,18 @@
                     align="center"
                     style="width: 100%">
                     <el-table-column
-                        prop="name"
-                        label="类型"
+                        prop="caseName"
+                        label="箱型名称"
                         >
                     </el-table-column>
                      <el-table-column
-                        prop="gram"
-                        label="克数"
+                        prop="lengthMath"
+                        label="面纸长算法"
                         >
                     </el-table-column>
-                    
-                    <el-table-column
-                        prop="unitPrice"
-                        label="单价/费用"
-                        >
-                    </el-table-column>
-                    <el-table-column
-                        prop="name"
-                        label="名称"
+                     <el-table-column
+                        prop="widthMath"
+                        label="面纸宽算法"
                         >
                     </el-table-column>
                     <el-table-column
@@ -67,31 +61,24 @@
         </div> -->
         
       </div>
-      <!-- 新增费用 -->
+      <!-- 新增箱型 -->
         <el-dialog
            
-            title="新增费用"
-            :visible.sync="costChange"
+            title="新增箱型"
+            :visible.sync="boxChange"
             width="500px"
             center
             :before-close="addClose">
               <div class="center">
                 <el-form label-width="100px"  size='mini'>
-               <el-form-item label="类型:">
-                   <el-radio-group v-model="addItemInfo.type">
-                        <el-radio :label="1">面纸类型费用</el-radio>
-                        <el-radio :label="2">坑纸类型费用</el-radio>
-                        <el-radio :label="3">表面处理费用</el-radio>
-                    </el-radio-group>
+                <el-form-item label="箱型名称:" >
+                   <el-input  v-model="addItemInfo.caseName"></el-input>
                </el-form-item>
-                <el-form-item label="克数:" >
-                   <el-input  v-model="addItemInfo.gram"></el-input>
+               <el-form-item label="面纸长算法:">
+                   <el-input  v-model="addItemInfo.lengthMath"></el-input>
                </el-form-item>
-               <el-form-item label="单价/费用:">
-                   <el-input  v-model="addItemInfo.unitPrice"></el-input>
-               </el-form-item>
-                <el-form-item label="名称:">
-                   <el-input  v-model="addItemInfo.name"></el-input>
+                <el-form-item label="面纸宽算法:">
+                   <el-input  v-model="addItemInfo.widthMath"></el-input>
                </el-form-item>
                  
            </el-form> 
@@ -101,31 +88,15 @@
                 <el-button type="primary" @click="addSure">确 定</el-button>
             </span>
         </el-dialog>
-		<!-- <el-tree
-  :data="data"
-  show-checkbox
-  default-expand-all
-  node-key="id"
-  ref="tree"
-  highlight-current
-  :props="defaultProps">
-</el-tree>
 
-<div class="buttons">
-  <el-button @click="getCheckedNodes">通过 node 获取</el-button>
-  <el-button @click="getCheckedKeys">通过 key 获取</el-button>
-  <el-button @click="setCheckedNodes">通过 node 设置</el-button>
-  <el-button @click="setCheckedKeys">通过 key 设置</el-button>
-  <el-button @click="resetChecked">清空</el-button>
-</div> -->
 	</div>
 </template>
 
 <script>
-import {updataCost,costDetail,deleteCost,costList} from '@/api/cost'
+import {updataBox,boxDetail,deleteBox,boxList} from '@/api/box'
 
 let addItemInfo = {
- name:'',gram:'',unitPrice:'',type:''
+ caseName:'',lengthMath:'',widthMath:''
 }
   export default {
     created(){
@@ -139,14 +110,14 @@ let addItemInfo = {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.costChange = false;
+          this.boxChange = false;
         }).catch(() => {
                 
         });
       },
       addSure(){
-        let tips = this.addItemInfo.id?'是否确认修改费用?':'是否确认新增费用?';
-            let success = this.addItemInfo.id?'修改费用成功':'新增费用成功';
+        let tips = this.addItemInfo.id?'是否确认修改箱型?':'是否确认新增箱型?';
+            let success = this.addItemInfo.id?'修改箱型成功':'新增箱型成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -155,20 +126,15 @@ let addItemInfo = {
                     try {
                      
                       //  console.log(this.addItemInfo)
-                     if(this.addItemInfo.name
-                     &&this.addItemInfo.type
-                     &&this.addItemInfo.unitPrice
+                     if(this.addItemInfo.caseName
+                     &&this.addItemInfo.lengthMath
+                     &&this.addItemInfo.widthMath
                      ){
-                       if(this.addItemInfo.type !=3){
-                           if(!this.addItemInfo.gram){
-                                return this.$message.warning('请填写克数')
-                           }
-                           
-                       }    
+                       
                       
                        console.log(this.addItemInfo)
                        // if(this.addItemInfo.id){//修改
-                            await updataCost(this.addItemInfo);
+                            await updataBox(this.addItemInfo);
                         // }else{//新增
                             
                             // await updataRole(this.addItemInfo);
@@ -177,7 +143,7 @@ let addItemInfo = {
                         this.addItemInfo = {}
                             this.getList({})
                          this.$message.success(success);
-                         this.costChange = false;
+                         this.boxChange = false;
                        
                      }else{
                        return this.$message.warning('请填写所有信息')
@@ -206,15 +172,15 @@ let addItemInfo = {
       },
       delteItem(item){
         console.log(item)
-          let tips = '是否确认删除费用';
-            let success = '删除费用成功';
+          let tips = '是否确认删除箱型';
+            let success = '删除箱型成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(async() => {
                     try {
-                        await deleteCost({id:item.id})
+                        await deleteBox({id:item.id})
                         
                             this.getList({})
                          this.$message.success(success);
@@ -231,23 +197,23 @@ let addItemInfo = {
         async addItem(item){
           if(item){
             // console.log(item)
-           let res =  await costDetail({id:item.id})
-           let {name,gram,unitPrice,type,id} = {...res.data}
+           let res =  await boxDetail({id:item.id})
+           let {caseName,lengthMath,widthMath,id} = {...res.data}
            
-            this.addItemInfo = {name,gram,unitPrice,type,id}
+            this.addItemInfo = {caseName,lengthMath,widthMath,id}
           }else{
             this.addItemInfo = {...addItemInfo}
            
           }
            console.log(this.addItemInfo)
-          this.costChange =true;
+          this.boxChange =true;
         },
         showParent(){
 
         },
     async getList(){
        this.loading = true;
-      let res = await costList();
+      let res = await boxList();
       this.list = res.data;
        this.loading = false;
       },
@@ -257,11 +223,10 @@ let addItemInfo = {
       return {
         loading:false,
         searchRoleValue:'',
-        costChange:false,
+        boxChange:false,
         addItemInfo:{
         },
         list:[],
-        treeData:[],
       };
     }
   };

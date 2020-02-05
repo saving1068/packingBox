@@ -23,53 +23,107 @@ const routes = [
 			{
 				path: '/home',//首页
 				name: 'home',
+				meta:{
+					title:'首页'
+				},
 				component:() => import('@/views/Home'),
 			},
 			{//下单
 				path:"placeOrder",
 				name: 'placeOrder',
+				meta:{
+					title:'我要下单'
+				},
 				component:() => import('@/views/placeOrder'),
 			},
 			{//订单
 				path: '/order',
 				name: 'order',
+				meta:{
+					title:'订单列表'
+				},
 				component:() => import('@/views/order'),
+			},
+			{//订单
+				path: '/orderDetail',
+				name: 'orderDetail',
+				meta:{
+					title:'订单详情'
+				},
+				component:() => import('@/views/orderDetail'),
 			},
 			{//权限页面
 				path: '/power',
 				name: 'power',
+				meta:{
+					title:'菜单管理'
+				},
 				component:() => import('@/views/power'),
 			},
 			{//角色
 				path: '/role',
 				name: 'role',
+				meta:{
+					title:'角色管理'
+				},
 				component:() => import('@/views/role'),
 			},
 			{//用户
 				path: '/user',
 				name: 'user',
+				meta:{
+					title:'用户管理'
+				},
 				component:() => import('@/views/user'),
 			},
 			{//字典
 				path: '/dictionaries',
 				name: 'dictionaries',
+				meta:{
+					title:'字段管理'
+				},
 				component:() => import('@/views/dictionaries'),
 			},
 			{//供应商
 				path: '/supplier',
 				name: 'supplier',
+				meta:{
+					title:'供应商管理'
+				},
 				component:() => import('@/views/supplier'),
 			},
 			{//客户
 				path: '/customer',
 				name: 'customer',
+				meta:{
+					title:'客户管理'
+				},
 				component:() => import('@/views/customer'),
 			},
 			{//费用
 				path: '/cost',
 				name: 'cost',
+				meta:{
+					title:'费用管理'
+				},
 				component:() => import('@/views/cost'),
 			},
+			{//
+				path:'/boxHandler',
+				name:'boxHandler',
+				meta:{
+					title:'箱型管理'
+				},
+				component:() => import('@/views/boxHandler')
+			},
+			{//
+				path:'/purchaseHandler',
+				name:'purchaseHandler',
+				meta:{
+					title:'采购管理'
+				},
+				component:() => import('@/views/purchaseHandler')
+			}
 		]
 	},
 	{

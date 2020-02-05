@@ -5,12 +5,13 @@
 				<nav-bar></nav-bar>
 			</el-aside>
 		
-	    <el-main style="background:#eef1f6;padding:0 0 0 20px;">
+	    <el-main style="background:#eef1f6;padding:0 0 0 20px;min-width:1200px;">
 			<el-header style="background:#fff;"> 
 				<myhead></myhead>	
 			</el-header>
 			<transition name="el-fade-in-linear">
 				<router-view  style="background:#fff;margin-top:20px;padding:20px;"/>
+				
 			</transition>
 			
 		</el-main>

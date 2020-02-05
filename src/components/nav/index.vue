@@ -12,7 +12,7 @@
 			</div>
 			
 				<div class="nav">
-					 <el-scrollbar style='max-height: 500px;'>
+					 <el-scrollbar style='max-height: 1000px;'>
 					<div class="nav-item " v-for="(item,index) in nav" 
 					:key='index' >
 						<div class='parent center' :class="{'active':item.isActive}" @click="goTo(item)">
@@ -53,19 +53,19 @@
 					path:'home'
 					},
 					{
-						title:'我下订单',
+						title:'我要下订单',
 						path:'placeOrder'
 					},
 					{
-					title:'订单',
+					title:'订单列表',
 					path:'order'
 					},
 					// {
 					// title:'权限',
 					// son:[
-						{title:"角色",path:"role"},
-						{title:"用户",path:"user"},
-						{title:'菜单页面',path:'power'},
+						{title:"角色管理",path:"role"},
+						{title:"用户管理",path:"user"},
+						{title:'菜单管理',path:'power'},
 					// ]
 					// },
 					{
@@ -84,7 +84,14 @@
 					title:'费用管理',
 					path:'cost'
 					},
-					
+					{
+					title:'箱型管理',
+					path:'boxHandler'
+					},
+					{
+						title:"采购管理",
+						path:'purchaseHandler'
+					}
 				]
 			}
 		},

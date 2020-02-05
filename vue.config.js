@@ -1,7 +1,10 @@
 console.log(process.env.VUE_APP_BASE_URL)
-console.log(process.env)
+console.log(process.env.NODE_ENV)
+// console.log(process.env.VUE_APP_BASE_URL)
 
 const path = require('path')
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const productionGzipExtensions = ['js', 'css']
 module.exports = {
 	// 选项...
 	//例如，如果你的应用被部署在 https://www.my-app.com/my-app/，则设置 publicPath 为 /my-app/。
@@ -44,9 +47,23 @@ module.exports = {
 	integrity: false,
 	configureWebpack: config => {
 		if (process.env.NODE_ENV === 'production') {
+			config.optimization.minimizer[0].options.terserOptions.compress.warnings = false
+			config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+			config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true
+			config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log']
+
+			config.plugins.push(new CompressionWebpackPlugin({
+				algorithm: 'gzip',
+				test:/\.js$|\.html$|\.css/,
+				threshold: 10240,
+				deleteOriginalAssets: false,
+				minRatio: 0.8
+			  }))
+
+			// console.log(config)
 			// 为生产环境修改配置...
 		} else {
-			process.env.BASE_API = '/api/'
+			// process.env.BASE_API = '/api/'
 			// 为开发环境修改配置...
 		}
 	},

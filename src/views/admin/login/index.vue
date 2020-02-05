@@ -5,7 +5,7 @@
 				<div class="left">
 					<img class="img" src="@/assets/logo.png">
 					<div class="desc">
-						<p class="title">蚂蚁淘商户管理后台</p>
+						<p class="title">彩雅包装管理后台</p>
 						<p class="txt">专注客户线索运营</p>
 					</div>
 				</div>
@@ -90,7 +90,7 @@
 				loaded: true,
 				tabIndex:0,
 				ifgetCode:false,
-				codeImage:'/api/user/kaptcha',
+				codeImage:process.env.NODE_ENV === 'production' ? 'http://wearewwx.com:8080/user/kaptcha': '/api/user/kaptcha',
 				seconds:60,
 				info: '',
 				loginForm: {
@@ -155,7 +155,7 @@
 			 getCode(){
 
 				 let random = '0.'+Math.floor(Math.random()*10000000000)
-				 this.codeImage = process.env.VUE_APP_BASE_URL+'user/kaptcha?' +random
+				 this.codeImage =process.env.NODE_ENV === 'production' ? 'http://wearewwx.com:8080'+'/user/kaptcha?' +random : '/api/'+'user/kaptcha?' +random
 				// let res = await kaptcha();
 				// console.log(res)
 				// this.codeImage = 

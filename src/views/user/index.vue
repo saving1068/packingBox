@@ -29,7 +29,7 @@
                     </el-table-column>
                     <el-table-column
                         prop="roleList"
-                        label="用户"
+                        label="角色"
                         >
                     </el-table-column>
                     <el-table-column
@@ -148,10 +148,10 @@ let addItemInfo = {
   roles:[],password:'',ifChangePassword:true,
 }
   export default {
-    created(){
+    async created(){
       this.loading = true;
-      this.getList()
-      this.roleList()
+     await this.getList()
+     await this.roleList()
       this.loading = false;
     },
     methods: {
