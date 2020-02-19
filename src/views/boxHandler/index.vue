@@ -18,13 +18,23 @@
                         >
                     </el-table-column>
                      <el-table-column
-                        prop="lengthMath"
+                        prop="faceLengthMath"
                         label="面纸长算法"
                         >
                     </el-table-column>
                      <el-table-column
-                        prop="widthMath"
+                        prop="faceWidthMath"
                         label="面纸宽算法"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="pitLengthMath"
+                        label="坑纸宽算法"
+                        >
+                    </el-table-column>
+                    <el-table-column
+                        prop="pitHeightMath"
+                        label="坑纸高算法"
                         >
                     </el-table-column>
                     <el-table-column
@@ -75,10 +85,16 @@
                    <el-input  v-model="addItemInfo.caseName"></el-input>
                </el-form-item>
                <el-form-item label="面纸长算法:">
-                   <el-input  v-model="addItemInfo.lengthMath"></el-input>
+                   <el-input  v-model="addItemInfo.faceLengthMath"></el-input>
                </el-form-item>
                 <el-form-item label="面纸宽算法:">
-                   <el-input  v-model="addItemInfo.widthMath"></el-input>
+                   <el-input  v-model="addItemInfo.faceWidthMath"></el-input>
+               </el-form-item>
+               <el-form-item label="坑纸长算法:">
+                   <el-input  v-model="addItemInfo.pitLengthMath"></el-input>
+               </el-form-item>
+                <el-form-item label="坑纸高算法:">
+                   <el-input  v-model="addItemInfo.pitHeightMath"></el-input>
                </el-form-item>
                  
            </el-form> 
@@ -96,7 +112,7 @@
 import {updataBox,boxDetail,deleteBox,boxList} from '@/api/box'
 
 let addItemInfo = {
- caseName:'',lengthMath:'',widthMath:''
+ caseName:'',faceLengthMath:'',faceWidthMath:'',pitLengthMath:'',pitHeightMath:''
 }
   export default {
     created(){
@@ -127,8 +143,8 @@ let addItemInfo = {
                      
                       //  console.log(this.addItemInfo)
                      if(this.addItemInfo.caseName
-                     &&this.addItemInfo.lengthMath
-                     &&this.addItemInfo.widthMath
+                     &&this.addItemInfo.faceLengthMath
+                     &&this.addItemInfo.faceWidthMath&&this.addItemInfo.pitLengthMath&&this.addItemInfo.pitHeightMath
                      ){
                        
                       
@@ -159,12 +175,14 @@ let addItemInfo = {
                 
                 });
       },
-      async searchRole(row, column, event){
+      async searchRole(value){
         try {
-             let res = await accountDetail({id:row.roleId})
-            //   this.sonShow = true;
-              
-            //   this.treeData  = res.data;
+            let obj ={
+                keyWord:value,
+                page:1
+                // sign:value
+            }
+            this.getList(obj)
         } catch (error) {
           
         }
@@ -198,9 +216,8 @@ let addItemInfo = {
           if(item){
             // console.log(item)
            let res =  await boxDetail({id:item.id})
-           let {caseName,lengthMath,widthMath,id} = {...res.data}
-           
-            this.addItemInfo = {caseName,lengthMath,widthMath,id}
+           let {caseName,faceLengthMath,faceWidthMath,id,pitLengthMath,pitHeightMath} = {...res.data};
+            this.addItemInfo = {caseName,faceLengthMath,faceWidthMath,id,pitLengthMath,pitHeightMath};
           }else{
             this.addItemInfo = {...addItemInfo}
            
@@ -211,9 +228,9 @@ let addItemInfo = {
         showParent(){
 
         },
-    async getList(){
+    async getList(obj){
        this.loading = true;
-      let res = await boxList();
+      let res = await boxList(obj);
       this.list = res.data;
        this.loading = false;
       },

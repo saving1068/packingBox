@@ -198,12 +198,12 @@ let addItemInfo = {
       },
       async searchRole(row, column, event){
         try {
-             let res = await roleDetail({id:row.roleId})
-              this.sonShow = true;
-              
-              this.treeData  = res.data;
-        } catch (error) {
           
+          let obj = {name:this.searchRoleValue,page:1}
+          console.log(obj)
+             this.getList(obj)
+        } catch (error) {
+          console.log(error)
         }
        
       },
@@ -244,7 +244,7 @@ let addItemInfo = {
            })
 
             this.itemPowerList = perList;
-            console.log(this.itemPowerList)
+            console.log(this.itemPowerList,'itemPowerList')
            console.log(res)
             this.addItemInfo = {...res.data}
           }else{
@@ -257,17 +257,42 @@ let addItemInfo = {
         showParent(){
 
         },
-    async getList(){
-      let res = await roleList()
+    async getList(obj){
+      let res = await roleList(obj)
       this.list = res.data
-      console.log(res);
+  
       },
     async menuList(){
       let res = await menuList()
-      this.initMenuList = res.data
-      console.log(res);
+       
+      this.initMenuList = this.resetList(res.data)
+      console.log(this.initMenuList,'initMenuList');
     },
-
+    resetList(arr){
+        console.log(arr)
+        let pList = [];
+        arr.forEach((item)=>{
+          if(item.pid == 0){
+            let o = this.sonsTree(item, arr);
+            pList.push(o)
+          }
+        })
+        return pList
+        console.log(pList,123123)
+      },
+      sonsTree(obj, arr) {
+          var children = [];
+          for (var i = 0; i < arr.length; i++) {
+              if (arr[i].pid == obj.id) {  //等于加入数组
+                  this.sonsTree(arr[i], arr);//递归出子元素
+                  children.push(arr[i]);
+              }
+          }
+          // if (children.length > 0) {
+              obj.children = children;
+          // }
+          return obj;
+      },
 
 
 

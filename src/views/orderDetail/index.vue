@@ -1,6 +1,7 @@
 <template>
   <div class="warp " v-loading='loading'>
-      <el-form inline :model="orderInfo"  label-width="150px">
+        <!-- <el-progress :text-inside="true" :stroke-width="24" :percentage="percentage" :status='status' ></el-progress> -->
+       <el-form inline :model="orderInfo"  label-width="150px">
         <el-form-item label="订单名称:"><span class="form-item-width">{{orderInfo.odName}}</span></el-form-item>
         <el-form-item label="产品规格:"><span class="form-item-width">{{orderInfo.productGuige}}</span></el-form-item>
         <el-form-item label="合同编号:"><span class="form-item-width">{{orderInfo.contractNumber}}</span></el-form-item>
@@ -35,8 +36,9 @@
                 <div>面纸宽:{{item.mtWidth}}</div>
                 <div>面纸单价:{{item.mtUnitPrice}}</div>
                 <div>面纸数量:{{item.mtCount}}</div>
-                <div>面纸供应商:{{item.sp}}</div>
-                <div>面纸类型:{{item.mtModelStr}}</div>
+                <div>面纸供应商:{{item.spName}}</div>
+                <div>面纸型号:{{item.mtModelName}}</div>
+                <div>面纸费用:{{item.mtCost}}</div>
               </div>
               <div v-else>
                 <div>类型:{{item.mtType == 1?'面纸':'坑纸'}}</div>
@@ -44,33 +46,34 @@
                 <div>坑纸高:{{item.mtHeight}}</div>
                 <div>坑纸单价:{{item.mtUnitPrice}}</div>
                 <div>坑纸数量:{{item.mtCount}}</div>
-                <div>坑纸供应商:{{item.sp}}</div>
-                <div>坑纸类型:{{item.mtModelStr}}</div>
+                <div>坑纸供应商:{{item.spName}}</div>
+                <div>坑纸型号:{{item.mtModelName}}</div>
+                <div>坑纸费用:{{item.mtCost}}</div>
               </div> 
           </div>
           <div class="item center" v-for="(item,index) in orderInfo.processcosts" :key="'info2-'+index" >
               <div v-if="item.psType == 3">
                   <div>类型:其他费用</div>
-                  <div>费用备注:{{item.psName}}</div>
+                  <div>费用备注:{{item.costRemake}}</div>
                   <div>费用:{{item.psCost}}</div>
               </div>
               <div v-else-if="item.psType == 0">
                   <div>类型:加工费</div>
                   <div>加工面积:{{item.psArea}}</div>
-                  <div>加工数量{{item.psCount}}</div>
+                  <div>加工数量:{{item.psCount}}</div>
                   <div>加工费计费基准:{{item.psCostBase}}</div>
                   <div>加工单价:{{item.psUnitPrice}}</div>
                   <div>人工费用:{{item.psCost}}</div>
               </div>
               <div v-else-if="item.psType == 1">
                   <div>类型:印刷</div>
-                  <div>印刷机类型:{{item.printType}}</div>
+                  <div>印刷机类型:{{item.printTypeStr}}</div>
                   <div>印刷费用:{{item.psCost}}</div>
-                  <div>印刷厂家:{{item.spId}}</div>
+                  <div>印刷厂家:{{item.spName}}</div>
               </div>
               <div v-else-if="item.psType == 2">
                   <div>类型:表面处理</div>
-                  <div>表面处理供应商:{{item.spId}}</div>
+                  <div>表面处理供应商:{{item.spName}}</div>
                   <div>表面处理要求:{{item.surfaceRequired}}</div>
                   <div>表面处理面积:{{item.area}}</div>
                   <div>表面处理平方价:{{item.psArea}}</div>
@@ -80,19 +83,56 @@
               </div>
           </div>
       </div>
+      <div style="padding-top:20px;">
+          <div class="center">图纸信息</div>
+          <div class="center">
+              <div>
+                  <div v-for="(item,index) in orderInfo.attachments" :key='index' class="center cursor">
+                    <div @click="downFile(item)">
+                        {{item.oldName}}
+                    </div>
+                    <i class="el-icon-download"></i>
+                </div>
+              </div>
+              
+          </div>
+      </div>
       <div class="center" style="padding:20px 0;">
           <div>总成本：{{orderInfo.totalCost}}</div>
       </div>
       <div class="center" >
-              <el-button type="primary">采购</el-button>
-        </div>
+              <el-button type="primary" @click="showDialog">采购</el-button>
+              <el-button type='warning' @click="excel">导出订单</el-button>
+               <el-button @click="goBack">返回</el-button>
+        </div>   
+      
+    <!-- 采购单 -->
+      <purchase-order
+         v-if="dialogVisible" 
+         :percentage='percentage'  
+         :dialogVisible='dialogVisible' 
+         :chargingType='chargingType' 
+         :orgId='orderInfo.id'
+            :status='status'
+            title="采购单"
+         @closeDialog='closeDialog'
+      >        
+      </purchase-order>    
   </div>
 </template>
 
 <script>
-import {idChangeStr,dictApi} from '@/utils'
+import {idChangeStr,dictApi,downFile,exportExcel} from '@/utils'
 import {orderDetail} from '@/api/order'
+// import {purchaseDetail,purchaseList} from '@/api/purchase'
+// import chargingList from '@/components/chargingList'
+import purchaseOrder from '@/components/purchaseOrder'
+
 export default {
+    components:{
+        // chargingList
+        purchaseOrder
+    },
     data(){
         return{
             orderInfo:{},
@@ -103,14 +143,77 @@ export default {
             printingList:[],//印刷机类型
             packAsk: [],//包装要求
             paperNum:[],//纸层数
+            // charging:[],//入货历史
+            chargingType:[],//入货类型
+            dialogVisible:false,
+            percentage:0,
+            status:'',
+            costRemake:[]
         }
     },
     async created(){
         
         await this.getDetail(this.$route.query.id)
+        // await this.purchaseList(this.orderInfo.id)
+        // await this.getPurchaseDetail(this.orderInfo.id)
        
     },
     methods:{
+         excel(){
+            let url = `http://wearewwx.com:8080/order/exportExcel?id=${this.orderInfo.id}`
+            exportExcel(url);
+            console.log(url)
+        },
+        downFile(item){
+            let url = `http://wearewwx.com:8080/order/download?id=${item.id}`
+            let type = item.oldName;
+            console.log(type)
+            downFile(url,type);
+        },
+        goBack(){
+            this.$router.replace({name:"order"})
+        },
+        showDialog(){
+            if(this.orderInfo.finishStatus ==  1){
+                this.dialogVisible = true;
+            }else{
+                this.$message.warning('订单已采购')
+            }
+            
+
+        },
+        closeDialog(value){
+            console.log(value)
+            if(value){
+                this.dialogVisible = false;
+             this.$router.push({
+                 name:"purchaseHandler"
+             })       
+            }else{
+                this.dialogVisible = false;
+            }
+                  //  this.charging.length
+        },
+        // async purchaseList(id){
+        //     try {
+        //         let res = await purchaseList({odId:id});
+        //         this.charging = res.data;
+        //         this.status= this.charging.length == 0?'exception':'success';
+        //         this.percentage = this.charging.length == 0?0:this.percentage;
+                   
+        //     } catch (error) {
+                
+        //     }
+        // },
+        async getPurchaseDetail(id){
+            try {
+                let res = await purchaseDetail({id})
+                console.log(res,21321)
+            } catch (error) {
+                
+            }
+        },
+
        async getDetail(id){
             try {
                 this.loading = true;
@@ -122,6 +225,7 @@ export default {
                 this.printingHandle = await dictApi("printingHandle");
                 this.printingList =  await dictApi("printing");
                 this.packAsk = await dictApi("packAsk");
+                this.costRemake = await dictApi("costRemake");
 
                 res.data.workProsedureStr = idChangeStr(this.tappingList,res.data.workProsedure);
                 res.data.beerCountStr = idChangeStr(this.beerNum,res.data.beerCount);
@@ -129,8 +233,17 @@ export default {
                 res.data.printColorStr = idChangeStr(this.printingColor,res.data.printColor);
                 res.data.printDealTypeStr = idChangeStr(this.printingHandle,res.data.printDealType);
                 res.data.packageRequireStr = idChangeStr(this.packAsk,res.data.packageRequire);
+
+                res.data.processcosts.map(item =>{
+                    let res =item.printType != undefined? this.printingList.find(itemS => itemS.key == item.printType):{value:''};
+                    // console.log(this.printingList,21321,res)
+                    item.printTypeStr = res.value;
+                    item.costRemake =item.psType == 3?idChangeStr(this.costRemake,item.remarkKey):'';
+                })
+                
+                this.chargingType = res.data.maters;
                 this.orderInfo = res.data;
-                console.log(this.orderInfo)
+                console.log(this.chargingType,123213)
             } catch (error) {
                 console.log(error)
             }
@@ -147,12 +260,18 @@ export default {
             width: 150px;
         }
     }
+    .cursor{
+        margin:5px 0; 
+        cursor: pointer;
+    }
     .maters{
         .item{
+            height: 180px;
             padding: 10px;
             border: 1px solid #000;
             border-radius: 5px;
             margin: 5px;
+            box-sizing: border-box;
         }
     }
 </style>

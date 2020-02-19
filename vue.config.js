@@ -46,6 +46,14 @@ module.exports = {
 
 	integrity: false,
 	configureWebpack: config => {
+		// config.externals = {
+		// 	'vue': 'Vue',
+        //     'vue-router': 'VueRouter',
+        //     'vuex': 'Vuex',
+        //     'axios': 'axios'
+
+		// }
+
 		if (process.env.NODE_ENV === 'production') {
 			config.optimization.minimizer[0].options.terserOptions.compress.warnings = false
 			config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
@@ -59,6 +67,8 @@ module.exports = {
 				deleteOriginalAssets: false,
 				minRatio: 0.8
 			  }))
+
+				
 
 			// console.log(config)
 			// 为生产环境修改配置...

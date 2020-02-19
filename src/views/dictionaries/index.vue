@@ -13,13 +13,15 @@
                     fit
                     @row-click='showParent'
                     align="center"
-                    style="width: 100%">
+                    style="min-width: 300px;">
                     <el-table-column
+                         width="150px"
                         prop="name"
                         label="名字"
                         >
                     </el-table-column>
                     <el-table-column
+                         width="150px"
                         prop="sign"
                         label="字典"
                         >
@@ -185,7 +187,7 @@ export default {
         searchDic(value){
             console.log(value)
             let obj ={
-                name:value
+                keyWord:value
                 // sign:value
             }
             this.getList(obj)
@@ -409,9 +411,10 @@ export default {
     }
     .data{
         padding-top:20px; 
+        min-width: 800px;
         .data-list{
            
-                width: 250px;
+                
             .item{
                 padding: 5px 0;
             }

@@ -6,18 +6,18 @@
 					<img src="@/assets/logo.png" alt="">
 				</div>
 				<div class="info">
-					<div>name</div>
-					<div>info</div>
+					<div>彩雅包装</div>
+					<!-- <div>info</div> -->
 				</div>
 			</div>
 			
 				<div class="nav">
-					 <el-scrollbar style='max-height: 1000px;'>
+					 <el-scrollbar style='max-height: 1200px;'>
 					<div class="nav-item " v-for="(item,index) in nav" 
-					:key='index' >
+					:key='index' :class="{'showSon':item.ifShowSon}">
 						<div class='parent center' :class="{'active':item.isActive}" @click="goTo(item)">
-							<span>{{item.title}}</span>
-							<div class="icon" v-if="item.son">
+							<span>{{item.description}}</span>
+							<div class="icon" v-if="item.children.length">
 								<i class="el-icon-arrow-up" v-if="item.ifShowSon"></i>
 								<i class="el-icon-arrow-down" v-else></i>
 							</div>
@@ -27,10 +27,10 @@
 						>
 						<div class="son-item center" 
 						 @click="goToSon(sonItem)"
-						 v-for="(sonItem,sonIndex) in item.son" 
+						 v-for="(sonItem,sonIndex) in item.children" 
 						:key="sonIndex"
 						 :class="{'active':sonItem.isActive}">
-							<span>{{sonItem.title}}</span>
+							<span>{{sonItem.description}}</span>
 						</div>
 							
 						</div>
@@ -44,54 +44,67 @@
 </template>
 
 <script>
+import {userMenu} from '@/api/menu'
 	export default{
 		data(){
 			return{
 				nav:[
-					{
-					title:'首页',
-					path:'home'
-					},
-					{
-						title:'我要下订单',
-						path:'placeOrder'
-					},
-					{
-					title:'订单列表',
-					path:'order'
-					},
 					// {
-					// title:'权限',
-					// son:[
-						{title:"角色管理",path:"role"},
-						{title:"用户管理",path:"user"},
-						{title:'菜单管理',path:'power'},
-					// ]
+					// title:'首页',
+					// path:'home'
 					// },
-					{
-					title:'系统字典管理',
-					path:'dictionaries'
-					},
-					{
-					title:'客户管理',
-					path:'customer'
-					},
-					{
-					title:'供应商管理',
-					path:'supplier'
-					},
-					{
-					title:'费用管理',
-					path:'cost'
-					},
-					{
-					title:'箱型管理',
-					path:'boxHandler'
-					},
-					{
-						title:"采购管理",
-						path:'purchaseHandler'
-					}
+					// {
+					// 	title:'我要下订单',
+					// 	path:'placeOrder'
+					// },
+					// {
+					// title:'订单列表',
+					// path:'order'
+					// },
+					// // {
+					// // title:'权限',
+					// // son:[
+					// 	{title:"角色管理",path:"role"},
+					// 	{title:"用户管理",path:"user"},
+					// 	{title:'菜单管理',path:'power'},
+					// // ]
+					// // },
+					// {
+					// title:'系统字典管理',
+					// path:'dictionaries'
+					// },
+					// {
+					// title:'客户管理',
+					// path:'customer'
+					// },
+					// {
+					// title:'供应商管理',
+					// path:'supplier'
+					// },
+					// {
+					// title:'费用管理',
+					// path:'cost'
+					// },
+					// {
+					// title:'箱型管理',
+					// path:'boxHandler'
+					// },
+					// {
+					// 	title:"采购管理",
+					// 	path:'purchaseHandler'
+					// },
+					// {
+					// 	title:"排产管理",
+					// 	path:'pdschedule'
+					// },
+					// {
+					// 	title:"成品库管理",
+					// 	path:'pdstock'
+					// },
+					// {
+					// 	title:"入料记录管理",
+					// 	path:'feeds'
+					// }
 				]
 			}
 		},
@@ -101,66 +114,121 @@
 				// console.log(value)
 			}
 		},
-		created() {
-			this.initNav(this.nav);
-			console.log(this.nav,1111)
-		},
-		mounted(){
+		async created() {
+			await this.getUserMunu()
+			await this.initNav(this.nav);
+		
 			let routeName = this.$route.name;
-			this.selectNav(routeName)
+			await this.selectNav(routeName)
+		},
+		async mounted(){
+			
 		},
 		methods:{
+			resetList(arr){
+        // console.log(arr)
+        let pList = [];
+        arr.forEach((item)=>{
+          if(item.pid == 0){
+            let o = this.sonsTree(item, arr);
+            pList.push(o)
+          }
+        })
+        return pList
+        // console.log(pList,123123)
+      },
+      sonsTree(obj, arr) {
+          var children = [];
+          for (var i = 0; i < arr.length; i++) {
+              if (arr[i].pid == obj.id) {  //等于加入数组
+                  this.sonsTree(arr[i], arr);//递归出子元素
+                  children.push(arr[i]);
+              }
+          }
+          // if (children.length > 0) {
+              obj.children = children;
+          // }
+          return obj;
+      },
+			async getUserMunu(){
+				let res = await userMenu();
+				this.nav = this.resetList(res.data)
+				console.log(this.nav)
+			},
 			goToSon(item){
-				console.log(item)
+				console.log(item.url,'213213213')
+				let url = item.url.indexOf('=');
+				let query = url >0?item.url.split('=')[1]:''
+				if(url >0){
+					this.$router.push({
+					path:item.url,
+					query:{
+						type:query
+					}
+					}).catch(err => {
+						err
+					})
+				}else{
 				this.$router.push({
-					name:item.path
+					path:item.url
 				}).catch(err => {
 					err
 				})
+				}
+				// let type = url >0?item.url.split('?')[1].split('=')[0]:''
+				
 			},
 			goTo(item){
-				if(item.path){
+			
+				if(item.url){
+					
 					this.$router.push({
-					name:item.path
+					path:item.url
 					}).catch(err => {err})
 				}else{
-					item.ifShowSon = true;
+					item.ifShowSon = !item.ifShowSon;
 				}
 				
 			},
 			selectNav(route){
+				
+				route = `/${route}`
+				console.log(route)
 				this.nav.forEach(item =>{
 					item.isActive = false;
-					if(item.path == route){
+					if(item.url == route){
 						item.isActive = true;
 						return
 					}else{
-						if(item.son){
+						
+						if(item.children){
+							
 							item.ifShowSon = false;
-							item.son.map(sonItem =>{
+							item.children.map(sonItem =>{
 								sonItem.isActive = false;
 								
-								if(sonItem.path == route){
+								if(sonItem.url == route){
 									sonItem.isActive = true;
 									item.ifShowSon = true;
-									console.log(item)
+									
 								}
 							})
 						}
 					}
 				})
-				console.log(this.nav,2222)
+				
 			},
 			initNav(arr){
 				
 				arr.forEach(item => {
 					this.$set(item,'isActive',false)
-					if(item.son){
+					if(item.children){
 						this.$set(item,'ifShowSon',false)
-						item.son.forEach(sonItem =>{
+						item.children.forEach(sonItem =>{
 							this.$set(sonItem,'isActive',false)
 						})
 					}
+					
 					// if(item.path == route){/
 					// 	this.$set(item,'isActive',true)
 					// }else{
@@ -194,7 +262,9 @@
 			height: 100%;
 			transition: all 5s;
 		}
-			
+			.showSon{
+				background:rgba($color: #FAEBD7, $alpha: .2) 
+			}
 		.nav-item{
 			.parent{
 				height: 50px;
@@ -202,6 +272,7 @@
 			.son{
 				height: 0px;
 				overflow: hidden;
+				transition: all .5s;
 			}
 			.showSon{
 				height: auto;

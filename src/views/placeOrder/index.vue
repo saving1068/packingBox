@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item label="包装要求:" class="form-inline">
         <el-select v-model="basicData.packageRequire" placeholder="请选择">
-          <el-option v-for="item in packAsk" :key="item.key" :label="item.value" :value="item.id"></el-option>
+          <el-option v-for="item in packAsk" :key="Number(item.key)" :label="item.value" :value="Number(item.key)"></el-option>
         </el-select>
       </el-form-item>
 
@@ -26,9 +26,7 @@
         <el-select v-model="basicData.workProsedure" placeholder="请选择">
           <el-option
             v-for="item in tappingList"
-            :key="item.key"
-            :label="item.value"
-            :value="item.id"
+            :key="Number(item.key)" :label="item.value" :value="Number(item.key)"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -41,7 +39,10 @@
       </el-form-item>
       <el-form-item label="纸层数:" class="form-inline">
         <el-select v-model="basicData.paperCount" placeholder="请选择">
-          <el-option v-for="item in paperNum" :key="item.key" :label="item.value" :value="item.id"></el-option>
+          
+          <el-option v-for="item in paperNum" 
+          
+          :key="Number(item.key)" :label="item.value" :value="Number(item.key)"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="订单金额(元):" class="form-inline">
@@ -50,7 +51,7 @@
 
       <el-form-item label="啤板拼数:" class="form-inline">
         <el-select v-model="basicData.beerCount" placeholder="请选择">
-          <el-option v-for="item in beerNum" :key="item.key" :label="item.value" :value="item.id"></el-option>
+          <el-option v-for="item in beerNum" :key="Number(item.key)" :label="item.value" :value="Number(item.key)"></el-option>
         </el-select>
       </el-form-item>
 
@@ -58,9 +59,7 @@
         <el-select v-model="basicData.printColor" placeholder="请选择">
           <el-option
             v-for="item in printingColor"
-            :key="item.key"
-            :label="item.value"
-            :value="item.id"
+            :key="Number(item.key)" :label="item.value" :value="Number(item.key)"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -68,9 +67,7 @@
         <el-select v-model="basicData.printDealType" placeholder="请选择">
           <el-option
             v-for="item in printingHandle"
-            :key="item.key"
-            :label="item.value"
-            :value="item.id"
+           :key="Number(item.key)" :label="item.value" :value="Number(item.key)"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -78,9 +75,9 @@
         <!-- <el-select v-model="basicData.printingHandle" placeholder="请选择">
                 <el-option
                 v-for="item in printingHandle"
-                :key="item.key"
+                :key="Number(item.key)"
                 :label="item.value"
-                :value="item.key">
+                :value="Number(item.key)">
                 </el-option>
         </el-select>-->
       </el-form-item>
@@ -308,14 +305,17 @@
           <el-select v-model="printing.printType" placeholder="请选择">
             <el-option
             v-for="item in printingList"
-            :key="item.key"
+            :key="Number(item.key)"
             :label="item.value"
-            :value="item.key">
+            :value="Number(item.key)">
             </el-option>
           </el-select>
         </el-form-item>   
         <el-form-item label="印刷费用:">
           <el-input v-model.number="printing.psCost" placeholder="印刷费用"></el-input>
+        </el-form-item>
+         <el-form-item label="印刷备注:">
+          <el-input v-model.number="printing.remark" placeholder="印刷备注"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -337,7 +337,7 @@
             <span>{{processingCost.psUnitPrice}}</span>
           </el-form-item>
           <el-form-item label="人工费用:" class="form-inline">
-           <span>{{processingCost.psCost}}</span>
+            <el-input v-model="processingCost.psCost" placeholder="人工费用"></el-input>
           </el-form-item>
       </el-form>
     </div>
@@ -348,8 +348,11 @@
       </div>
       <el-form size="mini" inline label-width="120px" style="padding:20px">
         <el-form-item v-for="(item,index) in other" :key='index'>
-          <el-form-item label="费用备注:" class="form-inline">
-            <el-input v-model.trim="item.psName" placeholder="备注"></el-input>
+          <el-form-item label="费用备注:" >
+            <el-select v-model="item.remarkKey" placeholder="请选择">
+              <el-option v-for="item in costRemake" :key="Number(item.key)" :label="item.value" :value="Number(item.key)"></el-option>
+            </el-select>
+            <!-- <el-input v-model.trim="item." placeholder="备注"></el-input> -->
           </el-form-item>
           <el-form-item label="费用:" class="form-inline">
             <el-input v-model.number="item.psCost" placeholder="费用"></el-input>
@@ -360,14 +363,37 @@
         </el-form-item>
       </el-form>
     </div>
+    <div class="facialTissue" >
+      <div class="space-between">
+        <div class="h1">上传图纸</div>
+      </div>
+      <div class="center">
+        <el-upload
+        class="upload"
+        :action="action"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :headers='headers'
+        :on-success='uploadSuccess'
+        multiple
+        show-file-list
+        :file-list="fileList">
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+      </div>
+      
+    </div>
     <div class="center">
-      <el-button type="primary" @click="takeOrder">我要下单({{totalCost}})</el-button>
+      <el-button type="primary" v-if="basicData.id"  @click="takeOrder">确认修改({{totalCost}})</el-button>
+      <el-button type="primary" v-else @click="takeOrder">我要下单({{totalCost}})</el-button>
+      
     </div>
 
     </div>
     
     <el-dialog
-      title="我要下单"
+      :title="this.basicData.id?'修改订单':'我要下单'"
       :visible.sync="orderInfo"
       width="80%"
       :before-close="handleClose">
@@ -443,7 +469,7 @@
 
 <script>
 import { dictApi ,finishedInfoFormula} from "@/utils";
-import {updataOrder} from '@/api/order'
+import {updataOrder,orderDetail,uploadFile,delFile} from '@/api/order'
 import { costList} from '@/api/cost'
 import {supplierList} from '@/api/supplier'
 import {accountList} from '@/api/user'
@@ -476,6 +502,7 @@ export default {
         maters:[],//订单材料 坑子and 面子
         processcosts:[],//订单费用,
         totalCost:0,
+        id:''//订单id
       },
       boxTypeList: [],
       tappingList: [],//加工工序
@@ -512,7 +539,11 @@ export default {
         psType:2
       },
       printing:{//印刷
-        psType:1
+        psType:1,
+        remark:'',
+        psCost:0,
+        printType:'',
+        spId:''
       },
       processingCost:{//加工
         psUnitPrice:0,
@@ -529,30 +560,39 @@ export default {
       loading:false,
       userList:[],//用户
       customer:[],//客户
-      sureLoding:false
+      sureLoding:false,
+      costRemake:[],
+      fileList:[],
+      suerFile:[],
+      action:'http://wearewwx.com:8080/order/upload',
+      headers:{
+        token:window.sessionStorage.getItem('token')
+      }
+
     };
   },
   created() {
-
+    
     this.dict().then(() => {});
   },
     watch:{
         finishedInfo:{
             handler(value,oldValue){
                
-                
+                let formula = this.boxTypeList.find(item => item.id==this.basicData.caseType) 
                 if(this.facialTissue.length !=0){
                     let mtWidth,mtLength;
-                      mtLength = ((Number(value.pdLength)*2 + Number(value.pdWidth)*2)+5);
-                      mtWidth = (Number(value.pdHigth)+Number(value.pdWidth)+5);
-
+                    
+                      mtLength =  finishedInfoFormula(formula.faceLengthMath,value.pdLength,value.pdWidth,value.pdHigth);
+                      mtWidth = finishedInfoFormula(formula.faceWidthMath,value.pdLength,value.pdWidth,value.pdHigth);
+                       
                 
-                      let obj = {
-                          mtWidth,
-                          mtLength,
-                          mtUnitPrice,
-                          // ...this.facialTissue[this.facialChoiseIndex]
-                      }
+                      // let obj = {
+                      //     mtWidth,
+                      //     mtLength,
+                      //     mtUnitPrice,
+                      //     // ...this.facialTissue[this.facialChoiseIndex]
+                      // }
                     this.facialTissue[this.facialChoiseIndex].mtWidth = mtWidth;
                     this.facialTissue[this.facialChoiseIndex].mtLength = mtLength;
                      //单价
@@ -593,17 +633,15 @@ export default {
                 if(this.tunnelTissue.length !=0){
                    let height = 0;
                     let length = 0;
-                    this.facialTissue.forEach(item=>{
-                      height += Number(item.mtLength);
-                      length += Number(item.mtWidth);
-                      console.log(item,item.mtLength,item.mtWidth,22)
-                    })
+                   length = finishedInfoFormula(formula.pitLengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+                    height = finishedInfoFormula(formula.pitHeightMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
 
-                    height = height-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
-                    length = length-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
+                    // height = height-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
+                    // length = length-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
                     let kT  = this.kT.find(item => item.id == this.tunnelTissue[this.tunnelChoiseIndex].mtModel);
                     let mtUnitPrice = 0;
-                    mtUnitPrice =  Number(height)*Number(length)*Number(kT.unitPrice).toFixed(3)/1;
+                    mtUnitPrice =  (Number(height)*Number(length)*Number(kT.unitPrice)/1000000).toFixed(3)/1;
+                    this.tunnelTissue[this.tunnelChoiseIndex].mtCost = (this.facialTissue[this.tunnelChoiseIndex].mtCount*mtUnitPrice).toFixed(3)/1;
                     // mtUnitPrice = ((Number(length*height)/1000000)*(Number(kT.unitPrice)/1000)*(Number(kT.gram)/1000)).toFixed(3)/1;
                     this.tunnelTissue.map(item =>{
                       item.mtLength = length;//坑纸长
@@ -623,6 +661,7 @@ export default {
           handler(value){
             if(this.facialTissue.length !=0){
               this.processing()
+              
               // let facialLength =0; let facialWidth = 0;
               //   this.facialTissue.forEach(item =>{
               //     facialLength += item.mtLength;
@@ -642,6 +681,8 @@ export default {
               //     area,psCount,psCostBase,psUnitPrice,psCost
               //   }
             }
+            // console.log(value)
+            this.orderCost()
           },
           deep:true
         }
@@ -663,14 +704,64 @@ export default {
         printingCost = this.printing.psCost;//
         surfaceCost = this.surface.psCost;
         processingCost = this.processingCost.psCost;
-        let totalCost  = (Number(facialTissueCost)+Number(tunnelTissueCost)+Number(otherCost)+printingCost+surfaceCost+processingCost).toFixed(3);
+        let totalCost  = (Number(facialTissueCost)+Number(tunnelTissueCost)+Number(otherCost)+Number(printingCost)+Number(surfaceCost)+Number(processingCost)).toFixed(3);
         console.log(totalCost,'totalCost','面子：'+facialTissueCost,"坑子:"+tunnelTissueCost,'其他：'+otherCost,'印刷费：'+printingCost,'表面：'+surfaceCost,'加工：'+processingCost)
         return isNaN(totalCost)?0:totalCost
       }
     },
   methods: {
+    async initOrder(){
+      try {
+        let res = await orderDetail({id:this.$route.query.id});
+        console.log(res,'res')
+        
+        let {
+          beerCount,caseType,odCount,packageRequire,workProsedure,unitPrice,beerPlate,paperCount,odMoney,printColor,printDealType,id,
+          odName,salesmanId,productGuige,ctContractNumber,merchandiserId,customerId,odSetdate,odFinishdate
+        } = {...res.data}
+        
+        this.basicData = {
+          beerCount,caseType,odCount,packageRequire,workProsedure,unitPrice,beerPlate,paperCount,odMoney,printColor,printDealType,id,
+          odName,salesmanId,productGuige,ctContractNumber,merchandiserId,customerId,odSetdate,odFinishdate
+        };
+        let {pdLength,pdWidth,pdHigth} = {...res.data}
+        this.finishedInfo = {pdLength,pdWidth,pdHigth}
+        let facialTissue = res.data.maters.filter(item => item.mtType == 1);
+        this.facialTissue = facialTissue;
+        let tunnelTissue = res.data.maters.filter(item => item.mtType == 2);
+        this.tunnelTissue = tunnelTissue;
+        let surface = res.data.processcosts.find(item =>item.psType == 2);
+   
+        this.surface = surface;
+        // debugger
+        let printing = res.data.processcosts.find(item =>item.psType == 1);
+        this.printing = printing;
+        let processingCost = res.data.processcosts.find(item =>item.psType == 0);
+        this.processingCost = processingCost;
+        let other = res.data.processcosts.filter(item =>item.psType == 3);
+        this.other = other;
+        let list = [];
+        res.data.attachments.forEach((item)=>{
+          let obj = {
+            name:item.oldName,
+            id:item.id,
+            odId:item.odId,
+            realName:item.realName
+          }
+          list.push(obj)
+        })
+        
+        this.fileList = [...list];
+        this.suerFile =  res.data.attachments;
+      } catch (error) {
+        console.log(error)
+      }
+      
+      // console.log(res.data)
+    },
     sureOrder(){
-         this.$confirm('是否确定下单', '提示', {
+        let tips = this.basicData.id?'是否确定修改订单':'是否确定下单';
+         this.$confirm(tips, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -681,7 +772,7 @@ export default {
           this.basicData.pdLength = this.finishedInfo.pdLength;
           this.basicData.pdWidth = this.finishedInfo.pdWidth;
           this.basicData.pdHigth = this.finishedInfo.pdHigth;
-          console.log()
+          this.basicData.attachments = this.suerFile;
           let flag = true;
           for(let key in this.basicData){
             if(this.basicData[key]){
@@ -697,8 +788,8 @@ export default {
           }
           try {
              this.sureLoding = true;
-            await updataOrder(this.basicData)
-            this.$message.success('下单成功');
+             let res = await updataOrder(this.basicData)
+            this.$message.success(res.returnMsg);
             this.$router.push({
             name:'order'
             }).catch(err => {err})
@@ -742,8 +833,13 @@ export default {
           this.tunnelTissue[this.tunnelChoiseIndex].mtCost = (value*this.tunnelTissue[this.tunnelChoiseIndex].mtUnitPrice).toFixed(3)/1;
       },
       takeOrder(){
-
-        this.orderInfo = true;
+        console.log(this.fileList)
+        if(this.facialTissue.length||this.tunnelTissue.length){
+          this.orderInfo = true;
+        }else{
+          this.$message.warning('请添加材料')
+        }
+        
       },
     async dict() {
       this.loading = true;
@@ -756,6 +852,7 @@ export default {
       this.printingHandle = await dictApi("printingHandle");
       this.printingList =  await dictApi("printing");
       this.packAsk = await dictApi("packAsk");
+      this.costRemake = await dictApi("costRemake");
       let spId = await supplierList();
       this.spId = spId.data;
       let mT =  await costList({type:1});
@@ -770,6 +867,10 @@ export default {
       let customer = await customerList();
       this.customer = customer.data;
       // console.log(this.boxTypeList)
+      if(this.$route.query.id){
+
+        await  this.initOrder()
+      }
       this.loading = false;
     },
     deleteItem(type,index){
@@ -818,7 +919,7 @@ export default {
       let length = this.tunnelTissue[this.tunnelChoiseIndex].mtLength;
       let mtUnitPrice = 0;
       // mtUnitPrice = ((Number(length*height)/1000000)*(Number(kT.unitPrice)/1000)*(Number(kT.gram)/1000)).toFixed(3)/1;
-      mtUnitPrice =  Number(height)*Number(length)*Number(kT.unitPrice).toFixed(3)/1;
+      mtUnitPrice =  (Number(height)*Number(length)*Number(kT.unitPrice)/1000000).toFixed(3)/1;
       console.log(Number(height),Number(length),Number(kT.unitPrice))
       this.tunnelTissue[this.tunnelChoiseIndex].mtUnitPrice = mtUnitPrice;
       this.tunnelTissue[this.tunnelChoiseIndex].gram = kT.gram;
@@ -827,11 +928,17 @@ export default {
     caseChange(value){
       console.log(value,2222)
       let formula = this.boxTypeList.find(item => item.id==value);
+      // console.log(formula,this.boxTypeList)
       if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength){
-        this.facialTissue[this.facialChoiseIndex].mtWidth = finishedInfoFormula(formula.widthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
-        this.facialTissue[this.facialChoiseIndex].mtLength = finishedInfoFormula(formula.lengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+        this.facialTissue[this.facialChoiseIndex].mtWidth = finishedInfoFormula(formula.faceWidthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+        this.facialTissue[this.facialChoiseIndex].mtLength = finishedInfoFormula(formula.faceLengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+       this.tunnelTissue[this.tunnelChoiseIndex].mtHeight = finishedInfoFormula(formula.pitHeightMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+        this.tunnelTissue[this.tunnelChoiseIndex].mtLength = finishedInfoFormula(formula.pitLengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
       }
       
+    },
+    orderCost(){
+        this.basicData.odMoney = (Number(this.basicData.odCount)*Number(this.basicData.unitPrice)).toFixed(3)/1; //订单金额
     },
     processing(){
         let facialLength =0; let facialWidth = 0;
@@ -843,10 +950,14 @@ export default {
                 // 表面 加工费
                 this.surface.area = ((Number(facialLength)*Number(facialWidth))*0.000001).toFixed(3)/1
                 let psUnitPrice,psCount,psCostBase,psCost,psType,area;
-                area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
-                psCount = this.basicData.odCount;//数量
-               
-                let paperNum = this.paperNum.find(item => item.id==this.basicData.paperCount)
+
+
+                area = ((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1<0.5?0.5:((Number(facialWidth)*Number(facialLength))/1000000).toFixed(3)/1;//面积
+                let beerNum = this.beerNum.find(item => item.key==this.basicData.beerCount).value;
+                console.log(beerNum,'beerNum')
+                psCount = Number(this.basicData.odCount)/Number(beerNum);//数量
+                console.log(psCount,'psCount')
+                let paperNum = this.paperNum.find(item => item.key==this.basicData.paperCount)
                 //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
                 psCostBase = paperNum.value.split('/')[1];//加工费计费基准
                 psUnitPrice = (Number(psCostBase)*Number(area)).toFixed(3)/1;//加工单价
@@ -857,13 +968,15 @@ export default {
     },
     addItem(type){
         if(type == 0){//面纸
-        console.log(this.finishedInfo)
-            if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength&&this.basicData.odCount&&this.basicData.paperCount&&this.basicData.caseType){
+      
+            if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength&&String(this.basicData.odCount)&&String(this.basicData.paperCount)&&String(this.basicData.caseType)&&
+                String(this.basicData.beerCount)
+            ){
                 let width,length,mtUnitPrice;
                 let formula = this.boxTypeList.find(item => item.id==this.basicData.caseType) 
                 console.log(formula)
-                length = finishedInfoFormula(formula.lengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
-                width = finishedInfoFormula(formula.widthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+                length = finishedInfoFormula(formula.faceLengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+                width = finishedInfoFormula(formula.faceWidthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
                 // length = ((Number(this.finishedInfo.pdLength)*2 + Number(this.finishedInfo.pdWidth)*2)+5);
                 // width = (Number(this.finishedInfo.pdHigth)+Number(this.finishedInfo.pdWidth)+5);
                 mtUnitPrice = 0;
@@ -906,21 +1019,27 @@ export default {
                 // console.log(this.processingCost,'this.processingCost')
 
             }else{
-                return this.$message.warning('请完成填写箱型,成品高，成品宽，成品宽，订单数量，纸层数的信息')
+                return this.$message.warning('请完成填写箱型,成品高，成品宽，成品宽，订单数量，纸层数，啤板拼数的信息')
             }
         }else if(type == 1){//坑纸
-          if(this.facialTissue.length == 0 ){
-            return this.$message.warning('请完成填写面纸的信息')
-          }else{
+          // if(this.facialTissue.length == 0 ){
+          //   // return this.$message.warning('请完成填写面纸的信息')
+
+          // }else{
+            if(this.finishedInfo.pdWidth&&this.finishedInfo.pdHigth&&this.finishedInfo.pdLength&&String(this.basicData.odCount)&&String(this.basicData.paperCount)&&String(this.basicData.caseType)&&
+                String(this.basicData.beerCount)
+                ){
             let height = 0;let mtUnitPrice = 0;
             let length = 0;
-            this.facialTissue.forEach(item=>{
-              height += Number(item.mtLength);
-              length += Number(item.mtWidth);
-              console.log(item,item.mtLength,item.mtWidth)
-            })
-             height = height-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
-            length = length-Math.abs((((Number(this.facialTissue.length) - 1)*1) - .5));
+            // this.facialTissue.forEach(item=>{
+            //   height += Number(item.mtLength);
+            //   length += Number(item.mtWidth);
+            //   console.log(item,item.mtLength,item.mtWidth)
+            // })
+            let formula = this.boxTypeList.find(item => item.id==this.basicData.caseType) 
+                console.log(formula)
+             length = finishedInfoFormula(formula.pitLengthMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
+            height = finishedInfoFormula(formula.pitHeightMath,this.finishedInfo.pdLength,this.finishedInfo.pdWidth,this.finishedInfo.pdHigth);
             // mtUnitPrice = Number(height)*Number(length);
               // debugger
               let tunnelTissueInfo = {
@@ -937,19 +1056,71 @@ export default {
                 }
                 this.tunnelTissue.push(tunnelTissueInfo)
               console.log(tunnelTissueInfo)
-          }
+              }else{
+                return this.$message.warning('请完成填写箱型,成品高，成品宽，成品宽，订单数量，纸层数,啤板拼数的信息')
+            }
+          // }
 
         }else{
           let other = {
             psCost:0,
-            psName:'',
+            remarkKey:'',
             psType:3
           }
           this.other.push(other)
           console.log(this.other)
         }
-    }
-  }
+    },
+     async handleRemove(file, fileList) {
+        console.log(file, fileList);
+        
+        
+          let fileInfo = file
+          let obj = {
+            realName:fileInfo.realName
+          }
+          console.log(obj)
+          let res = await delFile(obj);
+          let index = this.fileList.findIndex(item => item.realName == fileInfo.realName);
+          // this.fileList.splice(index,1);
+          this.suerFile.splice(index,1);
+          this.$message({
+            type: 'success',
+            message: res.returnMsg
+          });
+        
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      beforeRemove(file, fileList) {
+        console.log(file)
+        return this.$confirm(`确定移除 ${ file.name }？`);
+        // if (file && file.status==="success") {
+          //移除前方法
+         
+      // }
+
+        
+       
+      },
+      uploadSuccess(response, file, fileList){
+        console.log(response)
+        let fileArr = []
+        response.data.forEach((item)=>{
+          let obj = {
+            name:item.oldName
+          }
+          fileArr.push(obj)
+        })
+
+        this.suerFile = [...this.suerFile,...response.data]
+        this.fileLis = [...fileArr]
+        console.log(this.fileList,this.suerFile)
+      }
+
+  },
+  
 };
 </script>
 
@@ -967,6 +1138,10 @@ export default {
     .h1 {
       font-weight: 600;
       font-size: 26px;
+    }
+    .upload{
+      padding: 20px;
+      width: 360px;
     }
   }
 }

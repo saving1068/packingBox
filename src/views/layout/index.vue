@@ -1,5 +1,5 @@
 <template>
-	  <el-container style="padding:0 20px;">
+	  <el-container style="padding:20px 20px;">
 		 
 			<el-aside width='200px'>
 				<nav-bar></nav-bar>

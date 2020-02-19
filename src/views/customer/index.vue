@@ -185,12 +185,13 @@ let addItemInfo = {
                 
                 });
       },
-      async searchRole(row, column, event){
+      async searchRole(value){
         try {
-             let res = await accountDetail({id:row.roleId})
-              this.sonShow = true;
-              
-              this.treeData  = res.data;
+             let obj ={
+                keyWord:value
+                // sign:value
+            }
+            this.getList(obj)
         } catch (error) {
           
         }
@@ -236,9 +237,9 @@ let addItemInfo = {
         showParent(){
 
         },
-    async getList(){
+    async getList(obj){
        this.loading = true;
-      let res = await customerList();
+      let res = await customerList(obj);
       this.list = res.data;
        this.loading = false;
       },

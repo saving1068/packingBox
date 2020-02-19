@@ -42,7 +42,7 @@
                                 size="mini"
                                 v-model="searchRoleValue"
                                 @input="searchRole"
-                                placeholder="输入关键字搜索">
+                                placeholder="输入名称搜索">
                             </el-input>
                         </template>
                         <template slot-scope="scope">
@@ -193,12 +193,14 @@ let addItemInfo = {
                 
                 });
       },
-      async searchRole(row, column, event){
+      async searchRole(value){
         try {
-             let res = await accountDetail({id:row.roleId})
-            //   this.sonShow = true;
-              
-            //   this.treeData  = res.data;
+           let obj ={
+                name:value,
+                page:1
+                // sign:value
+            }
+            this.getList(obj)
         } catch (error) {
           
         }
@@ -245,9 +247,9 @@ let addItemInfo = {
         showParent(){
 
         },
-    async getList(){
+    async getList(obj){
        this.loading = true;
-      let res = await costList();
+      let res = await costList(obj);
       this.list = res.data;
        this.loading = false;
       },

@@ -166,6 +166,7 @@ let addItemInfo = {
                 
         });
       },
+      
       addSure(){
         let tips = this.addItemInfo.id?'是否确认修改用户?':'是否确认新增用户?';
             let success = this.addItemInfo.id?'修改用户成功':'新增用户成功';
@@ -226,12 +227,13 @@ let addItemInfo = {
                 
                 });
       },
-      async searchRole(row, column, event){
+      async searchRole(value){
         try {
-             let res = await accountDetail({id:row.roleId})
-              this.sonShow = true;
-              
-              this.treeData  = res.data;
+              let obj ={
+                keyWord:value
+                // sign:value
+            }
+            this.getList(obj)
         } catch (error) {
           
         }
@@ -308,8 +310,8 @@ let addItemInfo = {
         showParent(){
 
         },
-    async getList(){
-      let res = await accountList();
+    async getList(obj){
+      let res = await accountList(obj);
       res.data.map(item =>{
         item.roleList = '';
       })
@@ -329,7 +331,7 @@ let addItemInfo = {
       },
     async roleList(){
       let res = await roleList()
-      this.initroleList = res.data
+      this.initroleList = res.data;
       console.log(res,22222);
     },
 
@@ -377,7 +379,7 @@ let addItemInfo = {
         itemPowerList:[],
         defaultProps: {
           // children: 'children',
-          label: 'name'
+          label:"description"
         }
       };
     }

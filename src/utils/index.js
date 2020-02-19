@@ -1,4 +1,5 @@
 import {detailDic} from '@/api/admin';
+import axios from 'axios'
 
 const dictApi = (async (sign)=>{
     let res = await detailDic({sign})
@@ -13,10 +14,75 @@ const finishedInfoFormula = ((formula,length,width,height)=>{//面子宽
 
 const idChangeStr = ((list,id)=>{
     let res = list.find(item => item.id == id);
-    console.log(res.value)
-    return res.value
+    let resT = list.find(item => item.key == id);
+    console.log(resT,id,list)
+    if(res){
+        return res.value||'没找到所对应的值'
+    }else{
+        return resT.value||'没找到所对应的值'
+    }
+   
+})
+
+const exportExcel = ((url)=>{
+    try {
+        console.log(url)
+        axios.get(url, {
+            withCredentials:true,
+             headers:{
+                 "token":sessionStorage.getItem('token')
+             },
+             responseType: 'blob', //二进制流
+         }).then(function (res) {
+             console.log(res)
+             if(!res) return
+             let blob = new Blob([res.data], {type: 'application/vnd.ms-excel;charset=utf-8'})
+             let url = window.URL.createObjectURL(blob);
+             let aLink = document.createElement("a");
+             aLink.style.display = "none";
+             aLink.href = url;
+             aLink.setAttribute("download", "excel.xls");
+             document.body.appendChild(aLink);
+             aLink.click();
+             document.body.removeChild(aLink); 
+             window.URL.revokeObjectURL(url); 
+         }).catch(function (error) {
+             console.log(error)
+         });
+    } catch (error) {
+        
+    }
+})
+
+const downFile = ((url,type)=>{
+    try {
+        console.log(url)
+        axios.get(url, {
+            withCredentials:true,
+             headers:{
+                 "token":sessionStorage.getItem('token')
+             },
+             responseType: 'blob', //二进制流
+         }).then(function (res) {
+             console.log(res)
+             if(!res) return
+             let blob = new Blob([res.data])
+             let url = window.URL.createObjectURL(blob);
+             let aLink = document.createElement("a");
+             aLink.style.display = "none";
+             aLink.href = url;
+             aLink.setAttribute("download",type);
+             document.body.appendChild(aLink);
+             aLink.click();
+             document.body.removeChild(aLink); 
+             window.URL.revokeObjectURL(url); 
+         }).catch(function (error) {
+             console.log(error)
+         });
+    } catch (error) {
+        
+    }
 })
 
 
-
-export {dictApi,finishedInfoFormula,idChangeStr}
+export {dictApi,finishedInfoFormula,idChangeStr,exportExcel,downFile}

@@ -10,6 +10,8 @@ import './styles/index.scss'
 import './icons'
 import Loading from '@/components/Loading'
 
+
+
 Vue.config.productionTip = false;
 
 Vue.use(elementUI);

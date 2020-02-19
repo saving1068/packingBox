@@ -29,7 +29,7 @@ const routes = [
 				component:() => import('@/views/Home'),
 			},
 			{//下单
-				path:"placeOrder",
+				path:"/placeOrder",
 				name: 'placeOrder',
 				meta:{
 					title:'我要下单'
@@ -123,6 +123,46 @@ const routes = [
 					title:'采购管理'
 				},
 				component:() => import('@/views/purchaseHandler')
+			},
+			{//
+				path:'/pdschedule',
+				name:'pdschedule',
+				meta:{
+					title:'排产管理'
+				},
+				component:() => import('@/views/pdschedule')
+			},
+			{//
+				path:'/feeds',
+				name:'feeds',
+				meta:{
+					title:'入料管理'
+				},
+				component:() => import('@/views/feed')
+			},
+			{//
+				path:'/pdstock',
+				name:'pdstock',
+				meta:{
+					title:'成品库管理'
+				},
+				component:() => import('@/views/pdstock')
+			},
+			{//
+				path:'/inHistory',
+				name:'inHistory',
+				meta:{
+					title:'成品库管理'
+				},
+				component:() => import('@/views/inHistory')
+			},
+			{//
+				path:'/outHistory',
+				name:'outHistory',
+				meta:{
+					title:'成品库管理'
+				},
+				component:() => import('@/views/outHistory')
 			}
 		]
 	},

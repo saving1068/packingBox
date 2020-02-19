@@ -1,40 +1,122 @@
 <template>
     <div class="warp">
-        <div>
-             <el-input
-             clearable
-            size="mini"
-            placeholder="请输入内容"
-            suffix-icon="el-icon-search"
-            v-model="searchValue">
-        </el-input>
-        </div>
-       
-       
+        <div style="flex:1"></div>
         <div class="login">
-             <i class="el-icon-bell"></i>
+            <el-badge :value="notReadNum" :hidden='notReadNum == 0'>
+                <el-dropdown :hide-on-click="false">
+                    <span class="el-dropdown-link">
+                        信息列表<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item v-for="(item,index) in msg" :key="index">
+                            <div class="space-between">
+                                <div style="padding:0 10px">{{item.content}}</div>
+                                <el-tag style="margin-right:10px;" size="mini"   :type="item.isRead == 1?'info':'warning'">{{item.isRead == 1?'已读':'未读'}}</el-tag>
+                                <el-button @click.native.prevent="readMsg(item)" size="mini" v-if="item.isRead !=1" type="primary">标记已读</el-button>
+                                <!-- <el-button @click.native.prevent="deleteMsg(item)"  size="mini"  type="danger">删除</el-button> -->
+                            </div>
+                            
+                        </el-dropdown-item>
+                        <el-pagination
+                            small
+                              @size-change="handleSizeChange"
+                             @current-change="handleCurrentChange"
+                            layout="prev, pager, next"
+                            :total="total">
+                            </el-pagination>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </el-badge>
+            
             <div class="avatar">
                 <el-avatar  size="small" src="../../assets/logo.png"></el-avatar>
             </div>
-            <el-dropdown szie="mini" @command="signOut">
+            <el-dropdown szie="mini" @command="signOut" >
             <span class="el-dropdown-link">
                 下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown" >
-                <el-dropdown-item >退出登录</el-dropdown-item>
+                <el-dropdown-item style="min-width:100px">退出登录</el-dropdown-item>
             </el-dropdown-menu>
             </el-dropdown>
         </div>
     </div>
 </template>
 <script>
+    import {
+    updataMsg,
+    msgDetail,
+    deleteMsg,
+    msgList,
+    readMsg,
+    notReadMsg
+}  from '@/api/msgTips'
      export default{
         data(){
             return{
-                searchValue:""
+                allValue:"",
+                notReadNum:0,
+                msg:[],
+                total:0,
+                searchValue:{
+                    limit:5,
+                    page:1,
+                }
             }
         },
+        async created(){
+           await this.notReadMsg()
+            await this.msgList()
+        },
         methods:{
+            
+            handleMsg(data){
+                console.log(data,213)
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                 this.searchValue.page = val;
+       this.msgList()
+            },
+            async readMsg(item){
+                let res = await readMsg({id:item.id})
+                await this.msgList()
+                    this.$message.success(res.returnMsg)
+            },
+            async deleteMsg(item){
+                try {
+                    let res = await deleteMsg({id:item.id})
+                    this.$message.success(res.returnMsg)
+                    
+                } catch (error) {
+                    
+                }
+                
+     
+            },
+            async msgList(){
+                try {
+                    let res = await msgList(this.searchValue)
+                    console.log(res)
+                    this.msg = res.data
+                    this.total = res.total
+                } catch (error) {
+                    
+                }
+               
+            },
+            async notReadMsg(){
+                try {
+                    let res = await notReadMsg();
+                    this.notReadNum = res.data;
+                    console.log(res)
+                } catch (error) {
+                    
+                }
+              
+            },
             signOut(value){
                 console.log(value)
                 this.$store.commit('clearToken')

@@ -1,6 +1,6 @@
 import request from '@/request'
 
-const  orderList = (params) => { //角色列表
+const  orderList = (params) => { //订单列表
     return request({
         url: '/order/list',
         method: 'POST',
@@ -8,7 +8,7 @@ const  orderList = (params) => { //角色列表
     });
 }
 
-const deleteOrder = (params) => { //删除角色
+const deleteOrder = (params) => { //删除订单
     return request({
         url: '/order/delete',
         method: 'DELETE',
@@ -16,18 +16,46 @@ const deleteOrder = (params) => { //删除角色
     });
 }
 
-const orderDetail  = (params) => { //角色详情
+const orderDetail  = (params) => { //订单详情
     return request({
         url: '/order/detail',
         method: 'GET',
         params
     });
 }
-const updataOrder = (params) => { //修改角色
+const updataOrder = (params) => { //修改订单
     return request({
         url: '/order/update',
         method: 'POST',
         data:params
+    });
+}
+
+const exportExcel   = (params) => { //订单详情
+    return request({
+        url: '/order/exportExcel',
+        method: 'GET',
+        params
+    });
+}
+
+const uploadFile =  (params) => { //订单详情
+    return request({
+        url: '/order/upload',
+        method: 'POST',
+        data:params,
+        headers:{
+            "Content-type":"multipart/form-data"
+        }
+
+    });
+}
+
+const delFile =   (params) => { //订单详情
+    return request({
+        url: '/order/delete/attachment',
+        method: 'DELETE',
+        params,
     });
 }
 
@@ -37,4 +65,7 @@ export {
     orderDetail,
     deleteOrder,
     orderList,
+    exportExcel,
+    uploadFile,
+    delFile
 }
