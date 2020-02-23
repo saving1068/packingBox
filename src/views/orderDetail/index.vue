@@ -13,7 +13,7 @@
         <el-form-item label="交货日期:"><span class="form-item-width">{{orderInfo.odFinishdate}}</span></el-form-item>
       </el-form>
       <el-form inline :model="orderInfo"  label-width="150px">
-        <el-form-item label="箱型:"><span class="form-item-width">箱型</span></el-form-item>
+        <el-form-item label="箱型:"><span class="form-item-width">{{orderInfo.caseName}}</span></el-form-item>
         <el-form-item label="订单数量:"><span class="form-item-width">{{orderInfo.odCount}}</span></el-form-item>
         <el-form-item label="单价（元）:"><span class="form-item-width">{{orderInfo.unitPrice}}</span></el-form-item>
         <el-form-item label="订单金额（元）:"><span class="form-item-width">{{orderInfo.odMoney}}</span></el-form-item>
@@ -103,6 +103,7 @@
       <div class="center" >
               <el-button type="primary" @click="showDialog">采购</el-button>
               <el-button type='warning' @click="excel">导出订单</el-button>
+               <el-button type='info' @click="print">导出印刷单</el-button>
                <el-button @click="goBack">返回</el-button>
         </div>   
       
@@ -159,16 +160,22 @@ export default {
        
     },
     methods:{
+        print(){
+             let url = `http://wearewwx.com:8080/order/exportPrint?id=${this.orderInfo.id}`
+             let type = `${this.orderInfo.odName}.doc`
+            downFile(url,type);
+        },
          excel(){
             let url = `http://wearewwx.com:8080/order/exportExcel?id=${this.orderInfo.id}`
-            exportExcel(url);
+            let type = `${this.orderInfo.odName}.xls`
+            downFile(url,type);
             console.log(url)
         },
         downFile(item){
             let url = `http://wearewwx.com:8080/order/download?id=${item.id}`
-            let type = item.oldName;
-            console.log(type)
-            downFile(url,type);
+                let type = item.oldName;
+                console.log(type)
+                downFile(url,type);
         },
         goBack(){
             this.$router.replace({name:"order"})

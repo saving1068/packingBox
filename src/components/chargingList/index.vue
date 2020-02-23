@@ -51,7 +51,7 @@
                             placement="top"
                             width="160"
                             v-model="material.visible">
-                            <p>确定入货吗？</p>
+                            <p>确定入料吗？</p>
                             <div style="text-align: right; margin: 0">
                                 <el-button size="mini" type="text" @click="material.visible = false">取消</el-button>
                                 <el-button type="primary" size="mini" @click="sureCharging()">确定</el-button>

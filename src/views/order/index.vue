@@ -251,7 +251,7 @@ import {orderDetail,
         pdUserId:'',
         workerCount:0
       }
-      import {exportExcel,dictApi,idChangeStr} from '@/utils'
+      import {exportExcel,dictApi,idChangeStr,downFile} from '@/utils'
 
 export default {
   
@@ -294,8 +294,11 @@ export default {
   methods:{
     excel(item){
       let url = `http://wearewwx.com:8080/order/exportExcel?id=${item.id}`
-      exportExcel(url);
-      console.log(url)
+       let type = `${item.odName}.xls`
+      downFile(url,type);
+      // console.log(url)
+      
+           
     },
     changeDetail(item){
       this.$router.push({

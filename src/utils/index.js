@@ -24,7 +24,7 @@ const idChangeStr = ((list,id)=>{
    
 })
 
-const exportExcel = ((url)=>{
+const exportExcel = ((url,type)=>{
     try {
         console.log(url)
         axios.get(url, {
@@ -41,7 +41,7 @@ const exportExcel = ((url)=>{
              let aLink = document.createElement("a");
              aLink.style.display = "none";
              aLink.href = url;
-             aLink.setAttribute("download", "excel.xls");
+             aLink.setAttribute("download", type);
              document.body.appendChild(aLink);
              aLink.click();
              document.body.removeChild(aLink); 
@@ -57,6 +57,13 @@ const exportExcel = ((url)=>{
 const downFile = ((url,type)=>{
     try {
         console.log(url)
+        let aLink = document.createElement("a");
+             aLink.style.display = "none";
+             aLink.href = url;
+             document.body.appendChild(aLink);
+             aLink.click();
+             document.body.removeChild(aLink); 
+             return
         axios.get(url, {
             withCredentials:true,
              headers:{

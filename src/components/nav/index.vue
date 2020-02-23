@@ -14,23 +14,25 @@
 				<div class="nav">
 					 <el-scrollbar style='max-height: 1200px;'>
 					<div class="nav-item " v-for="(item,index) in nav" 
-					:key='index' :class="{'showSon':item.ifShowSon}">
-						<div class='parent center' :class="{'active':item.isActive}" @click="goTo(item)">
-							<span>{{item.description}}</span>
+					:key='index' >
+						<div class='parent'  @click="goTo(item)">
+							<div style="width:150px" class="center">{{item.description}}</div>
 							<div class="icon" v-if="item.children.length">
 								<i class="el-icon-arrow-up" v-if="item.ifShowSon"></i>
-								<i class="el-icon-arrow-down" v-else></i>
+								<i class="el-icon-arrow-right" v-else></i>
 							</div>
 						</div>
 						<div class="son" 
 							:class="{'showSon':item.ifShowSon}"
 						>
-						<div class="son-item center" 
+<!--space-between -->	<div class="son-item center" 
 						 @click="goToSon(sonItem)"
 						 v-for="(sonItem,sonIndex) in item.children" 
 						:key="sonIndex"
 						 :class="{'active':sonItem.isActive}">
-							<span>{{sonItem.description}}</span>
+						 <span>{{sonItem.description}}</span>
+						 <!-- <div class="blur"></div> -->
+						 <!-- <div class="color center">{{sonItem.description}}</div> -->
 						</div>
 							
 						</div>
@@ -245,8 +247,10 @@ import {userMenu} from '@/api/menu'
 <style scoped lang="scss">
 	.warp{
 		width: 200px;
+		display: inline-block;
 		background: #fff;
-		color: #326af5;
+		// color: #326af5;
+		    border-right: 1px solid #e6e6e6;
 		.mine-info{
 			.image{
 				width: 50px;
@@ -260,35 +264,60 @@ import {userMenu} from '@/api/menu'
 		}
 		.nav{
 			height: 100%;
-			transition: all 5s;
+			
 		}
-			.showSon{
-				background:rgba($color: #FAEBD7, $alpha: .2) 
-			}
+			// .showSon{
+			// 	background:rgba($color: #FAEBD7, $alpha: .2) 
+			// }
 		.nav-item{
+			
 			.parent{
 				height: 50px;
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				
 			}
 			.son{
+				// background: rgba($color: #C0C0C0, $alpha: .4);
 				height: 0px;
 				overflow: hidden;
-				transition: all .5s;
+				display: none;
+				transition:all 1s linear 0s;
 			}
 			.showSon{
+				display: block;
 				height: auto;
 			}
 			.son-item{
 				height: 50px;
+				cursor: pointer;
+				.color{
+					background: #fff;
+					color: #326af5;
+					flex: 1;
+					height: 100%;
+				}
+				.blur{
+					width: 10px;
+					height: 100%;
+					background:#326af5;
+				}
 			}
-			.center:hover{
-			background:#326af5;
-			color: #fff;
+			.son-item:hover{
+			background:#ecf5ff;
+			// color: #fff;
+			
+		}
+			.parent:hover{
+			background:#ecf5ff;
+			// color: #fff;
 			cursor: pointer;
 		}
 		}
 		.active{
-			background: #326af5;
-			color: #fff;
+			color: #409eff;
+			// color: #fff;
 		}
 		
 	}
