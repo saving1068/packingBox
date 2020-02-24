@@ -29,9 +29,14 @@
     </div>
     <div class="center">
         <el-button type="primary"  @click="getList">查询</el-button>
+        <el-button type="primary"  @click="out">生成送货单</el-button>
       </div>
     <div class="table">
-      <el-table :data="tableData" fit >
+      <el-table :data="tableData" fit tooltip-effect="dark" @selection-change='selectionChange'>
+        <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
         <el-table-column prop="pdName" align='center' label="成品名称" ></el-table-column>
         <el-table-column prop="odSerialNumber" align='center' label="成品编号" width="180"></el-table-column>
         <el-table-column prop="stCount" align='center' label="库存数量"></el-table-column>
@@ -59,12 +64,12 @@
               type="text"
               size="mini" slot="reference">完成</el-button>
             </el-popover>
-            <el-button
+            <!-- <el-button
               @click.native.prevent="out(scope.row)"
               type="text"
               size="mini">
               成品出库
-            </el-button>
+            </el-button> -->
             <el-popover
             placement="top"
             width="160"
@@ -114,6 +119,50 @@
       @updata='getList'
       @closeDialog='dialogVisible = false'
     ></goods-history> 
+    <el-dialog
+      title="提示"
+      :visible.sync="selecDia"
+      width="80%"
+      fit
+      :before-close="handleClose">
+       <el-table
+      :data="selection"
+      @row-click='selectionClick'
+      style="width: 100%">
+      <el-table-column
+        prop="pdName"
+        label="成品名称"
+        >
+      </el-table-column>
+      <el-table-column
+        prop=""
+        label="客户合同"
+       >
+      </el-table-column>
+      <el-table-column
+        prop="pdUnitPrice"
+        label="成品单价">
+      </el-table-column>
+      <el-table-column
+        prop="stCount"
+        label="成品数量">
+        <template slot-scope="scope">
+           <el-input  placeholder="请输入数量" @input='selectInput' v-model.number="scope.row.stCount"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="pdUnitPrice"
+        label="总价(元)">
+        <template slot-scope="scope">
+           <el-input  placeholder="请输入总价" v-model.number="scope.row.allPlace"></el-input>
+        </template>
+      </el-table-column>
+    </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="selecDia = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -151,7 +200,10 @@ export default {
       history:[],
       dialogVisible:false,
       modelName:"",
-      detail:{}
+      detail:{},
+      selection:[],
+      selecDia:false,
+      selecIndex:0,
     };
   },
   async created(){
@@ -185,6 +237,22 @@ export default {
         console.log(err)
       })
     },
+    selectInput(value){
+      this.selection[this.selecIndex].allPlace = (Number(this.selection[this.selecIndex].pdUnitPrice)*Number(value)).toFixed(3)
+    },
+    selectionClick(row, column, event){
+      let index = this.selection.findIndex(item => item.odId == row.odId);
+      console.log(index)
+      this.selecIndex = index;
+
+    },
+    selectionChange(selection){
+      selection.map(item =>{
+        item.allPlace = (Number(item.pdUnitPrice)*Number(item.stCount)).toFixed(3)
+      })
+      this.selection = selection;
+      console.log(selection)
+    },
     async outPdstock(item){
       let obj = {
         delCount:item.delNumber,
@@ -193,17 +261,29 @@ export default {
        let res = await outPdstock(obj)
        this.$message.success(res.returnMsg)
     },
-    async out(item){
-      if(item.stCount){
-         let res = await  outPdstockHistory({odId:item.odId});
-        this.history = res.data;
-        this.modelName = item.odName;
-        this.detail = item;
-        //   console.log(res)\
-         this.dialogVisible= true;
+    handleClose(){
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            this.selecDia = false;
+          })
+          .catch(_ => {});
+    },
+    async out(){
+      if(this.selection.length){
+        this.selecDia = true;
       }else{
-        this.$message.warning('该订单并没有存货')
+        this.$message.warning("请选择成品列表")
       }
+      // if(item.stCount){
+      //    let res = await  outPdstockHistory({odId:item.odId});
+      //   this.history = res.data;
+      //   this.modelName = item.odName;
+      //   this.detail = item;
+      //   //   console.log(res)\
+      //    this.dialogVisible= true;
+      // }else{
+      //   this.$message.warning('该订单并没有存货')
+      // }
     },
     async dict() {
        try {

@@ -14,7 +14,7 @@ import Loading from '@/components/Loading'
 
 Vue.config.productionTip = false;
 
-Vue.use(elementUI);
+Vue.use(elementUI, { size: 'mini', zIndex: 3000 });
 Vue.use(echarts)
 Vue.use(Loading)
 
