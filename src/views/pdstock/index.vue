@@ -16,6 +16,18 @@
           </el-option>
         </el-select>
         </el-form-item>
+        <el-form-item label="客户">
+          <el-select v-model="searchValue.customerId" placeholder="请选择">
+          <el-option 
+          v-for="item in customerList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+         >
+          </el-option>
+          
+        </el-select>
+        </el-form-item>
         <el-form-item label="订单流水号">
           <el-input
             clearable
@@ -39,6 +51,7 @@
     </el-table-column>
         <el-table-column prop="pdName" align='center' label="成品名称" ></el-table-column>
         <el-table-column prop="odSerialNumber" align='center' label="成品编号" width="180"></el-table-column>
+        <el-table-column prop="customerName" align='center' label="客户名称" width="180"></el-table-column>
         <el-table-column prop="stCount" align='center' label="库存数量"></el-table-column>
         <el-table-column prop="alreadyOutCount" align='center' label="已出库数量"></el-table-column>
         <el-table-column prop="pdUnitPrice" align='center' label="成品单价"></el-table-column>
@@ -125,6 +138,31 @@
       width="80%"
       fit
       :before-close="handleClose">
+      <el-form inline label-width="100px" >
+        <el-form-item label="送货人">
+          <el-select v-model="select.dgMan" placeholder="请选择">
+            <el-option
+              v-for="item in deliverer"
+              :key="item.id"
+              :label="item.contactName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="送货时间">
+          <el-date-picker
+           v-model="select.dgTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="选择日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="总价(元)">
+          {{select.money}}
+        </el-form-item>
+      </el-form>
+      
+     
        <el-table
       :data="selection"
       @row-click='selectionClick'
@@ -135,7 +173,7 @@
         >
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="contractNumber"
         label="客户合同"
        >
       </el-table-column>
@@ -145,7 +183,7 @@
       </el-table-column>
       <el-table-column
         prop="stCount"
-        label="成品数量">
+        label="送货数量">
         <template slot-scope="scope">
            <el-input  placeholder="请输入数量" @input='selectInput' v-model.number="scope.row.stCount"></el-input>
         </template>
@@ -154,13 +192,14 @@
         prop="pdUnitPrice"
         label="总价(元)">
         <template slot-scope="scope">
-           <el-input  placeholder="请输入总价" v-model.number="scope.row.allPlace"></el-input>
+          {{scope.row.allPlace}}
+           <el-input placeholder="请输入总价" v-model.number="scope.row.pdMoney"></el-input>
         </template>
       </el-table-column>
     </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="selecDia = false">确 定</el-button>
+        <el-button type="primary" @click="sureSelect">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -173,16 +212,35 @@ import {updataPdstock,
     pdstockList,
     addPdstock,
     outPdstock,outPdstockHistory} from '@/api/pdstock'
+    import {accountList} from '@/api/user'
+    import {updataDelier} from '@/api/deliver'
    import goodsHistory from '@/components/goodsHistory'
+   import {downFile} from '@/utils'
+    import {customerList} from '@/api/customer'
 export default {
    components:{
     goodsHistory
   },
+ 
+  watch:{
+    selection:{
+      handler(value){
+        console.log(value)
+         let money = 0;
+        value.forEach(item =>{
+          money+= Number(item.pdMoney)
+        })
+        money = money.toFixed(3)/1;
+       this.select.money = money
+      },
+      deep:true
+    }
+  },
   data() {
     return {
       searchValue:{
-        odName:"",odSerialNumber:'',
-        customer:"",merchandiser:"",
+        customerId:'',
+        
         odFinishdateBegin:'',odFinishdateEnd:"",
         outstockStatus:'',
         page:1,limit:10
@@ -201,9 +259,17 @@ export default {
       dialogVisible:false,
       modelName:"",
       detail:{},
+      select:{
+        dgMan:'',
+        dgTime:'',
+        list:[],
+        money:'',
+        customerId:''
+      },
       selection:[],
       selecDia:false,
       selecIndex:0,
+      deliverer:[],
     };
   },
   async created(){
@@ -211,6 +277,45 @@ export default {
     
   },
   methods:{
+    async sureSelect(){
+      for(let i=0;i<this.selection.length;i++){
+        if(this.selection[i].stCount == 0){
+          return this.$message.warning('出库数量不能为0')
+        }
+      }
+      try {
+            this.$confirm('是否确定生成送货单', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then( async() => {
+             let list = [];
+            this.selection.map((item)=>{
+              let obj = {
+                odId:item.odId,
+                count:item.stCount,
+                money:item.pdMoney,
+                unitPrice:item.pdUnitPrice
+              }
+              list.push(obj)
+            })
+            this.select.list = list;
+            this.select.customerId = this.selection[0].customerId;
+           
+            let res = await updataDelier(this.select);
+             let url = `http://wearewwx.com:8080/dg/export?id=${res.data}`
+           
+            downFile(url);
+            }).catch(() => {
+                    
+            });
+        
+      } catch (error) {
+        
+      }
+      
+      console.log(this.select)
+    },
     async finishOrder(item){
       try {
         let obj = {
@@ -238,7 +343,7 @@ export default {
       })
     },
     selectInput(value){
-      this.selection[this.selecIndex].allPlace = (Number(this.selection[this.selecIndex].pdUnitPrice)*Number(value)).toFixed(3)
+      this.selection[this.selecIndex].pdMoney = (Number(this.selection[this.selecIndex].pdUnitPrice)*Number(value)).toFixed(3)
     },
     selectionClick(row, column, event){
       let index = this.selection.findIndex(item => item.odId == row.odId);
@@ -248,7 +353,7 @@ export default {
     },
     selectionChange(selection){
       selection.map(item =>{
-        item.allPlace = (Number(item.pdUnitPrice)*Number(item.stCount)).toFixed(3)
+        item.pdMoney = (Number(item.pdUnitPrice)*Number(item.stCount)).toFixed(3);
       })
       this.selection = selection;
       console.log(selection)
@@ -270,6 +375,25 @@ export default {
     },
     async out(){
       if(this.selection.length){
+        let arr = [];
+        if(this.selection.length>1){
+           this.selection.forEach((item)=>{
+          arr.push(item.customerId)
+        })
+          let nary=arr.slice().sort();
+          console.log(nary)
+          for(let i=0;i<arr.length;i++){
+            console.log(nary[i],nary[i+1])
+            if(nary[i+1]){
+              if (nary[i]!=nary[i+1]){
+                
+                return  this.$message.warning("请选择相同客户的成品生成送货单")
+              }
+            }
+              
+          }  
+        }
+
         this.selecDia = true;
       }else{
         this.$message.warning("请选择成品列表")
@@ -288,9 +412,11 @@ export default {
     async dict() {
        try {
           this.loading = true;
-          // let customer = await customerList();
+          let deliverer = await accountList()
+          this.deliverer = deliverer.data;
+          let customer = await customerList();
 
-          // this.customerList = customer.data;
+          this.customerList = customer.data;
           // let account = await accountList();
           // this.merchandiserList = account.data;
           this.getList()
@@ -312,6 +438,7 @@ export default {
         })
         this.tableData = res.data;
         this.total = res.total;
+        console.log(res.data)
       } catch (error) {
         console.log(error)
       }

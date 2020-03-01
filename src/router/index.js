@@ -17,7 +17,7 @@ const routes = [
 		name: 'layout',
 		component:() => import('@/views/layout'),
 		redirect:{
-			name:'home'
+			name:'order'
 		},
 		children:[
 			{
@@ -152,17 +152,25 @@ const routes = [
 				path:'/inHistory',
 				name:'inHistory',
 				meta:{
-					title:'成品库管理'
+					title:'入库历史'
 				},
 				component:() => import('@/views/inHistory')
 			},
-			{//
+			{//deliverer
 				path:'/outHistory',
 				name:'outHistory',
 				meta:{
-					title:'成品库管理'
+					title:'出库历史'
 				},
 				component:() => import('@/views/outHistory')
+			},
+			{//
+				path:'/deliverer',
+				name:'deliverer',
+				meta:{
+					title:'送货单'
+				},
+				component:() => import('@/views/deliverer')
 			}
 		]
 	},

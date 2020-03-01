@@ -51,7 +51,7 @@ const uploadFile =  (params) => { //订单详情
     });
 }
 
-const delFile =   (params) => { //订单详情
+const delFile =   (params) => { //删除附件
     return request({
         url: '/order/delete/attachment',
         method: 'DELETE',
@@ -59,6 +59,20 @@ const delFile =   (params) => { //订单详情
     });
 }
 
+const delMater =   (params) => { //删除材料
+    return request({
+        url: '/order/mater/delete',
+        method: 'DELETE',
+        params,
+    });
+}
+const delProcesscost = (params) => { //删除其他费用
+    return request({
+        url: '/order/processcost/delete',
+        method: 'DELETE',
+        params,
+    });
+}
 
 export {
     updataOrder,
@@ -67,5 +81,7 @@ export {
     orderList,
     exportExcel,
     uploadFile,
-    delFile
+    delFile,
+    delMater,
+    delProcesscost
 }

@@ -166,7 +166,7 @@ export default {
                     this.getPurchaseDetail()
                     this.$emit('updata',true)
                     this.$router.push({
-                        name:'pdschedule'
+                        name:'order'
                     })
                      this.$message.success(res.returnMsg)
                 } catch (error) {

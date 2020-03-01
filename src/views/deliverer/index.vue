@@ -2,12 +2,12 @@
   <div class="warp" v-loading='loading'>
     <div class="search center">
       <el-form inline size="mini">
-        <el-form-item label="订单名称">
+        <el-form-item label="送货人">
           <el-input
             clearable
             size="mini"
             placeholder="请输入内容"
-            v-model="searchValue.pdName"
+            v-model="searchValue.dgMan"
           >
          
         </el-input>
@@ -19,26 +19,28 @@
       </div>
     <div class="table">
       <el-table :data="tableData" fit >
-         <el-table-column prop="pdName" align='center' label="名称" ></el-table-column>
+         <el-table-column prop="dgMan" align='center' label="送货人" ></el-table-column>
         <!-- <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
-        <el-table-column prop="fdCount" align='center' label="数量"></el-table-column>
+        <el-table-column prop="dgTime" align='center' label="送货时间"></el-table-column>
+         <el-table-column prop="customerName" align='center' label="客户名称" width="180"></el-table-column>
         <!-- <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column> -->
         <!-- <el-table-column prop="odSetdate" align='center' label="订单日期"></el-table-column> -->
+        <el-table-column prop="serialNumber" align='center' label="流水号"></el-table-column>
+        <el-table-column prop="money" align='center' label="金额"></el-table-column>
         <el-table-column prop="createTime" align='center' label="创建时间"></el-table-column>
-        <!-- <el-table-column prop="merchandiser" align='center' label="跟单员"></el-table-column> -->
-        <el-table-column prop="createAuthor" align='center' label="发起人"></el-table-column>
+        
         <!-- <el-table-column prop="finishStatusStr" align='center' label="订单状态">
        
         </el-table-column> -->
         <el-table-column align='center' label="操作">
           <template slot-scope="scope">
-            <el-button
+            <!-- <el-button
               @click.native.prevent=""
               type="text"
               size="mini">
-              完成
-            </el-button>
+              修改
+            </el-button> -->
             <el-popover
               placement="top"
               width="160"
@@ -52,12 +54,6 @@
               type="text"
               size="mini" slot="reference">删除</el-button>
             </el-popover>
-            <!-- <el-button
-              @click.native.prevent=""
-              type="text"
-              size="mini">
-              详情
-            </el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -78,13 +74,14 @@
 </template>
 
 <script>
-import {updataFeed,feedDetail,deleteFeed,feedList}from '@/api/feeds'
+import {updataDelier,delierDetail,deleteDelier,delierList}from '@/api/deliver'
   import {customerList} from '@/api/customer'
     import {accountList} from '@/api/user'
 export default {
   data() {
     return {
       searchValue:{
+          dgMan:'',
         pdName:"",serialNumber:'',
         customer:"",merchandiser:"",
         odFinishdateBegin:'',odFinishdateEnd:"",
@@ -135,7 +132,7 @@ export default {
     async getList(){
       try {
         
-        let res = await feedList(this.searchValue);
+        let res = await delierList(this.searchValue);
         this.tableData = res.data;
         console.log(this.tableData)
         this.total = res.total;
@@ -148,7 +145,7 @@ export default {
       try {
         console.log(item)
         this.delLoading= true
-        let res = await deleteFeed({id:item.id})
+        let res = await deleteDelier({id:item.id})
         this.delLoading= false
         this.searchValue.page =1;
         this.$message.success(res.returnMsg)

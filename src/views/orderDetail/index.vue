@@ -181,11 +181,11 @@ export default {
             this.$router.replace({name:"order"})
         },
         showDialog(){
-            if(this.orderInfo.finishStatus ==  1){
+            // if(this.orderInfo.finishStatus ==  1){
                 this.dialogVisible = true;
-            }else{
-                this.$message.warning('订单已采购')
-            }
+            // }else{
+            //     this.$message.warning('订单已采购')
+            // }
             
 
         },

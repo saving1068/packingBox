@@ -84,8 +84,10 @@
         <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column>
         <el-table-column prop="odSetdate" align='center' label="订单日期"></el-table-column>
         <el-table-column prop="odFinishdate" align='center' label="交货日期"></el-table-column>
+        <el-table-column prop="createTime" align='center' label="创建日期"></el-table-column>
         <el-table-column prop="merchandiser" align='center' label="跟单员"></el-table-column>
         <el-table-column prop="createAuthor" align='center' label="发起人"></el-table-column>
+
         <el-table-column prop="finishStatusStr" align='center' label="订单状态">
        
         </el-table-column>
@@ -129,10 +131,16 @@
               排产
             </el-button>
             <el-button
-              @click.native.prevent="changeDetail(scope.row)"
+              @click.native.prevent="changeDetail(scope.row,0)"
               type="text"
               size="mini">
               修改订单
+            </el-button>
+            <el-button
+              @click.native.prevent="changeDetail(scope.row,1)"
+              type="text"
+              size="mini">
+              另存为订单
             </el-button>
           </template>
         </el-table-column>
@@ -300,11 +308,12 @@ export default {
       
            
     },
-    changeDetail(item){
+    changeDetail(item,type){
       this.$router.push({
         name:'placeOrder',
         query:{
-          id:item.id
+          id:item.id,
+          type
         }
       }).catch( err =>{
         console.log(err)
