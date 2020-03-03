@@ -12,15 +12,24 @@
                     @row-click='showParent'
                     align="center"
                     style="width: 100%">
+                    <el-table-column prop="supplierName" label="供应商名称">
+
+                    </el-table-column>
                     <el-table-column
-                        prop="name"
+                        prop="type"
                         label="类型"
                         >
+                        <template  slot-scope="scope">
+                           <span>{{scope.row.type|costType}}</span>
+                        </template>
                     </el-table-column>
                      <el-table-column
                         prop="gram"
                         label="克数"
                         >
+                        <template  slot-scope="scope">
+                           <span>{{scope.row.gram?scope.row.gram:'--/'}}</span>
+                        </template>
                     </el-table-column>
                     
                     <el-table-column
@@ -77,6 +86,18 @@
             :before-close="addClose">
               <div class="center">
                 <el-form label-width="100px"  size='mini'>
+                  <el-form-item label="所属供应商:">
+                    <el-select v-model="addItemInfo.supplierId" placeholder="请选择">
+                        <el-option 
+                        v-for="item in supplierList"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                      >
+                        </el-option>
+                        
+                      </el-select>
+                  </el-form-item>
                <el-form-item label="类型:">
                    <el-radio-group v-model="addItemInfo.type">
                         <el-radio :label="1">面纸类型费用</el-radio>
@@ -84,7 +105,7 @@
                         <el-radio :label="3">表面处理费用</el-radio>
                     </el-radio-group>
                </el-form-item>
-                <el-form-item label="克数:" >
+                <el-form-item label="克数:" v-if="addItemInfo.type!=3">
                    <el-input  v-model="addItemInfo.gram"></el-input>
                </el-form-item>
                <el-form-item label="单价/费用:">
@@ -123,16 +144,21 @@
 
 <script>
 import {updataCost,costDetail,deleteCost,costList} from '@/api/cost'
-
+import {supplierList} from '@/api/supplier'
 let addItemInfo = {
- name:'',gram:'',unitPrice:'',type:''
+ name:'',gram:'',unitPrice:'',type:'',supplierId:''
 }
   export default {
-    created(){
-     
-      this.getList()
+    async created(){
+      await this.dict()
+      await this.getList()
     },
     methods: {
+    async  dict(){
+       let res = await supplierList();
+        this.supplierList = res.data;
+        console.log(this.supplierList)
+      },
       addClose(){
         this.$confirm('取消新增, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -264,7 +290,15 @@ let addItemInfo = {
         },
         list:[],
         treeData:[],
+        supplierList:[]
       };
+    },
+    filters:{
+      costType(state){
+          
+          let list = ['面纸类型费用','坑纸类型费用','表面处理费用'];
+          return list[state-1]
+      },
     }
   };
 </script>

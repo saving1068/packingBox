@@ -240,12 +240,16 @@ export default {
                 res.data.printColorStr = idChangeStr(this.printingColor,res.data.printColor);
                 res.data.printDealTypeStr = idChangeStr(this.printingHandle,res.data.printDealType);
                 res.data.packageRequireStr = idChangeStr(this.packAsk,res.data.packageRequire);
-
+                
                 res.data.processcosts.map(item =>{
+                    
+                    // console.log(this.printingList,21321)
                     let res =item.printType != undefined? this.printingList.find(itemS => itemS.key == item.printType):{value:''};
-                    // console.log(this.printingList,21321,res)
+                    // console.log(res)
                     item.printTypeStr = res.value;
+                    console.log(item)
                     item.costRemake =item.psType == 3?idChangeStr(this.costRemake,item.remarkKey):'';
+                   
                 })
                 
                 this.chargingType = res.data.maters;

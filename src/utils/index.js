@@ -13,14 +13,18 @@ const finishedInfoFormula = ((formula,length,width,height)=>{//面子宽
 })
 
 const idChangeStr = ((list,id)=>{
-    let res = list.find(item => item.id == id);
+    // let res = list.find(item => item.id == id);
     let resT = list.find(item => item.key == id);
-    console.log(resT,id,list)
-    if(res){
-        return res.value||'没找到所对应的值'
-    }else{
-        return resT.value||'没找到所对应的值'
-    }
+    // console.log(resT,id,list)
+    // console.log(res,resT)
+    // if(res){
+    //     const tip = res?res.value:'暂无数据'
+    //     return tip
+    // }else{
+        const tip = resT?resT.value:'暂无数据'
+        console.log(tip)
+        return tip
+    // }
    
 })
 
