@@ -124,7 +124,7 @@
             <div @click="choiseItem(item,index)">
              
               <el-form-item label="面纸供应商:" class="form-inline">
-                <el-select placeholder="请选择" @change="mtSpChange" v-model="item.spId">
+                <el-select placeholder="请选择"  @click.native="choiseItem(item,index)" @change="mtSpChange" v-model="item.spId">
                   <el-option
                     v-for="item in spId"
                     :key="item.id"
@@ -134,7 +134,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="面纸型号:" class="form-inline">
-                <el-select placeholder="请选择" v-model="item.mtModel" >
+                <el-select placeholder="请选择" v-model="item.mtModel" @click.native="choiseItem(item,index)">
                   <el-option v-for="item in mT" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -186,7 +186,7 @@
           <el-form-item v-for="(item,index) in tunnelTissue" :key="index" :class="{'materActive':item.active}">
             <div @click="ChoiseTunnelIndex(item,index)">
               <el-form-item label="坑纸供应商:" class="form-inline">
-                <el-select placeholder="请选择" @change="ktSpChange" v-model="item.spId">
+                <el-select placeholder="请选择" @click.native="ChoiseTunnelIndex(item,index)" @change="ktSpChange" v-model="item.spId">
                   <el-option
                     v-for="item in spId"
                     :key="item.id"
@@ -196,16 +196,16 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="坑纸型号:" class="form-inline">
-                <el-select placeholder="请选择" v-model="item.mtModel" @change="ktTypeChange">
+                <el-select placeholder="请选择" @click.native="ChoiseTunnelIndex(item,index)" v-model="item.mtModel" @change="ktTypeChange">
                   <el-option v-for="item in kT" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="坑纸长:" class="form-inline">
-                <el-input @input="ktLInput" v-model="item.mtLength" placeholder="请输入成品高"></el-input>
+                <el-input  v-model="item.mtLength" placeholder="请输入成品高"></el-input>
                 <!-- <span>{{item.mtLength}}</span> -->
               </el-form-item>
               <el-form-item label="坑纸高:" class="form-inline">
-                <el-input @input="ktHInput" v-model="item.mtHeight" placeholder="请输入成品高"></el-input>
+                <el-input  v-model="item.mtHeight" placeholder="请输入成品高"></el-input>
                 <!-- <span>{{item.mtHeight}}</span> -->
               </el-form-item>
               <el-form-item label="坑纸单价:" class="form-inline">
@@ -730,28 +730,30 @@ export default {
     },
     facialTissue:{
        handler(value,oldValue){
+         console.log(value)
         value.forEach((item,index)=>{
           let {width,length} = {width:item.mtWidth,length:item.mtLength};
-          console.log(width,length,index,item)
+          // console.log(width,length,index,item)
           
         let mT = this.mT.find(
           items => items.id == item.mtModel
         );
+        console.log(mT)
         if(!mT){
           return
         }
         let mtUnitPrice = 0;
-        mtUnitPrice = item.unitPrice?
-          (
-            (Number(length * width) / 1000000) *
-            (Number(item.unitPrice) / 1000) *
-            (Number(item.gram) / 1000)
-          ).toFixed(3) / 1:
-          (
+        mtUnitPrice = (
             (Number(length * width) / 1000000) *
             (Number(mT.unitPrice) / 1000) *
             (Number(mT.gram) / 1000)
-          ).toFixed(3) / 1;
+          ).toFixed(3) / 1
+          // :
+          // (
+          //   (Number(length * width) / 1000000) *
+          //   (Number(mT.unitPrice) / 1000) *
+          //   (Number(mT.gram) / 1000)
+          // ).toFixed(3) / 1;
           item.unitPrice = mT.unitPrice;
         item.mtUnitPrice = mtUnitPrice;
         item.mtCost =(item.mtCount * mtUnitPrice).toFixed(3) / 1;
@@ -764,32 +766,36 @@ export default {
       },
       deep:true
     },
-    // facialTissueList:{
-    //    handler(value,oldValue){
-    //      console.log(value,oldValue,'---------------------------22')
-    //       value.forEach((item,index)=>{
-          
-    //       if(oldValue.length !=0){
-    //         console.log(item.spId,oldValue[index].spId,'-----')
-    //         if(item.spId != oldValue[index].spId){
-    //          item.mtModel = ''
-    //        }
-    //       }
-           
-    //     })
 
-         
-         
-    //     this.facialTissue = value;
-         
-    //   },
-    //   deep:true
-    // },
     tunnelTissue:{
       handler(value,oldValue){
-      
-      },
-      deep:true
+
+          value.forEach((item,index)=>{
+            console.log(item)
+              let {height,length} = {height:item.mtHeight,length:item.mtLength};
+          //  let height = this.tunnelTissue[this.tunnelChoiseIndex].mtHeight;
+          // let length = value;
+          let kT = this.kT.find(
+            items => items.id == item.mtModel
+          );
+          if(!kT){
+            return
+          }
+          let mtUnitPrice = 0;
+          mtUnitPrice =(
+              (Number(height) * Number(length) * Number(kT.unitPrice)) /
+              1000000
+            ).toFixed(3) / 1
+          item.mtUnitPrice = mtUnitPrice;
+          item.mtCost =
+            (
+              item.mtCount * mtUnitPrice
+            ).toFixed(3) / 1;
+          item.gram = kT.gram;
+          })
+          
+          },
+          deep:true
     },
   },
   computed: { 
@@ -833,10 +839,7 @@ export default {
       );
       return isNaN(totalCost) ? 0 : totalCost;
     },
-    // facialTissueList(){
-    //   let list  = JSON.parse(JSON.stringify(this.facialTissue))
-    //   return list
-    // }
+
 
   },
   methods: {
@@ -856,12 +859,12 @@ export default {
        this.tunnelTissue[this.tunnelChoiseIndex].mtModel ='';
       let res =  await costList({ supplierId:value,type: 2 })
       this.kT = res.data;
-       let height = this.tunnelTissue[this.tunnelChoiseIndex].mtHeight;
-      let length = this.tunnelTissue[this.tunnelChoiseIndex].mtLength;;
-      let obj = {
-        height,length
-      }
-      this.ktCompute(obj)
+      //  let height = this.tunnelTissue[this.tunnelChoiseIndex].mtHeight;
+      // let length = this.tunnelTissue[this.tunnelChoiseIndex].mtLength;;
+      // let obj = {
+      //   height,length
+      // }
+      // this.ktCompute(obj)
     },
     async surfaceSpChange(value){
       this.surface.surfaceRequired = '';
@@ -899,9 +902,11 @@ export default {
       let mT = this.mT.find(
         item => item.id == this.facialTissue[this.facialChoiseIndex].mtModel
       );
+      //  console.log(mT)
       if(!mT){
         return
       }
+     
       let mtUnitPrice = 0;
       mtUnitPrice =
         (
@@ -1191,7 +1196,7 @@ export default {
         .catch(() => {});
     },
     choiseItem(item, index) {
-      // console.log(index);
+      console.log(index);
       this.facialChoiseIndex = index;
       this.facialTissue.map((item,sindex)=>{
         if(index == sindex){
@@ -1205,6 +1210,7 @@ export default {
       // this.facialTissue[index].active = true;
     },
     ChoiseTunnelIndex(item, index) {
+      console.log(index)
       this.tunnelChoiseIndex = index;
        this.tunnelTissue.map((item,sindex)=>{
         if(index == sindex){
@@ -1425,9 +1431,9 @@ export default {
       let beerNum = this.beerNum.find(
         item => item.key == this.basicData.beerCount
       ).value;
-      console.log(beerNum, "beerNum");
+      // console.log(beerNum, "beerNum");
       psCount = Number(this.basicData.odCount) / Number(beerNum); //数量
-      console.log(psCount, "psCount");
+      // console.log(psCount, "psCount");
       let paperNum = this.paperNum.find(
         item => item.key == this.basicData.paperCount
       );
