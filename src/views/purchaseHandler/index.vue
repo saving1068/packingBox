@@ -15,9 +15,24 @@
                         label="订单名称"
                         >
                     </el-table-column>
+                     <el-table-column
+                        prop="spName"
+                        label="供应商"
+                        >
+                        </el-table-column>
+                         <el-table-column
+                        prop="mtLength"
+                        label="材料长"
+                        >
+                        </el-table-column>
+                         <el-table-column
+                        prop="mtWidth"
+                        label="材料宽"
+                        >
+                        </el-table-column>
                     <el-table-column
-                        prop="mtModelName"
-                        label="材料名称"
+                        prop="mtHeight"
+                        label="材料高"
                         >
                     </el-table-column>
                      <el-table-column

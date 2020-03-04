@@ -306,6 +306,7 @@ export default {
              let url = `http://wearewwx.com:8080/dg/export?id=${res.data}`
            
             downFile(url);
+            this.selecDia = false;
             }).catch(() => {
                     
             });

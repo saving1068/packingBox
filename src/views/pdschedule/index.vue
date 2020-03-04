@@ -130,6 +130,7 @@
     </el-pagination>
     </div>
     <goods-history
+      title="成品入库"
       :list='history'
       :dialogVisible='dialogVisible'
       v-if="dialogVisible"

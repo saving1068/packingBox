@@ -338,9 +338,9 @@
               <el-select v-model="item.remarkKey" placeholder="请选择">
                 <el-option
                   v-for="item in costRemake"
-                  :key="Number(item.key)"
+                  :key="item.key"
                   :label="item.value"
-                  :value="Number(item.key)"
+                  :value="item.key"
                 ></el-option>
               </el-select>
               <!-- <el-input v-model.trim="item." placeholder="备注"></el-input> -->

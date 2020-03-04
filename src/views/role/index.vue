@@ -46,17 +46,6 @@
                     </el-table-column>
                     </el-table>
         </div>
-        <div class="tree" v-show="sonShow">
-          <el-tree
-          :data="treeData"
-          show-checkbox
-          default-expand-all
-          node-key="id"
-          ref="tree"
-          highlight-current
-          :props="defaultProps">
-        </el-tree>
-        </div>
         
       </div>
       <!-- 新增角色 -->
@@ -151,6 +140,7 @@ let addItemInfo = {
         });
       },
       addSure(){
+         console.log(this.$refs.tree.getCheckedNodes(),2222)
         let tips = this.addItemInfo.id?'是否确认修改角色?':'是否确认新增角色?';
             let success = this.addItemInfo.id?'修改角色成功':'新增角色成功';
             this.$confirm(tips, '提示', {
@@ -159,13 +149,21 @@ let addItemInfo = {
                 type: 'warning'
                 }).then(async() => {
                     try {
-                      console.log(this.$refs.tree.getCheckedNodes())
+                     
                       this.addItemInfo.pids = [];
+                      let list = [];
+                      this.$refs.tree.getCheckedNodes().filter(item => item.pid!=0).forEach((item)=>{
+                        list.push(item.pid)
+                      })
+                      
+                      console.log(list)
+                      
                       this.$refs.tree.getCheckedNodes().forEach(item =>{
                            this.addItemInfo.pids.push(item.id)
                       })
-                     
-                      //  console.log(this.addItemInfo)
+                     this.addItemInfo.pids = Array.from(new Set([...list,...this.addItemInfo.pids])) 
+                       console.log(this.addItemInfo.pids)
+                      //  debugger
                      if(this.addItemInfo.pids.length != 0&&this.addItemInfo.name
                      &&this.addItemInfo.description
                      &&this.addItemInfo.sort
@@ -239,9 +237,28 @@ let addItemInfo = {
             console.log(item)
            let res =  await roleDetail({id:item.roleId})
            let perList = [];
+          //  let pList = this.resetList(res.data.perList);
+          //  console.log(pList)
+          //  pList.forEach(item=>{
+          //    item.children.forEach(sItem=>{
+
+          //    })
+          //  })
+          // let menuList = [];
+          // this.initMenuList.forEach(item =>{
+          //   if(item.children){
+          //     item.children.forEach(sitem=>{
+          //         menuList.push(sitem.id)
+          //     })
+          //   } 
+          //   menuList.push(item.id)
+          // })
+          // console.log(menuList)
+          // debugger
            res.data.perList.forEach(item =>{
              perList.push(item.id)
            })
+
 
             this.itemPowerList = perList;
             console.log(this.itemPowerList,'itemPowerList')
@@ -293,47 +310,18 @@ let addItemInfo = {
           // }
           return obj;
       },
-
-
-
-
-
-
-      getCheckedNodes() {
-        console.log(this.$refs.tree.getCheckedNodes());
-      },
-      getCheckedKeys() {
-        console.log(this.$refs.tree.getCheckedKeys());
-      },
-      setCheckedNodes() {
-        this.$refs.tree.setCheckedNodes([{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 9,
-          label: '三级 1-1-1'
-        }]);
-      },
-      setCheckedKeys() {
-        this.$refs.tree.setCheckedKeys([3]);
-      },
-      resetChecked() {
-        this.$refs.tree.setCheckedKeys([]);
-      }
     },
 
     data() {
       return {
         loading:false,
         searchRoleValue:'',
-        sonShow:false,
         roleChange:false,
         addItemInfo:{
 
         },
         list:[],
         initMenuList:[],
-        treeData:[],
         itemPowerList:[],
         defaultProps: {
           // children: 'children',
