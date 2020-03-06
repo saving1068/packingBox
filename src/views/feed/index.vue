@@ -16,10 +16,11 @@
     </div>
     <div class="center">
         <el-button type="primary"  @click="getList">查询</el-button>
+         <el-button type="warning"  @click="selecDia=true">生成采购月度对账单</el-button>
       </div>
     <div class="table">
       <el-table :data="tableData" fit >
-         <el-table-column prop="pdName" align='center' label="名称" ></el-table-column>
+         <el-table-column prop="pdName" align='center' label="订单名称" ></el-table-column>
         <!-- <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
         <el-table-column prop="fdCount" align='center' label="数量"></el-table-column>
@@ -74,13 +75,53 @@
 
     <!-- 排产 -->
 
+
+    <el-dialog
+      title="采购度季对账单"
+      :visible.sync="selecDia"
+      width="30%"
+      fit
+      >
+      <el-form inline  >
+        <el-form-item label="供应商">
+         <el-select v-model="select.spId" placeholder="请选择">
+            <el-option
+              v-for="item in supplier"
+              :key="item.id"
+              :label="item.contact"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="供应商送货时间">
+           <el-date-picker
+            @change="dgTime"
+            v-model="dgTimeValue"
+            type="daterange"
+            range-separator="至"
+             value-format='yyyy-MM-dd'
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      
+     
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="selecDia=false">取 消</el-button>
+        <el-button type="primary" @click="sureSelect">生成采购月季对账单</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import {updataFeed,feedDetail,deleteFeed,feedList}from '@/api/feeds'
+import {supplierList} from '@/api/supplier'
   import {customerList} from '@/api/customer'
     import {accountList} from '@/api/user'
+    import{downFile} from '@/utils'
 export default {
   data() {
     return {
@@ -90,14 +131,21 @@ export default {
         odFinishdateBegin:'',odFinishdateEnd:"",
         page:1,limit:10
       },
+      dgTimeValue:"",
       customerList:[],
-      merchandiserList:[],
+      merchandiserselectList:[],
       detevalue:'',
       loading:false,
       tableData: [],
       total:0,
-      delLoading:false
-
+      delLoading:false,
+      selecDia:false,
+      supplier:[],
+      select:{
+        spId:'',
+        feedTimeStart:'',
+        feedTimeEnd:''
+      }
     };
   },
   async created(){
@@ -105,6 +153,28 @@ export default {
     
   },
   methods:{
+    sureSelect(){
+      if(this.select.spId&&this.select.feedTimeStart&&this.select.feedTimeEnd){
+         let url = `http://wearewwx.com:8080/purchase/exportSOA?spId=${this.select.spId}&feedTimeStart=${this.select.feedTimeStart}&feedTimeEnd&${this.select.feedTimeEnd}`
+         console.log(url)
+        downFile(url);
+        this.selecDia = false;
+      }else{
+        this.$message.warning("请填写所需信息")
+      }
+      
+    },
+    dgTime(value){
+      console.log(value)
+      if(value){
+        this.select.feedTimeStart = value[0];
+      this.select.feedTimeEnd =  value[1];
+      }else{
+        this.select.feedTimeStart = '';
+      this.select.feedTimeEnd =  '';
+      }
+      
+    },
     goToDetail(item){
       console.log(item)
       this.$router.push({
@@ -125,6 +195,8 @@ export default {
           this.customerList = customer.data;
           let account = await accountList();
           this.merchandiserList = account.data;
+          let supplier = await supplierList();
+          this.supplier= supplier.data;
           this.getList()
        this.loading =false;
       } catch (error) {

@@ -133,7 +133,7 @@
       @closeDialog='dialogVisible = false'
     ></goods-history> 
     <el-dialog
-      title="提示"
+      title="送货单"
       :visible.sync="selecDia"
       width="80%"
       fit
@@ -149,14 +149,14 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="送货时间">
+        <!-- <el-form-item label="送货时间">
           <el-date-picker
            v-model="select.dgTime"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="选择日期">
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="总价(元)">
           {{select.money}}
         </el-form-item>
@@ -306,6 +306,7 @@ export default {
              let url = `http://wearewwx.com:8080/dg/export?id=${res.data}`
            
             downFile(url);
+            this.getList()
             this.selecDia = false;
             }).catch(() => {
                     

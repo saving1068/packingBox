@@ -362,7 +362,9 @@ export default {
     async surePdschedule(){
       try {
         this.pdscheduleInfo.odId = this.orderInfo.id;
-          let res = await updataPdschedule(this.pdscheduleInfo)
+          let res = await updataPdschedule(this.pdscheduleInfo);
+          let url = `http://wearewwx.com:8080/pdschedule/export?id=${this.pdscheduleInfo.odId}`
+          downFile(url);
           this.pdscheduleInfo = {...pdscheduleInfo}
           this.pdschedule = false;
 
