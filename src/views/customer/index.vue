@@ -46,6 +46,7 @@
                             </el-input>
                         </template>
                         <template slot-scope="scope">
+                          <el-button type="waring" @click.stop="customerInfo(scope.row)" size="mini">月度对账单</el-button>
                             <el-button type="primary" @click.stop="addItem(scope.row)" size="mini">修改</el-button>
                             <el-button type="danger" @click.stop="delteItem(scope.row)" size="mini">删除</el-button>
                         </template>
@@ -97,28 +98,52 @@
                 <el-button type="primary" @click="addSure">确 定</el-button>
             </span>
         </el-dialog>
-		<!-- <el-tree
-  :data="data"
-  show-checkbox
-  default-expand-all
-  node-key="id"
-  ref="tree"
-  highlight-current
-  :props="defaultProps">
-</el-tree>
 
-<div class="buttons">
-  <el-button @click="getCheckedNodes">通过 node 获取</el-button>
-  <el-button @click="getCheckedKeys">通过 key 获取</el-button>
-  <el-button @click="setCheckedNodes">通过 node 设置</el-button>
-  <el-button @click="setCheckedKeys">通过 key 设置</el-button>
-  <el-button @click="resetChecked">清空</el-button>
-</div> -->
+
+   <el-dialog
+           
+            title="客户信息"
+            :visible.sync="customerShow"
+            width="400px"
+            center
+           >
+              <div class="center">
+                <el-form label-width="80px"  size='mini'>
+               <el-form-item label="客户名称:">
+                   <el-input  v-model="customerValue.name" disabled></el-input>
+               </el-form-item>
+                <el-form-item label="客户地址:">
+                   <el-input  v-model="customerValue.address" disabled></el-input>
+               </el-form-item>
+               <el-form-item label="联系人:">
+                   <el-input  v-model="customerValue.contact" disabled></el-input>
+               </el-form-item>
+                <el-form-item label="联系号码:">
+                   <el-input  v-model="customerValue.contactNumber" disabled></el-input>
+               </el-form-item>
+               <el-form-item label="月度:">
+                  <el-date-picker
+                    v-model="customerValue.dgTime"
+                    type="month"
+                    format="yyyy-MM"
+                    value-format='yyyy-MM'
+                    placeholder="选择月">
+                  </el-date-picker>
+               </el-form-item>
+                 
+           </el-form> 
+           </div>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="customerShow = false">取 消</el-button>
+                <el-button type="primary" @click="generate">生产月度对账单</el-button>
+            </span>
+        </el-dialog>
 	</div>
 </template>
 
 <script>
-import {updataCustomer,customerDetail,deleteCustomer,customerList} from '@/api/customer'
+import {updataCustomer,customerDetail,deleteCustomer,customerList,exportSOA} from '@/api/customer'
+import {downFile} from '@/utils'
 
 let addItemInfo = {
  contact:'',contactNumber:'',name:'',address:''
@@ -130,6 +155,25 @@ let addItemInfo = {
       // this.loading = false;
     },
     methods: {
+      generate(){
+        if(this.customerValue.dgTime){
+      let url = `http://wearewwx.com:8080/dg/exportSOA?customerId=${this.customerValue.id}&dgTime=${this.customerValue.dgTime}`
+      downFile(url);
+        }else{
+         this.$message.warning("请选择需要的月份")
+        } 
+        // console.log(this.customerValue)
+        
+      },
+      customerInfo(item){
+        this.customerValue = {...item};
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth()+1
+        this.customerValue.dgTime = `${year}-${month}`
+        this.customerShow = true;
+
+      },
       addClose(){
         this.$confirm('取消新增, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -252,6 +296,8 @@ let addItemInfo = {
         customerChange:false,
         addItemInfo:{
         },
+        customerShow:false,
+        customerValue:{},
         list:[],
         treeData:[],
       };

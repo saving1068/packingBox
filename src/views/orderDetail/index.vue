@@ -192,7 +192,10 @@ export default {
         closeDialog(value){
             console.log(value)
             if(value){
-                this.dialogVisible = false;
+            let url = `http://wearewwx.com:8080/purchase/export?id=${this.orderInfo.id}`
+            downFile(url);
+            this.dialogVisible = false;
+            
              this.$router.push({
                  name:"purchaseHandler"
              })       

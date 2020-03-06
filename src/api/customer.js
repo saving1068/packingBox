@@ -29,5 +29,13 @@ const updataCustomer = (params) => { //修改角色
         data:params
     });
 }
+const exportSOA  = (params) => { //角色详情
+    return request({
+        url: 'dg/exportSOA',
+        method: 'GET',
+        params
+    });
+}
 
-export {updataCustomer,customerDetail,deleteCustomer,customerList}
+
+export {updataCustomer,customerDetail,deleteCustomer,customerList,exportSOA}

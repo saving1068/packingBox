@@ -141,8 +141,9 @@ let addItemInfo = {
       },
       addSure(){
          console.log(this.$refs.tree.getCheckedNodes(),2222)
-        let tips = this.addItemInfo.id?'是否确认修改角色?':'是否确认新增角色?';
-            let success = this.addItemInfo.id?'修改角色成功':'新增角色成功';
+         console.log(this.addItemInfo)
+        let tips = this.addItemInfo.roleId?'是否确认修改角色?':'是否确认新增角色?';
+            let success = this.addItemInfo.roleId?'修改角色成功':'新增角色成功';
             this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -237,28 +238,60 @@ let addItemInfo = {
             console.log(item)
            let res =  await roleDetail({id:item.roleId})
            let perList = [];
-          //  let pList = this.resetList(res.data.perList);
-          //  console.log(pList)
-          //  pList.forEach(item=>{
-          //    item.children.forEach(sItem=>{
-
-          //    })
-          //  })
-          // let menuList = [];
-          // this.initMenuList.forEach(item =>{
-          //   if(item.children){
-          //     item.children.forEach(sitem=>{
-          //         menuList.push(sitem.id)
-          //     })
-          //   } 
-          //   menuList.push(item.id)
-          // })
-          // console.log(menuList)
+          let menuList = [];//全部角色
+          let contrastList = [];//全部角色
+          this.initMenuList.forEach(item =>{
+            if(item.children){
+              item.children.forEach(sitem=>{
+                  menuList.push(sitem.id);
+                  contrastList.push(sitem);
+              })
+            } 
+            menuList.push(item.id);
+            contrastList.push(item)
+          })
+         
           // debugger
-           res.data.perList.forEach(item =>{
+           res.data.perList.forEach(item =>{//当前角色的
              perList.push(item.id)
            })
 
+          let otherArr = [...menuList,...perList].filter((item,index,arr)=>{//当前角色和全包角色中找出没选中的
+            return arr.indexOf(item) == arr.lastIndexOf(item)
+          })
+        
+          let notCArr = [];//没选中
+          otherArr.forEach((item,index)=>{
+            contrastList.find((sItem)=>{
+              // console.log(sItem,item);
+              if(sItem.id == item){
+                notCArr.push(sItem)
+              }
+            })//找出没选择的内容
+            
+          })
+           console.log('notCArr:',notCArr,'otherArr:',otherArr)
+          notCArr.forEach((item,index)=>{
+            let notIndex= perList.findIndex(sItem =>sItem == item.pid);
+            perList.splice(notIndex,1)
+            console.log(notIndex)
+            // perList.findIndex((sItem,sIndex)=>{
+            //   // console.log(sItem,item.pid)
+            //   if(item.pid == sItem){
+            //     // console.log(sIndex)
+            //     perList.splice(sIndex,1)
+            //     console.log(perList,'perList')
+            //   }
+            // });
+            
+            
+          })
+         
+          console.log(perList,'perList')
+          
+
+         
+// debugger
 
             this.itemPowerList = perList;
             console.log(this.itemPowerList,'itemPowerList')

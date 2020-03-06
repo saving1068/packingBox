@@ -195,7 +195,9 @@ import chargingList from '@/components/chargingList'
         res.data.map(item =>{
           item.progress = isNaN(((Number(item.intoTheCargo)/Number(item.pcCount)*100).toFixed(3)/1))?0:((Number(item.intoTheCargo)/Number(item.pcCount)*100).toFixed(3)/1);
           console.log(item.mtId,"mtid")
-
+          item.mtHeight = item.mtHeight?item.mtHeight:"--/"
+          item.mtWidth = item.mtWidth?item.mtWidth:"--/"
+          item.mtLength = item.mtLength?item.mtLength:"--/"
         })
         
        this.total = res.total;

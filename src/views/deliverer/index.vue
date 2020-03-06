@@ -3,19 +3,47 @@
     <div class="search center">
       <el-form inline size="mini">
         <el-form-item label="送货人">
-          <el-input
-            clearable
-            size="mini"
-            placeholder="请输入内容"
-            v-model="searchValue.dgMan"
-          >
-         
-        </el-input>
+          <el-select v-model="searchValue.dgMan" placeholder="请选择">
+            <el-option
+              v-for="item in merchandiserList"
+              :key="item.id"
+              :label="item.contactName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="客户名称">
+          <el-select v-model="searchValue.customerId" placeholder="请选择">
+            <el-option
+              v-for="item in customerList"
+              :key="item.id"
+              :label="item.contact"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+
+        </el-form-item>
+        <el-form-item label="送货时间">
+           <el-date-picker
+            @change="dgTime"
+            v-model="dgTimeValue"
+            type="daterange"
+            range-separator="至"
+             value-format='yyyy-MM-dd'
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+          <!-- <el-date-picker
+            v-model="searchValue.dgTime"
+            type="date"
+            value-format='yyyy-mm-dd'
+            placeholder="选择日期">
+          </el-date-picker> -->
         </el-form-item>
       </el-form>
     </div>
     <div class="center">
-        <el-button type="primary"  @click="getList">查询</el-button>
+        <el-button type="primary" :loading="dialogVisible" @click="search">查询</el-button>
       </div>
     <div class="table">
       <el-table :data="tableData" fit >
@@ -23,7 +51,7 @@
         <!-- <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
         <el-table-column prop="dgTime" align='center' label="送货时间"></el-table-column>
-         <el-table-column prop="customerName" align='center' label="客户名称" width="180"></el-table-column>
+         <el-table-column prop="customerName" align='center' label="客户名称"></el-table-column>
         <!-- <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column> -->
         <!-- <el-table-column prop="odSetdate" align='center' label="订单日期"></el-table-column> -->
         <el-table-column prop="serialNumber" align='center' label="流水号"></el-table-column>
@@ -41,6 +69,12 @@
               size="mini">
               修改
             </el-button> -->
+             <el-button
+              @click.native.prevent="getDetail(scope.row)"
+              type="text"
+              size="mini">
+              详情
+            </el-button>
             <el-popover
               placement="top"
               width="160"
@@ -68,7 +102,74 @@
     </div>
 
 
-    <!-- 排产 -->
+    <!-- 送货单 -->
+    <el-dialog
+      title="送货单"
+      center
+      :visible.sync="dialogVisible"
+      width="80%"
+      >
+        
+      <el-table :data="searchData.data" fit >
+        <el-table-column prop="dgMan" align='center' label="送货人" ></el-table-column>
+        <el-table-column prop="dgTime" align='center' label="送货时间"></el-table-column>
+        <el-table-column prop="customerName" align='center' label="客户名称"></el-table-column>
+        <el-table-column prop="serialNumber" align='center' label="流水号"></el-table-column>
+        <el-table-column prop="money" align='center' label="金额"></el-table-column>
+        <el-table-column prop="createTime" align='center' label="创建时间"></el-table-column>
+      </el-table>
+      <div class="totalMoney">
+        总价:{{searchData.totalMoney?searchData.totalMoney:0}}元
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false,searchData={}">关闭</el-button>
+      </span>
+    </el-dialog>
+
+
+    <!-- 送货单详情 -->
+    <el-dialog
+      title="送货单"
+      center
+      :visible.sync="detailShow"
+      width="80%"
+      >
+        <el-form inline label-width="180px">
+          <el-form-item label="送货人">
+            <span>{{detail.dgMan}}</span>
+          </el-form-item>
+          <el-form-item label="送货时间">
+            <span>{{detail.dgTime}}</span>
+          </el-form-item>
+          <el-form-item label="客户名称">
+            <span>{{detail.customerName}}</span>
+          </el-form-item>
+          <el-form-item label="流水号">
+            <span>{{detail.serialNumber}}</span>
+          </el-form-item>
+          <el-form-item label="金额(元)" >
+            <span>{{detail.money}}</span>
+          </el-form-item>
+        </el-form>
+        <div class="center" style="padding:10px 0;line-height: 24px;
+    font-size: 18px;
+    color: #303133;">送货单信息</div>
+        <div class="center" style="padding:0 100px;">
+           <el-table :data="detail.list" fit>
+              <el-table-column prop="odName" align='center' width="180" label="订单名称"></el-table-column>
+              <el-table-column prop="ctContractNumber" align='center' label="客户合同编号"></el-table-column>
+              <el-table-column prop="contractNumber" align='center' label="合同编号"></el-table-column>
+              <el-table-column prop="productGuige" align='center' label="规格"></el-table-column>
+              <el-table-column prop="unitPrice" align='center' label="单价" ></el-table-column>
+              <el-table-column prop="count" align='center' label="数量" ></el-table-column>
+              <el-table-column prop="money" align='center' label="金额(元)"></el-table-column>
+            </el-table>
+        </div>
+         
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="detailShow = false,detail={}">关闭</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -82,16 +183,24 @@ export default {
     return {
       searchValue:{
           dgMan:'',
-        pdName:"",serialNumber:'',
-        customer:"",merchandiser:"",
-        odFinishdateBegin:'',odFinishdateEnd:"",
-        page:1,limit:10
+          customerId:'',
+          dgTimeStart:"",
+          dgTimeEnd:"",
       },
+      dialogVisible:false,
       customerList:[],
+      dgTimeValue:'',
       merchandiserList:[],
-      detevalue:'',
       loading:false,
       tableData: [],
+      searchData:{
+        data:[],
+        totalMoney:0
+      },
+      detail:{
+
+      },
+      detailShow:false,
       total:0,
       delLoading:false
 
@@ -102,6 +211,21 @@ export default {
     
   },
   methods:{
+    async getDetail(item){
+      
+      let res = await delierDetail({id:item.id})
+      this.detailShow = true;
+      this.detail = res.data; 
+      console.log(res)
+    },
+    async search(){
+     
+       this.dialogVisible = true;
+      let res = await delierList(this.searchValue);
+     
+      this.searchData = res;
+      console.log(this.searchData,'111111111111')
+    },
     goToDetail(item){
       console.log(item)
       this.$router.push({
@@ -131,8 +255,11 @@ export default {
 
     async getList(){
       try {
-        
-        let res = await delierList(this.searchValue);
+        let obj = {
+          limit:10,
+          page:1,
+        }
+        let res = await delierList(obj);
         this.tableData = res.data;
         console.log(this.tableData)
         this.total = res.total;
@@ -154,10 +281,16 @@ export default {
         
       }
     },
-    deteChange(value){
+    dgTime(value){
       console.log(value)
-      this.searchValue.odFinishdateBegin = value[0];
-      this.searchValue.odFinishdateEnd =  value[1];
+      if(value){
+        this.searchValue.dgTimeStart = value[0];
+      this.searchValue.dgTimeEnd =  value[1];
+      }else{
+        this.searchValue.dgTimeStart = '';
+      this.searchValue.dgTimeEnd =  '';
+      }
+      
     },
      handleClose(done) {
         this.$confirm('确认关闭？')
@@ -180,6 +313,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.totalMoney{
+  display: flex;
+  justify-content: flex-end;
+  font-size: 28px;
+  line-height: 28px;
+  padding-top:10px;
+}
 .search {
   // display: flex;
   // justify-content: space-around;

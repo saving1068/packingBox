@@ -1440,7 +1440,8 @@ export default {
       //  console.log(this.basicData.paperCount,this.paperNum,"sadasdasdasdsa")
       psCostBase = paperNum.value.split("/")[1]; //加工费计费基准
       psUnitPrice = (Number(psCostBase) * Number(area)).toFixed(3) / 1; //加工单价
-      psCost = (psUnitPrice * psCount).toFixed(3) / 1; //人工费用
+      psCost = this.processingCost.psCost
+      // psCost = (psUnitPrice * psCount).toFixed(3) / 1; //人工费用
       this.processingCost = {
         area,
         psCount,
