@@ -89,6 +89,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
+         <el-form-item label="备注:" >
+           <el-input type="textarea"  style="width:500px" :rows="2"  resize='none' v-model="basicData.remark" placeholder="请输入"></el-input>
+        </el-form-item>
         <el-form-item class="form-inline">
           <!-- <el-select v-model="basicData.printingHandle" placeholder="请选择">
                 <el-option
@@ -511,7 +514,8 @@ export default {
         maters: [], //订单材料 坑子and 面子
         processcosts: [], //订单费用,
         totalCost: 0,
-        id: "" //订单id
+        id: "", //订单id
+        remark:''
       },
       boxTypeList: [],
       tappingList: [], //加工工序

@@ -102,7 +102,7 @@
       </div>
       <div class="center" >
               <el-button type="primary" @click="showDialog">采购</el-button>
-              <el-button type='warning' @click="excel">导出订单</el-button>
+              <!-- <el-button type='warning' @click="excel">导出订单</el-button> -->
                <el-button type='info' @click="print">导出印刷单</el-button>
                <el-button @click="goBack">返回</el-button>
         </div>   

@@ -12,7 +12,7 @@
          
         </el-input>
         </el-form-item>
-        <el-form-item label="订单流水号">
+        <!-- <el-form-item label="订单流水号">
           <el-input
             clearable
             size="mini"
@@ -22,7 +22,7 @@
           
         </el-input>
         
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="合同编号">
           <el-input
             clearable
@@ -35,12 +35,12 @@
         
         </el-form-item>
         <el-form-item label="订单状态:" class="form-inline">
-        <el-select v-model="searchValue.finishStatus" placeholder="请选择">
+        <el-select v-model="searchValue.finishStatus" placeholder="请选择" clearable>
           <el-option v-for="item in orderStatus" :key="item.key" :label="item.value" :value="item.key"></el-option>
         </el-select>
       </el-form-item>
         <el-form-item label="客户">
-          <el-select v-model="searchValue.customerId" placeholder="请选择">
+          <el-select v-model="searchValue.customerId" placeholder="请选择" clearable>
             <el-option
               v-for="item in customerList"
               :key="item.id"
@@ -50,7 +50,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="跟单员">
-          <el-select v-model="searchValue.merchandiserId" placeholder="请选择">
+          <el-select v-model="searchValue.merchandiserId" placeholder="请选择" clearable>
             <el-option
               v-for="item in merchandiserList"
               :key="item.id"
@@ -70,35 +70,50 @@
               end-placeholder="结束日期">
             </el-date-picker>
         </el-form-item>
+        <el-form-item label="订单总成本(元)">
+          <div  style="width:195px">{{this.statistics.totalCost}}</div>
+        </el-form-item>
+        <el-form-item label="订单总金额(元)">
+          <div  style="width:195px">{{this.statistics.totalMoney}}</div>
+        </el-form-item>
+         <el-form-item label="合同总数量" >
+          <div style="width:195px">{{total}}单</div>
+        </el-form-item>
       </el-form>
     </div>
     <div class="center">
-        <el-button type="primary"  @click="getList">查询</el-button>
+        <el-button type="primary"  @click="initData">查询</el-button>
+        <el-button type="warning"  @click="exportOrder">导出订单</el-button>
       </div>
     <div class="table">
-      <el-table :data="tableData" fit >
+      <el-table :data="tableData" fit  tooltip-effect="dark" v-el-table-infinite-scroll="load" height='500' @selection-change="handleSelectionChange">
+         <el-table-column
+          type="selection"
+          width="55">
+        </el-table-column>
         <el-table-column prop="odName" align='center' label="名称" width="180"></el-table-column>
-        <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column>
+        <el-table-column prop="contractNumber" align='center' label="合同编号" width="180"></el-table-column>
         <el-table-column prop="customer" align='center' label="客户"></el-table-column>
         <el-table-column prop="odCount" align='center' label="数量"></el-table-column>
         <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column>
+        <el-table-column prop="totalCost" align='center' label="订单成本(元)"></el-table-column>
         <el-table-column prop="odSetdate" align='center' label="订单日期"></el-table-column>
         <el-table-column prop="odFinishdate" align='center' label="交货日期"></el-table-column>
         <el-table-column prop="createTime" align='center' label="创建日期"></el-table-column>
         <el-table-column prop="merchandiser" align='center' label="跟单员"></el-table-column>
-        <el-table-column prop="createAuthor" align='center' label="发起人"></el-table-column>
+        <!-- <el-table-column prop="createAuthor" align='center' label="发起人"></el-table-column> -->
 
         <el-table-column prop="finishStatusStr" align='center' label="订单状态">
        
         </el-table-column>
         <el-table-column align='center' label="操作">
           <template slot-scope="scope">
-            <el-button
+            <!-- <el-button
               @click.native.prevent="excel(scope.row)"
               type="text"
               size="mini">
               导出订单
-            </el-button>
+            </el-button> -->
             <el-popover
               placement="top"
               width="160"
@@ -236,6 +251,7 @@
 </template>
 
 <script>
+import elTableInfiniteScroll from 'el-table-infinite-scroll';
 import {orderDetail,
     deleteOrder,
     orderList,updataOrder} from '@/api/order'
@@ -262,7 +278,9 @@ import {orderDetail,
       import {exportExcel,dictApi,idChangeStr,downFile} from '@/utils'
 
 export default {
-  
+  directives: {
+    'el-table-infinite-scroll': elTableInfiniteScroll
+  },
   data() {
     return {
       searchValue:{
@@ -275,7 +293,7 @@ export default {
       loading:false,
       detevalue: "",
       tableData: [],
-      total:0,
+      total:1,
       merchandiserList:[],
       orderStatus:[],
       customerList:[],
@@ -291,8 +309,11 @@ export default {
         pdFinishTime:'',
         pdTime:"",
         pdUserId:'',
-        workerCount:0
-      }
+        workerCount:0,
+       
+      },
+       statistics:{},
+      select:[],
     };
   },
   async created(){
@@ -300,6 +321,33 @@ export default {
     
   },
   methods:{
+    initData(){
+         this.searchValue.page =1;
+         this.tableData = [];
+         this.getList();
+    },
+    load(){
+      this.searchValue.page++;
+      this.getList();
+    },
+    exportOrder(){
+      if(this.select.length){
+        let list = [];
+        this.select.forEach(item =>{
+          list.push(item.id);
+        })
+      list = list.join(",");
+      console.log(list)
+      let url = `http://wearewwx.com:8080/order/exportExcel?ids=${list}`;
+      downFile(url);
+      }else{
+        this.$message.warning('请选择导出的订单')
+      }
+    },
+    handleSelectionChange(val){
+      this.select = val;
+      // console.log(val)
+    },
     excel(item){
       let url = `http://wearewwx.com:8080/order/exportExcel?id=${item.id}`
        let type = `${item.odName}.xls`
@@ -397,16 +445,24 @@ export default {
       try {
         this.loading = true;
         let res = await orderList(this.searchValue);
-        res.data.map((item)=>{
-          item.visible = false;
-          item.visibleF = false;
-          item.finishStatusStr= idChangeStr(this.orderStatus,item.finishStatus)
-        })
-        
-        this.tableData = res.data;
-        console.log(this.tableData)
-        this.total = res.total;
-        this.loading =false;
+        if(this.tableData.length <this.total){
+           res.data.map((item)=>{
+            item.visible = false;
+            item.visibleF = false;
+            item.finishStatusStr= idChangeStr(this.orderStatus,item.finishStatus)
+             this.tableData.push(item)
+          })
+          
+          // this.tableData = res.data;
+          this.statistics = res.statistics;
+          console.log(this.tableData)
+          this.total = res.total;
+          this.loading =false;
+        }else{
+          this.$message.warning('已经是最后一组数据了')
+          this.loading =false;
+        }
+       
       } catch (error) {
         console.log(error)
       }
@@ -425,8 +481,14 @@ export default {
     },
     deteChange(value){
       console.log(value)
-      this.searchValue.odFinishdateBegin = value[0];
+      if(value){
+        this.searchValue.odFinishdateBegin = value[0];
       this.searchValue.odFinishdateEnd =  value[1];
+      }else{
+         this.searchValue.odFinishdateBegin = '';
+      this.searchValue.odFinishdateEnd =  '';
+      }
+      
     },
      handleClose(done) {
         this.$confirm('确认关闭？')

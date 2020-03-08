@@ -88,7 +88,7 @@
             <el-option
               v-for="item in supplier"
               :key="item.id"
-              :label="item.contact"
+              :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
