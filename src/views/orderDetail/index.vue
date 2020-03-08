@@ -11,6 +11,7 @@
         <el-form-item label="客户:"><span class="form-item-width">{{orderInfo.customer}}</span></el-form-item>
         <el-form-item label="订单日期:"><span class="form-item-width">{{orderInfo.odSetdate}}</span></el-form-item>
         <el-form-item label="交货日期:"><span class="form-item-width">{{orderInfo.odFinishdate}}</span></el-form-item>
+         <el-form-item label="订单备注:"><span class="form-item-width">{{orderInfo.remake}}</span></el-form-item>
       </el-form>
       <el-form inline :model="orderInfo"  label-width="150px">
         <el-form-item label="箱型:"><span class="form-item-width">{{orderInfo.caseName}}</span></el-form-item>

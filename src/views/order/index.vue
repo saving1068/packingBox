@@ -160,14 +160,14 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
+      <!-- <el-pagination
         style="padding-top:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :page-size="10"
         layout="total, prev, pager, next"
         :total="total">
-    </el-pagination>
+    </el-pagination> -->
     </div>
 
 

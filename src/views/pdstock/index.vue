@@ -149,14 +149,14 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="送货时间">
+        <el-form-item label="送货时间">
           <el-date-picker
            v-model="select.dgTime"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="选择日期">
           </el-date-picker>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="总价(元)">
           {{select.money}}
         </el-form-item>
@@ -283,6 +283,9 @@ export default {
           return this.$message.warning('出库数量不能为0')
         }
       }
+      if(!this.select.dgTime&&!this.select.dgMan){
+              return this.$message.warning('请填写送货时间和送货人')
+            }
       try {
             this.$confirm('是否确定生成送货单', '提示', {
               confirmButtonText: '确定',
@@ -299,6 +302,7 @@ export default {
               }
               list.push(obj)
             })
+            
             this.select.list = list;
             this.select.customerId = this.selection[0].customerId;
            
