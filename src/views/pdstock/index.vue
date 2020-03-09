@@ -139,6 +139,9 @@
       fit
       :before-close="handleClose">
       <el-form inline label-width="100px" >
+         <el-form-item >
+         <el-button type="warning" @click="addPd">新增</el-button>
+        </el-form-item>
         <el-form-item label="送货人">
           <el-select v-model="select.dgMan" placeholder="请选择">
             <el-option
@@ -157,6 +160,7 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
+       
         <el-form-item label="总价(元)">
           {{select.money}}
         </el-form-item>
@@ -169,12 +173,12 @@
       style="width: 100%">
       <el-table-column
         prop="pdName"
-        label="成品名称"
+        label="产品名称"
         >
       </el-table-column>
       <el-table-column
-        prop="contractNumber"
-        label="客户合同"
+        prop="pdGuige"
+        label="型号规格"
        >
       </el-table-column>
       <el-table-column
@@ -189,17 +193,62 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="pdUnitPrice"
+        prop="pdMoney"
         label="总价(元)">
         <template slot-scope="scope">
-          {{scope.row.allPlace}}
+          <!-- {{scope.row.allPlace}} -->
            <el-input placeholder="请输入总价" v-model.number="scope.row.pdMoney"></el-input>
         </template>
       </el-table-column>
+      <el-table-column
+        prop="unit"
+        label="单位">
+        <template slot-scope="scope">
+          <!-- {{scope.row.allPlace}} -->
+           <el-input placeholder="请输入单位" v-model.number="scope.row.unit"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作">
+        <template slot-scope="scope">
+          {{scope.row.odId}}
+            <span v-if="scope.row.odId">--/</span>
+            <el-button  @click="delectAdd(scope.$index)" v-else type="text">删除</el-button>
+        </template>
+      </el-table-column>
+      
     </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="sureSelect">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="新增" :visible.sync="ifAdd">
+        <el-form label-width="100px" >
+         <el-form-item label="产品名称">
+           <el-input v-model="addPdInfo.pdName" placeholder="请输入产品名称"></el-input>
+        </el-form-item>
+        <el-form-item label="型号规格">
+           <el-input v-model="addPdInfo.pdGuige" placeholder="请输入型号规格"></el-input>
+        </el-form-item>
+        <el-form-item label="数量" >
+           <el-input v-model.number="addPdInfo.stCount"  @input="addInputCount" placeholder="请输入数量"></el-input>
+        </el-form-item>
+        <el-form-item label="单价(元)" >
+           <el-input v-model.number="addPdInfo.pdUnitPrice" @input="addInputPrice" placeholder="请输入单价"></el-input>
+        </el-form-item>
+        <el-form-item label="金额(元)">
+           <el-input v-model.number="addPdInfo.pdMoney" placeholder="请输入产品名称"></el-input>
+        </el-form-item>
+        <el-form-item label="单位">
+           <el-input v-model="addPdInfo.unit" placeholder="请输入单位"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelAdd">取 消</el-button>
+        <el-button type="primary" @click="suerAdd">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -217,6 +266,14 @@ import {updataPdstock,
    import goodsHistory from '@/components/goodsHistory'
    import {downFile} from '@/utils'
     import {customerList} from '@/api/customer'
+    let addPdInfo = {
+      stCount:0,
+      pdMoney:0,
+      pdUnitPrice:0,
+      pdGuige:'',
+      pdName:'',
+      unit:'个',
+    }
 export default {
    components:{
     goodsHistory
@@ -270,6 +327,8 @@ export default {
       selecDia:false,
       selecIndex:0,
       deliverer:[],
+      ifAdd:false,
+      addPdInfo:{}
     };
   },
   async created(){
@@ -277,6 +336,58 @@ export default {
     
   },
   methods:{
+    delectAdd(index){
+       this.$confirm('是否确定删除该条数据', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.selection.splice(index,1)
+            }).catch(() => {
+                    
+            });
+      
+    },
+    addInputCount(value){
+      let money = (Number(this.addPdInfo.pdUnitPrice)*Number(value)).toFixed(3)
+      this.addPdInfo.pdMoney = isNaN(money)?0:money
+
+    },
+    addInputPrice(value){
+       let money = (Number(value)*Number(this.addPdInfo.stCount)).toFixed(3);
+      this.addPdInfo.pdMoney = isNaN(money)?0:money
+
+    },
+    suerAdd(){
+      console.log(this.addPdInfo)
+      this.$confirm('是否确定新增', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+             
+              this.selection.push(this.addPdInfo);
+               this.ifAdd = false;
+            }).catch(() => {
+                    
+            });
+    },
+    cancelAdd(){
+      this.$confirm('是否确定取消新增', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.ifAdd = false;
+            }).catch(() => {
+                    
+            });
+      
+    },
+    addPd(){
+      this.addPdInfo = {...addPdInfo};
+      this.ifAdd = true;
+    },
     async sureSelect(){
       for(let i=0;i<this.selection.length;i++){
         if(this.selection[i].stCount == 0){
@@ -298,7 +409,10 @@ export default {
                 odId:item.odId,
                 count:item.stCount,
                 money:item.pdMoney,
-                unitPrice:item.pdUnitPrice
+                unitPrice:item.pdUnitPrice,
+                model:item.pdGuige,
+                pdName:item.pdName,
+                unit:item.unit,
               }
               list.push(obj)
             })
@@ -308,8 +422,12 @@ export default {
            
             let res = await updataDelier(this.select);
              let url = `http://wearewwx.com:8080/dg/export?id=${res.data}`
-           
             downFile(url);
+            this.selection.forEach((item,index)=>{
+               if(!item.odId){
+                 this.selection.splice(index,1);
+               }
+            })
             this.getList()
             this.selecDia = false;
             }).catch(() => {
@@ -360,6 +478,7 @@ export default {
     selectionChange(selection){
       selection.map(item =>{
         item.pdMoney = (Number(item.pdUnitPrice)*Number(item.stCount)).toFixed(3);
+        item.unit = '个';
       })
       this.selection = selection;
       console.log(selection)

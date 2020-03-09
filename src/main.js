@@ -11,6 +11,24 @@ import './icons'
 import Loading from '@/components/Loading'
 
 
+Vue.directive('loadmore', {
+  bind(el, binding) {
+    
+    const selectWrap = el.querySelector('.el-table__body-wrapper')
+    selectWrap.addEventListener('scroll', function() {
+      let sign = 0;
+    
+      // console.log(this.scrollWidth,this.clientWidth,this)
+      const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
+      if (scrollDistance <= sign&&!this.scrollLeft) {
+        binding.value()
+      }
+    })
+  }
+})
+
+
+
 
 Vue.config.productionTip = false;
 

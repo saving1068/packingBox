@@ -154,15 +154,16 @@
         <div class="center" style="padding:10px 0;line-height: 24px;
     font-size: 18px;
     color: #303133;">送货单信息</div>
-        <div class="center" style="padding:0 100px;">
+        <div class="center" style="padding:0 90px;">
            <el-table :data="detail.list" fit>
-              <el-table-column prop="odName" align='center' width="180" label="订单名称"></el-table-column>
+              <el-table-column prop="pdName" align='center'  label="订单名称"></el-table-column>
               <el-table-column prop="ctContractNumber" align='center' label="客户合同编号"></el-table-column>
               <el-table-column prop="contractNumber" align='center' label="合同编号"></el-table-column>
-              <el-table-column prop="productGuige" align='center' label="规格"></el-table-column>
-              <el-table-column prop="unitPrice" align='center' label="单价" ></el-table-column>
+              <el-table-column prop="model" align='center' label="规格"></el-table-column>
+              <el-table-column prop="unitPrice" align='center' label="单价(元)" ></el-table-column>
               <el-table-column prop="count" align='center' label="数量" ></el-table-column>
               <el-table-column prop="money" align='center' label="金额(元)"></el-table-column>
+              <el-table-column prop="unit" align='center' label="单位"></el-table-column>
             </el-table>
         </div>
          
@@ -215,7 +216,12 @@ export default {
       
       let res = await delierDetail({id:item.id})
       this.detailShow = true;
+      res.data.list.map((sitem)=>{
+        sitem.ctContractNumber=sitem.ctContractNumber?sitem.ctContractNumber:'--/'
+        sitem.contractNumber=sitem.contractNumber?sitem.contractNumber:'--/'
+      })
       this.detail = res.data; 
+
       console.log(res)
     },
     async search(){
