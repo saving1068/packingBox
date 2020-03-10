@@ -48,7 +48,7 @@
     <div class="table">
       <el-table :data="tableData" fit >
          <el-table-column prop="dgMan" align='center' label="送货人" ></el-table-column>
-        <!-- <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column> -->
+        <!-- <el-table-column prop="serialNumber" align='center' label="流水号" ''></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
         <el-table-column prop="dgTime" align='center' label="送货时间"></el-table-column>
          <el-table-column prop="customerName" align='center' label="客户名称"></el-table-column>

@@ -1,11 +1,11 @@
 <template>
 	  <el-container style="padding:20px 20px;">
 		 
-			<el-aside width='200px'>
+			<el-aside width='190px'>
 				<nav-bar></nav-bar>
 			</el-aside>
 		
-	    <el-main style="background:#eef1f6;padding:0 0 0 20px;min-width:1200px;">
+	    <el-main style="background:#eef1f6;padding:0 0 0 20px;min-width:1135px;">
 			<el-header style="background:#fff;"> 
 				<myhead></myhead>	
 			</el-header>

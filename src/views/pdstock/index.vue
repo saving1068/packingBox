@@ -50,8 +50,8 @@
       width="55">
     </el-table-column>
         <el-table-column prop="pdName" align='center' label="成品名称" ></el-table-column>
-        <el-table-column prop="odSerialNumber" align='center' label="成品编号" width="180"></el-table-column>
-        <el-table-column prop="customerName" align='center' label="客户名称" width="180"></el-table-column>
+        <el-table-column prop="odSerialNumber" align='center' label="成品编号"  ></el-table-column>
+        <el-table-column prop="customerName" align='center' label="客户名称"  ></el-table-column>
         <el-table-column prop="stCount" align='center' label="库存数量"></el-table-column>
         <el-table-column prop="alreadyOutCount" align='center' label="已出库数量"></el-table-column>
         <el-table-column prop="pdUnitPrice" align='center' label="成品单价"></el-table-column>

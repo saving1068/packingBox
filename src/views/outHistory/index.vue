@@ -21,7 +21,7 @@
     <div class="table">
       <el-table :data="tableData" fit >
         <el-table-column prop="pdName" align='center' label="名称" ></el-table-column>
-        <!-- <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column> -->
+        <!-- <el-table-column prop="serialNumber" align='center' label="流水号"  ></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
        
         <el-table-column  prop="osCount" align='center' label="出库数量"></el-table-column>

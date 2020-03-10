@@ -91,8 +91,8 @@
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column prop="odName" align='center' label="名称" width="180"></el-table-column>
-        <el-table-column prop="contractNumber" align='center' label="合同编号" width="180"></el-table-column>
+        <el-table-column prop="odName" align='center' label="名称" ></el-table-column>
+        <el-table-column prop="contractNumber" align='center' label="合同编号"  ></el-table-column>
         <el-table-column prop="customer" align='center' label="客户"></el-table-column>
         <el-table-column prop="odCount" align='center' label="数量"></el-table-column>
         <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column>

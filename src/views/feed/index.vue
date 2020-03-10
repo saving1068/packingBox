@@ -21,7 +21,7 @@
     <div class="table">
       <el-table :data="tableData" fit >
          <el-table-column prop="pdName" align='center' label="订单名称" ></el-table-column>
-        <!-- <el-table-column prop="serialNumber" align='center' label="流水号" width="180"></el-table-column> -->
+        <!-- <el-table-column prop="serialNumber" align='center' label="流水号"  ></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
         <el-table-column prop="fdCount" align='center' label="数量"></el-table-column>
         <!-- <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column> -->

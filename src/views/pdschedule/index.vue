@@ -62,7 +62,7 @@
     <div class="table">
       <el-table :data="tableData" fit >
         <el-table-column prop="odName" align='center' label="订单名称" ></el-table-column>
-        <el-table-column prop="odSerialNumber" align='center' label="订单编号" width="180"></el-table-column>
+        <el-table-column prop="odSerialNumber" align='center' label="订单编号"  ></el-table-column>
         <el-table-column prop="alreadyCount" align='center' label="已生产数量"></el-table-column>
         <el-table-column prop="createTime" align='center' label="排期日期"></el-table-column>
         <el-table-column prop="odSetdate" align='center' label="是否完成生产">
