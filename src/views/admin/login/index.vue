@@ -1,6 +1,6 @@
 <template>
 	<div class="login">
-		<div class="login-head">
+		<!-- <div class="login-head">
 			<div class="login-head__content flex justify-content-spacebetween align-items-center">
 				<div class="left">
 					<img class="img" src="@/assets/logo.png">
@@ -11,9 +11,10 @@
 				</div>
 				<div class="right"><span>欢迎登录</span></div>
 			</div>
-		</div>
+		</div> -->
+		<img class="backgroundImg" src="@/images/background.jpg" />
 		<div class="login-content">
-			<!-- <img src="@/assets/logo.png" /> -->
+			
 			<div class="login-wrap">
 				<ul class="nav">
 					<li :class="{current:tabIndex==0}" @click="tabChange(0)">账号登录</li>
@@ -22,13 +23,13 @@
 				<div class="userLogin" v-if="tabIndex==0">
 					<div class="infoBox">
 						<div class="infoInp">
-							<input type="text" v-model="loginForm.account" placeholder="输入登陆账号">
+							<el-input size="medium" prefix-icon="el-icon-user-solid" type="text" v-model="loginForm.account" placeholder="输入登陆账号"></el-input>
 						</div>
 						<div class="infoInp">
-							<input placeholder="输入密码" v-model="loginForm.password" type="password">
+							<el-input size="medium"  prefix-icon="el-icon-lock" placeholder="输入密码" v-model="loginForm.password" show-password></el-input>
 						</div>
-						<div class="infoInp center">
-							<input style="flex:1" placeholder="输入验证码" v-model="loginForm.verCode"  @keydown.enter="handleLogin">
+						<div class=" center" style="margin-top: 10px;">
+							<input class="infoInput" style="flex:1" placeholder="输入验证码" v-model="loginForm.verCode"  @keydown.enter="handleLogin">
 							<div class="verCode" @click="getCode">
 								<img :src="codeImage" alt="">
 							</div>
@@ -61,7 +62,7 @@
 			</div>
 		</div>
 
-		<canvas id="loginBackground"></canvas>
+		<!-- <canvas id="loginBackground"></canvas> -->
 	</div>
 </template>
 <script>
@@ -151,7 +152,7 @@
 		},
 		mounted() {
 			// this.initCanvas('#loginBackground')
-			this.setBg()
+			// this.setBg()
 			// debugger
 		},
 		methods: {
@@ -447,19 +448,31 @@
 				}
 			}
 		}
-
+		.backgroundImg{
+			top: 0;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+		}
 		.login-content {
-			position: relative;
+			position: absolute;
+			background: rgb(51,138,254);
 			height: 250px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			z-index: 10;
+			border-radius: 10px;
+			box-shadow:rgba(35,107,181,.6) 10px 10px 5px;
 			.login-wrap {
-				position: absolute;
-				top: 20%;
-				right: 10%;
+				// position: absolute;
+				// top: 20%;
+				// right: 10%;
 				width: 300px;
-				background: transparent;
-				border-radius: 15px;
+				// background: transparent;
+				
 				z-index: 10;
-				border: 1px solid #fff;
+				// border: 1px solid #fff;
 				padding: 20px 15px;
 
 				.nav {
@@ -470,20 +483,20 @@
 						color: #999999;
 						margin: 0 5px;
 						padding: 5px;
-						cursor: pointer;
+						// cursor: pointer;
 					}
 
 					.current {
-						color: #00cccc !important;
-						border-bottom: #00cccc 2px solid;
+						color: #fff !important;
+						border-bottom: #fff 2px solid;
 					}
 				}
 
 				.loginBtn {
 					width: 150px;
 					margin: 0 auto;
-					background: #00cccc;
-					color: #fff;
+					background: #fff;
+					color: rgb(41,151,255);
 					text-align: center;
 					line-height: 30px;
 					border-radius: 10px;
@@ -492,18 +505,21 @@
 				}
 
 				.infoBox {
-					.infoInp {
-						margin-top: 10px;
-						position: relative;
-
-						input {
+					.infoInput{
 							width: 100%;
 							height: 35px;
 							border-radius: 15px;
 							outline: none;
 							border: none;
 							padding: 0 10px;
-						}
+							
+					}
+					.infoInp {
+						margin-top: 10px;
+						position: relative;
+						border-radius: 15px;
+						overflow: hidden;
+						
 
 						.getCode {
 							position: absolute;

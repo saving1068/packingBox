@@ -5,10 +5,8 @@
       </div>
       
       <div class="data space-between">
-        
-            <!-- <ul class="data-list"> -->
-                <el-scrollbar >
-                    <el-table
+        <div class="table">
+            <el-table
                     :data="list"
                     fit
                     @row-click='showParent'
@@ -45,20 +43,24 @@
                         
                     </el-table-column>
                     </el-table>
+        </div>
+            <!-- <ul class="data-list"> -->
+                <!-- <el-scrollbar > -->
+                    
                <!-- <li class="item space-between" v-for="(item,index) in list" :key="index">
                    <div>{{item.name}}</div>
                    <div>{{item.sign}}</div>
                     <el-button type="primary" @click="ifChnageItem" size="mini">修改</el-button>
                     <el-button type="danger" size="mini">删除</el-button>
                 </li>  -->
-                 </el-scrollbar>
+                 <!-- </el-scrollbar> -->
             <!-- </ul> -->
        
         <div class="item-info" v-show="sonShow">
             <div class="btn">
                 <el-button type="primary" @click="ifItemAddValue()" icon="el-icon-edit">新增</el-button>
             </div>
-                <el-scrollbar >
+                <!-- <el-scrollbar > -->
                      <el-table
                     :data="sonList"
                      align="center"
@@ -89,7 +91,7 @@
                         </template>                
                     </el-table-column>
                     </el-table>
-                </el-scrollbar>
+                <!-- </el-scrollbar> -->
         </div>
       </div>
         <!-- 修改字典中的内容 -->
@@ -410,7 +412,7 @@ export default {
        
     }
     .data{
-        padding-top:20px; 
+         padding:20px; 
         min-width: 800px;
         .data-list{
            

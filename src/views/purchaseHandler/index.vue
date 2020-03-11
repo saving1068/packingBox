@@ -3,7 +3,7 @@
      
       <div class="data space-between">
         <div class="table">
-          <el-scrollbar >
+          <!-- <el-scrollbar > -->
                     <el-table
                     :data="datalist"
                     fit
@@ -84,14 +84,14 @@
                     </el-table-column>
                     </el-table>
                      <el-pagination
-                      style="padding-top:20px;"
+                      style=" padding:20px;"
                       @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
                       :page-size="10"
                       layout="total, prev, pager, next"
                       :total="total">
                   </el-pagination>
-                 </el-scrollbar>
+                 <!-- </el-scrollbar> -->
         </div>   
       </div>
       <!-- 采购单 -->

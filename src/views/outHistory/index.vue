@@ -58,7 +58,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
-        style="padding-top:20px;"
+        style=" padding:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :page-size="10"

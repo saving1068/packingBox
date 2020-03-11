@@ -146,6 +146,16 @@ div:focus{
        
     }
 }
+
+.el-aside{
+    overflow: hidden;
+}
+#scorll {
+    .el-scrollbar__wrap{
+        overflow: auto !important;
+        height: 100%;
+    }
+}
 .center{
 	display: flex;
 	justify-content: center;

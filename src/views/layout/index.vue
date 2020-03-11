@@ -1,20 +1,31 @@
 <template>
 	  <el-container style="padding:20px 20px;">
-		 
-			<el-aside width='190px'>
-				<nav-bar></nav-bar>
+		 <!-- <el-header style="background:#fff;"> 
+				<myhead></myhead>	
+			</el-header> -->
+		<!-- <el-container style="margin-top:20px;"> -->
+			<el-aside width='200px' :style="{'max-height':maxHeight+'px','background':'#fff'}">
+				<!-- <div :style="{'height':maxHeight+'px','width':'190px'}"> -->
+					<!-- <el-scrollbar id="scorll" :style='{"height":maxHeight+"px"}'> -->
+					<nav-bar :maxHeight='maxHeight'></nav-bar>
+					<!-- </el-scrollbar> -->
+				<!-- </div> -->
+				
 			</el-aside>
 		
-	    <el-main style="background:#eef1f6;padding:0 0 0 20px;min-width:1135px;">
+	    <el-main style="background:#eef1f6;padding:0 15px 0 20px;min-width:1125px;" :style="{'height':maxHeight+'px'}">
+			<el-scrollbar id="scorll" :style='{"height":maxHeight+"px"}'>
 			<el-header style="background:#fff;"> 
 				<myhead></myhead>	
 			</el-header>
 			<transition name="el-fade-in-linear">
-				<router-view  style="background:#fff;margin-top:20px;padding:20px;"/>
+				<router-view   style="background:#fff;padding:20px;margin-top:20px;"/>
 				
 			</transition>
-			
+			</el-scrollbar>
 		</el-main>
+		<!-- </el-container> -->
+			
 	  </el-container>
 <!-- <div class="warpBox">
 	<div class="nav">
@@ -35,7 +46,17 @@ export default {
   name: 'home',
   components: {
     navBar,myhead
-  }
+  },
+	mounted(){
+		let size = document.documentElement.clientHeight;
+		console.log(size);
+		this.maxHeight = Number(size)-40;
+	},
+	data(){
+		return{
+			maxHeight:0,
+		}
+	}
 }
 </script>
 <style scoped="scoped" lang="scss">

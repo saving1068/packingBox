@@ -5,7 +5,7 @@
       </div>
       <div class="data space-between">
         <div class="table">
-          <el-scrollbar >
+          <!-- <el-scrollbar > -->
                     <el-table
                     :data="list"
                     fit
@@ -61,7 +61,7 @@
                         
                     </el-table-column>
                     </el-table>
-                 </el-scrollbar>
+                 <!-- </el-scrollbar> -->
         </div>
         <!-- <div class="tree" v-show="sonShow">
           <el-tree

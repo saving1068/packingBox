@@ -2,8 +2,8 @@
 	<div class="warp">
 		
 			<div class="mine-info center">
-				<div class="image">
-					<img src="@/assets/logo.png" alt="">
+				<div class="image center" >
+					<i size="medium" class="el-icon-user-solid"></i>
 				</div>
 				<div class="info">
 					<div>彩雅包装</div>
@@ -11,8 +11,8 @@
 				</div>
 			</div>
 			
-				<div class="nav">
-					 <el-scrollbar style='max-height: 1200px;'>
+				<div class="nav" :style='{"height":maxHeight+"px"}'>
+					 <el-scrollbar id="scorll" :style='{"height":maxHeight-100+"px"}'>
 					<div class="nav-item " v-for="(item,index) in nav" 
 					:key='index' >
 						<div class='parent'  @click="goTo(item)">
@@ -48,6 +48,12 @@
 <script>
 import {userMenu} from '@/api/menu'
 	export default{
+		props:{
+			maxHeight:{
+				type:Number,
+				default:0
+			}
+		},
 		data(){
 			return{
 				nav:[
@@ -117,6 +123,7 @@ import {userMenu} from '@/api/menu'
 			}
 		},
 		async created() {
+			console.log(this.maxHeight)
 			await this.getUserMunu()
 			await this.initNav(this.nav);
 		
@@ -252,10 +259,16 @@ import {userMenu} from '@/api/menu'
 		// color: #326af5;
 		    border-right: 1px solid #e6e6e6;
 		.mine-info{
+			padding: 20px;
 			.image{
 				width: 50px;
 				height: 50px;
 				border-radius: 50%;
+				background: rgb(41,151,255) ;
+				.el-icon-user-solid{
+					font-size:32px;
+					color:#fff;
+				}
 				// overflow: hidden;
 			}
 			.info{
@@ -264,7 +277,8 @@ import {userMenu} from '@/api/menu'
 		}
 		.nav{
 			height: 100%;
-			
+			padding-bottom:20px;
+			box-sizing: border-box;
 		}
 			// .showSon{
 			// 	background:rgba($color: #FAEBD7, $alpha: .2) 
@@ -274,7 +288,7 @@ import {userMenu} from '@/api/menu'
 			.parent{
 				height: 50px;
 				display: flex;
-				justify-content: space-around;
+				// justify-content: space-around;
 				align-items: center;
 				
 			}
