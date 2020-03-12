@@ -17,10 +17,11 @@ Vue.directive('loadmore', {
     const selectWrap = el.querySelector('.el-table__body-wrapper')
     selectWrap.addEventListener('scroll', function() {
       let sign = 0;
-    
-      // console.log(this.scrollWidth,this.clientWidth,this)
-      const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
-      if (scrollDistance <= sign&&!this.scrollLeft) {
+      // let wSign = Number(this.scrollWidth)-Number(this.scrollLeft)<this.scrollWidth?false:true;
+      // console.log(wSign)
+      const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight;
+     
+      if (scrollDistance <= sign) {
         binding.value()
       }
     })

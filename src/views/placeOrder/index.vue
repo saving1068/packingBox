@@ -336,8 +336,8 @@
           <el-button type="primary" @click="addItem(2)" icon="el-icon-edit">新增</el-button>
         </div>
         <el-form size="mini" inline label-width="120px" style="padding:20px">
-          <el-form-item v-for="(item,index) in other" :key="index">
-            <el-form-item label="费用备注:">
+          <el-form-item v-for="(item,index) in other" :key="index" >
+            <el-form-item label="费用备注:" style='display:block'> 
               <el-select v-model="item.remarkKey" placeholder="请选择">
                 <el-option
                   v-for="item in costRemake"
@@ -348,7 +348,7 @@
               </el-select>
               <!-- <el-input v-model.trim="item." placeholder="备注"></el-input> -->
             </el-form-item>
-            <el-form-item label="费用:" class="form-inline">
+            <el-form-item label="费用:" class="form-inline"  style='display:block'>
               <el-input v-model.number="item.psCost" placeholder="费用"></el-input>
             </el-form-item>
             <div style="text-align: right;">

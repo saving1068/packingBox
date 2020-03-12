@@ -1,9 +1,9 @@
 <template>
-	  <el-container style="padding:20px 20px;">
-		 <!-- <el-header style="background:#fff;"> 
+	  <el-container style="padding:20px 20px;background:#eef1f6;">
+		 <el-header style="background:#fff;"> 
 				<myhead></myhead>	
-			</el-header> -->
-		<!-- <el-container style="margin-top:20px;"> -->
+		</el-header>
+		<el-container style="margin-top:20px;">
 			<el-aside width='200px' :style="{'max-height':maxHeight+'px','background':'#fff'}">
 				<!-- <div :style="{'height':maxHeight+'px','width':'190px'}"> -->
 					<!-- <el-scrollbar id="scorll" :style='{"height":maxHeight+"px"}'> -->
@@ -12,19 +12,20 @@
 				<!-- </div> -->
 				
 			</el-aside>
-		
-	    <el-main style="background:#eef1f6;padding:0 15px 0 20px;min-width:1125px;" :style="{'height':maxHeight+'px'}">
-			<el-scrollbar id="scorll" :style='{"height":maxHeight+"px"}'>
-			<el-header style="background:#fff;"> 
-				<myhead></myhead>	
-			</el-header>
-			<transition name="el-fade-in-linear">
-				<router-view   style="background:#fff;padding:20px;margin-top:20px;"/>
-				
-			</transition>
-			</el-scrollbar>
-		</el-main>
-		<!-- </el-container> -->
+		<el-container>
+			<el-main style="padding:0 0px 0 20px;min-width:1125px;" :style="{'height':maxHeight+'px'}">
+				<el-scrollbar id="scorll" :style='{"height":maxHeight+"px"}' style="background:#fff;">
+				<!-- <el-header style="background:#fff;"> 
+					<myhead></myhead>	
+				</el-header> -->
+				<transition name="el-fade-in-linear">
+					<router-view   style="background:#fff;padding:20px"/>
+					
+				</transition>
+				</el-scrollbar>
+			</el-main>
+			</el-container>
+		</el-container>
 			
 	  </el-container>
 <!-- <div class="warpBox">
@@ -50,7 +51,7 @@ export default {
 	mounted(){
 		let size = document.documentElement.clientHeight;
 		console.log(size);
-		this.maxHeight = Number(size)-40;
+		this.maxHeight = Number(size)-120;
 	},
 	data(){
 		return{

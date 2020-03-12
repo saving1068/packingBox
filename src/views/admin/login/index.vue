@@ -13,8 +13,10 @@
 			</div>
 		</div> -->
 		<img class="backgroundImg" src="@/images/background.jpg" />
+		<div class="center pageTitle">
+			佛山市南海区彩雅纸箱包装有限公司管理平台
+		</div>
 		<div class="login-content">
-			
 			<div class="login-wrap">
 				<ul class="nav">
 					<li :class="{current:tabIndex==0}" @click="tabChange(0)">账号登录</li>
@@ -408,7 +410,18 @@
 		height: 100%;
 		top: 0;
 	}
-
+	.pageTitle{
+		font-size: 44px;
+		width: 80%;
+		font-weight: 600;
+		color: #fff;
+		position: fixed;
+		z-index: 1;
+		transform: translateX(-50%);
+		left: 50%;
+		top: 20%;
+		letter-spacing:5px;
+	}
 	.login {
 		position: relative;
 		width: 100%;
@@ -457,10 +470,10 @@
 		.login-content {
 			position: absolute;
 			background: rgb(51,138,254);
-			height: 250px;
-			top: 50%;
+			height: 350px;
+			top: 30%;
 			left: 50%;
-			transform: translate(-50%,-50%);
+			transform: translateX(-50%);
 			z-index: 10;
 			border-radius: 10px;
 			box-shadow:rgba(35,107,181,.6) 10px 10px 5px;
@@ -468,7 +481,7 @@
 				// position: absolute;
 				// top: 20%;
 				// right: 10%;
-				width: 300px;
+				width: 400px;
 				// background: transparent;
 				
 				z-index: 10;
@@ -512,7 +525,7 @@
 							outline: none;
 							border: none;
 							padding: 0 10px;
-							
+							margin-right: 10px;
 					}
 					.infoInp {
 						margin-top: 10px;
@@ -539,7 +552,7 @@
 
 				.userLogin {
 					width: 260px;
-					margin: 0 auto;
+					margin: 30px auto;
 
 					.forget {
 						

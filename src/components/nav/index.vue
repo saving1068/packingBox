@@ -3,10 +3,12 @@
 		
 			<div class="mine-info center">
 				<div class="image center" >
-					<i size="medium" class="el-icon-user-solid"></i>
+					<!-- <i size="medium" class="el-icon-user-solid"></i>
+					 -->
+					 <img src="../../images/icon.jpg" alt="">
 				</div>
 				<div class="info">
-					<div>彩雅包装</div>
+					<div>我的专区</div>
 					<!-- <div>info</div> -->
 				</div>
 			</div>
@@ -260,11 +262,13 @@ import {userMenu} from '@/api/menu'
 		    border-right: 1px solid #e6e6e6;
 		.mine-info{
 			padding: 20px;
+			background: rgb(64, 158, 255);
 			.image{
 				width: 50px;
 				height: 50px;
 				border-radius: 50%;
 				background: rgb(41,151,255) ;
+				overflow: hidden;
 				.el-icon-user-solid{
 					font-size:32px;
 					color:#fff;
@@ -272,7 +276,9 @@ import {userMenu} from '@/api/menu'
 				// overflow: hidden;
 			}
 			.info{
+				color: #fff;
 				padding: 0 5px;
+				font-size: 24px;
 			}
 		}
 		.nav{

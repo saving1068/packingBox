@@ -1,8 +1,15 @@
 <template>
     <div class="warp">
-        <div style="flex:1"></div>
+        <div style="flex:1" class="center">
+            <div style="width:60px;height:60px;">
+                <img src="../../images/icon.jpg" >
+            </div>
+            <div style="flex:1;font-width:600;font-size:32px;letter-spacing:5px;color:#409eff;">
+               佛山市南海区彩雅纸箱包装有限公司管理平台
+            </div>
+        </div>
         <div class="login">
-            <el-badge :value="notReadNum" :hidden='notReadNum == 0'>
+            <el-badge :value="notReadNum" :hidden='notReadNum == 0' style="margin:0 35px;">
                 <el-dropdown :hide-on-click="false">
                     <span class="el-dropdown-link">
                         信息列表<i class="el-icon-arrow-down el-icon--right"></i>
@@ -28,10 +35,11 @@
                 </el-dropdown>
             </el-badge>
             
-            <div class="avatar">
-                <el-avatar  size="small" src="../../assets/logo.png"></el-avatar>
-            </div>
-            <el-dropdown szie="mini" @command="signOut" >
+            <!-- <div class="avatar">
+                <el-avatar  size="small" src="../../images/icon.jpg"></el-avatar>
+            </div> -->
+            <!-- <div>退出登录</div> -->
+            <el-dropdown szie="mini" @command="signOut" size="medium" >
             <span class="el-dropdown-link">
                 下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
