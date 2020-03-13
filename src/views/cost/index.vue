@@ -43,6 +43,11 @@
                         >
                     </el-table-column>
                     <el-table-column
+                        prop="lastUpdateTime"
+                        label="更新时间"
+                        >
+                    </el-table-column>
+                    <el-table-column
                         align="right"
                         width="300px"
                         >

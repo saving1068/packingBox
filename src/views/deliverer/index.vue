@@ -88,6 +88,12 @@
               type="text"
               size="mini" slot="reference">删除</el-button>
             </el-popover>
+            <el-button
+              @click.native.prevent="exportDg(scope.row)"
+              type="text"
+              size="mini">
+              导出送货单
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -179,6 +185,7 @@
 import {updataDelier,delierDetail,deleteDelier,delierList}from '@/api/deliver'
   import {customerList} from '@/api/customer'
     import {accountList} from '@/api/user'
+    import {downFile} from '@/utils'
 export default {
   data() {
     return {
@@ -212,6 +219,10 @@ export default {
     
   },
   methods:{
+    exportDg(item){
+       let url = `http://wearewwx.com:8080/dg/export?id=${item.id}`
+        downFile(url);
+    },
     async getDetail(item){
       
       let res = await delierDetail({id:item.id})

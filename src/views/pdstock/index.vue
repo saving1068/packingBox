@@ -211,7 +211,6 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          {{scope.row.odId}}
             <span v-if="scope.row.odId">--/</span>
             <el-button  @click="delectAdd(scope.$index)" v-else type="text">删除</el-button>
         </template>
