@@ -47,7 +47,7 @@
       </div>
     <div class="table">
       <el-table :data="tableData" fit >
-         <el-table-column prop="dgMan" align='center' label="送货人" ></el-table-column>
+         <el-table-column prop="dgManName" align='center' label="送货人" ></el-table-column>
         <!-- <el-table-column prop="serialNumber" align='center' label="流水号" ''></el-table-column> -->
         <!-- <el-table-column prop="customer" align='center' label="客户"></el-table-column> -->
         <el-table-column prop="dgTime" align='center' label="送货时间"></el-table-column>
@@ -63,14 +63,14 @@
         </el-table-column> -->
         <el-table-column align='center' label="操作">
           <template slot-scope="scope">
-            <!-- <el-button
-              @click.native.prevent=""
+            <el-button
+              @click.native.prevent="getDetail(scope.row,0)"
               type="text"
               size="mini">
               修改
-            </el-button> -->
+            </el-button>
              <el-button
-              @click.native.prevent="getDetail(scope.row)"
+              @click.native.prevent="getDetail(scope.row,1)"
               type="text"
               size="mini">
               详情
@@ -142,10 +142,35 @@
       >
         <el-form inline label-width="180px">
           <el-form-item label="送货人">
-            <span>{{detail.dgMan}}</span>
+            
+            <el-select v-model="detail.dgMan" placeholder="请选择" :disabled="changeDetail != 0">
+            <el-option
+              v-for="item in merchandiserList"
+              :key="item.id"
+              :label="item.contactName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+            <!-- <span>{{detail.dgMan}}</span> -->
           </el-form-item>
-          <el-form-item label="送货时间">
-            <span>{{detail.dgTime}}</span>
+          <el-form-item label="送货时间" >
+            <el-date-picker
+            :disabled="changeDetail != 0"
+              v-model="detail.dgTime"
+              value-format='yyyy-MM-dd'
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+            <!-- <el-date-picker
+            @change="dgDetailTime"
+            v-model="dgTimeValue"
+            type="daterange"
+            range-separator="至"
+             value-format='yyyy-MM-dd'
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker> -->
+            <!-- <span>{{detail.dgTime}}</span> -->
           </el-form-item>
           <el-form-item label="客户名称">
             <span>{{detail.customerName}}</span>
@@ -154,26 +179,53 @@
             <span>{{detail.serialNumber}}</span>
           </el-form-item>
           <el-form-item label="金额(元)" >
-            <span>{{detail.money}}</span>
+            <el-input placeholder="请输入金额" v-model="detail.money" :disabled="changeDetail != 0"></el-input>
+            <!-- <span>{{detail.money}}</span> -->
           </el-form-item>
         </el-form>
         <div class="center" style="padding:10px 0;line-height: 24px;
     font-size: 18px;
     color: #303133;">送货单信息</div>
         <div class="center" style="padding:0 90px;">
-           <el-table :data="detail.list" fit>
-              <el-table-column prop="pdName" align='center'  label="订单名称"></el-table-column>
+           <el-table :data="detail.list" fit @row-click='rowClick'>
+              <el-table-column prop="pdName" align='center'  label="订单名称">
+                <template slot-scope="scope" >
+                  <el-input v-if="changeDetail == 0" placeholder="请输入订单名称" v-model="scope.row.pdName"></el-input>
+                  <span v-else>{{scope.row.pdName}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="ctContractNumber" align='center' label="客户合同编号"></el-table-column>
               <el-table-column prop="contractNumber" align='center' label="合同编号"></el-table-column>
               <el-table-column prop="model" align='center' label="规格"></el-table-column>
-              <el-table-column prop="unitPrice" align='center' label="单价(元)" ></el-table-column>
-              <el-table-column prop="count" align='center' label="数量" ></el-table-column>
-              <el-table-column prop="money" align='center' label="金额(元)"></el-table-column>
-              <el-table-column prop="unit" align='center' label="单位"></el-table-column>
+              <el-table-column prop="unitPrice" align='center' label="单价(元)" >
+                <template slot-scope="scope" >
+                  <el-input v-if="changeDetail == 0" placeholder="请输入单价" @input="priceChange" v-model="scope.row.unitPrice"></el-input>
+                  <span v-else>{{scope.row.unitPrice}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="count" align='center' label="数量" >
+                <template slot-scope="scope" >
+                  <el-input v-if="changeDetail == 0" placeholder="请输入数量" @input="countChange" v-model.number="scope.row.count"></el-input>
+                  <span v-else>{{scope.row.count}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="money" align='center' label="金额(元)">
+                <template slot-scope="scope" >
+                  <el-input v-if="changeDetail == 0" placeholder="请输入金额" @input="moneyChange" v-model="scope.row.money"></el-input>
+                  <span v-else>{{scope.row.money}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="unit" align='center' label="单位">
+                <template slot-scope="scope" >
+                  <el-input v-if="changeDetail == 0" placeholder="请输入单位" v-model="scope.row.unit"></el-input>
+                  <span v-else>{{scope.row.unit}}</span>
+                </template>
+              </el-table-column>
             </el-table>
         </div>
          
       <span slot="footer" class="dialog-footer">
+        <el-button :loading="changeSing" type="primary" @click="detailChange()">修改</el-button>
         <el-button @click="detailShow = false,detail={}">关闭</el-button>
       </span>
     </el-dialog>
@@ -210,26 +262,99 @@ export default {
       },
       detailShow:false,
       total:0,
-      delLoading:false
-
+      delLoading:false,
+      changeDetail:1,
+      changeSing:false,
+      chioseIndex:0
     };
   },
   async created(){
    this.dict()
     
   },
+
   methods:{
+    rowClick(row, column, event){
+      let index =  row.index;
+      this.chioseIndex = index;
+
+    },
+    moneyChange(value){
+      let money =0;
+       this.detail.list.forEach(item =>{
+         money += Number(value)
+       })
+      this.detail.money = money
+    },
+    priceChange(value){
+      let money =0;
+      this.detail.list[this.chioseIndex].money = (Number(this.detail.list[this.chioseIndex].count)*Number(value)).toFixed(3)/1;
+      this.detail.list.forEach(item =>{
+         money += Number(item.money)
+       })
+       this.detail.money = money
+    },
+    countChange(value){
+      let money =0;
+       this.detail.list[this.chioseIndex].money = (Number(this.detail.list[this.chioseIndex].unitPrice)*Number(value)).toFixed(3)/1;
+       this.detail.list.forEach(item =>{
+         money += Number(item.money)
+       })
+       this.detail.money = money.toFixed(3)/1
+        
+    },
+    async detailChange(){
+      // console.log(this.detail)
+      let list = [];
+      this.detail.list.forEach(item=>{
+        console.log(item)
+        let obj = {
+          odId:item.odId,
+          count:item.count,
+          money:item.money,
+          unitPrice:item.unitPrice,
+          model:item.productGuige,
+          pdName:item.pdName,
+          unit:item.unit,
+        }
+        list.push(obj)
+      })
+      try {
+        let obj = {
+          dgMan:this.detail.dgMan,
+          dgTime:this.detail.dgTime,
+          id:this.detail.id,
+          money:this.detail.money,
+          list
+        }
+        console.log(obj)
+        // debugger
+        this.changeSing = true;
+        let res =  await updataDelier(obj)
+        this.getList()
+        this.$message.success(res.returnMsg);
+         this.changeSing = false;
+         this.detailShow = false;
+      } catch (error) {
+          this.changeSing = false
+      }
+      
+    },
     exportDg(item){
        let url = `http://wearewwx.com:8080/dg/export?id=${item.id}`
         downFile(url);
     },
-    async getDetail(item){
-      
-      let res = await delierDetail({id:item.id})
+    async getDetail(item,type){
+
+      let res = await delierDetail({id:item.id});
+      this.changeDetail = type;
+      console.log(this.changeDetail)
+      // debugger
       this.detailShow = true;
-      res.data.list.map((sitem)=>{
-        sitem.ctContractNumber=sitem.ctContractNumber?sitem.ctContractNumber:'--/'
-        sitem.contractNumber=sitem.contractNumber?sitem.contractNumber:'--/'
+      res.data.list.map((sitem,index)=>{
+        sitem.ctContractNumber=sitem.ctContractNumber?sitem.ctContractNumber:'--/';
+        sitem.contractNumber=sitem.contractNumber?sitem.contractNumber:'--/';
+        sitem.index = index
       })
       this.detail = res.data; 
 
@@ -297,6 +422,9 @@ export default {
       } catch (error) {
         
       }
+    },
+    dgDetailTime(value){
+
     },
     dgTime(value){
       console.log(value)

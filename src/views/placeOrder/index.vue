@@ -301,10 +301,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="印刷费用:">
-            <el-input v-model.number="printing.psCost" placeholder="印刷费用"></el-input>
+            <el-input v-model="printing.psCost" placeholder="印刷费用"></el-input>
           </el-form-item>
           <el-form-item label="印刷备注:">
-            <el-input v-model.number="printing.remark" placeholder="印刷备注"></el-input>
+            <el-input v-model="printing.remark" placeholder="印刷备注"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -349,7 +349,7 @@
               <!-- <el-input v-model.trim="item." placeholder="备注"></el-input> -->
             </el-form-item>
             <el-form-item label="费用:" class="form-inline"  style='display:block'>
-              <el-input v-model.number="item.psCost" placeholder="费用"></el-input>
+              <el-input v-model="item.psCost" placeholder="费用"></el-input>
             </el-form-item>
             <div style="text-align: right;">
               <el-button type="danger" size="medium" @click="deleteItem(2,index,item)">删除</el-button>

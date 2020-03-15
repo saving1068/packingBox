@@ -86,7 +86,7 @@
         <el-button type="warning"  @click="exportOrder">导出订单</el-button>
       </div>
     <div class="table">
-      <el-table :data="tableData" fit  tooltip-effect="dark" v-loadmore="load" height='650' @selection-change="handleSelectionChange">
+      <el-table :data="tableData" fit  tooltip-effect="dark" v-el-table-infinite-scroll="load" height='650' @selection-change="handleSelectionChange">
          <el-table-column
           type="selection"
           width="55">

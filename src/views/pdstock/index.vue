@@ -197,7 +197,7 @@
         label="总价(元)">
         <template slot-scope="scope">
           <!-- {{scope.row.allPlace}} -->
-           <el-input placeholder="请输入总价" v-model.number="scope.row.pdMoney"></el-input>
+           <el-input placeholder="请输入总价" v-model="scope.row.pdMoney"></el-input>
         </template>
       </el-table-column>
       <el-table-column
@@ -205,7 +205,7 @@
         label="单位">
         <template slot-scope="scope">
           <!-- {{scope.row.allPlace}} -->
-           <el-input placeholder="请输入单位" v-model.number="scope.row.unit"></el-input>
+           <el-input placeholder="请输入单位" v-model="scope.row.unit"></el-input>
         </template>
       </el-table-column>
       <el-table-column
@@ -223,8 +223,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="新增" :visible.sync="ifAdd">
-        <el-form label-width="100px" >
+    <el-dialog title="新增" width="350px" center :visible.sync="ifAdd">
+        <el-form label-width="70px" >
          <el-form-item label="产品名称">
            <el-input v-model="addPdInfo.pdName" placeholder="请输入产品名称"></el-input>
         </el-form-item>
@@ -232,13 +232,13 @@
            <el-input v-model="addPdInfo.pdGuige" placeholder="请输入型号规格"></el-input>
         </el-form-item>
         <el-form-item label="数量" >
-           <el-input v-model.number="addPdInfo.stCount"  @input="addInputCount" placeholder="请输入数量"></el-input>
+           <el-input v-model="addPdInfo.stCount"  @input="addInputCount" placeholder="请输入数量"></el-input>
         </el-form-item>
         <el-form-item label="单价(元)" >
-           <el-input v-model.number="addPdInfo.pdUnitPrice" @input="addInputPrice" placeholder="请输入单价"></el-input>
+           <el-input v-model="addPdInfo.pdUnitPrice" @input="addInputPrice" placeholder="请输入单价"></el-input>
         </el-form-item>
         <el-form-item label="金额(元)">
-           <el-input v-model.number="addPdInfo.pdMoney" placeholder="请输入产品名称"></el-input>
+           <el-input v-model="addPdInfo.pdMoney" placeholder="请输入产品名称"></el-input>
         </el-form-item>
         <el-form-item label="单位">
            <el-input v-model="addPdInfo.unit" placeholder="请输入单位"></el-input>
@@ -359,7 +359,9 @@ export default {
     },
     suerAdd(){
       console.log(this.addPdInfo)
-      this.$confirm('是否确定新增', '提示', {
+
+      if(this.addPdInfo.stCount&&this.addPdInfo.pdMoney&&this.addPdInfo.pdUnitPrice&&this.addPdInfo.pdGuige&&this.addPdInfo.pdName&&this.addPdInfo.unit){
+        this.$confirm('是否确定新增', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
@@ -370,6 +372,10 @@ export default {
             }).catch(() => {
                     
             });
+      }else{
+        this.$message.warning("请完善所有信息再新增")
+      }
+      
     },
     cancelAdd(){
       this.$confirm('是否确定取消新增', '提示', {
