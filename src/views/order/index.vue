@@ -86,7 +86,7 @@
         <el-button type="warning"  @click="exportOrder">导出订单</el-button>
       </div>
     <div class="table">
-      <el-table :data="tableData" fit  tooltip-effect="dark" v-el-table-infinite-scroll="load" height='650' @selection-change="handleSelectionChange">
+      <el-table :data="tableData" fit  tooltip-effect="dark" v-loadmore="load" height='650' @selection-change="handleSelectionChange">
          <el-table-column
           type="selection"
           width="55">
@@ -317,7 +317,9 @@ export default {
     };
   },
   async created(){
-   this.dict()
+   this.dict().then(()=>{
+     this.getList()
+   })
     
   },
   methods:{
@@ -328,6 +330,7 @@ export default {
     },
     load(){
       this.searchValue.page++;
+      console.log('滚动')
       this.getList();
     },
     exportOrder(){
@@ -434,7 +437,7 @@ export default {
           this.customerList = customer.data;
           let account = await accountList();
           this.merchandiserList = account.data;
-          await this.getList()
+          
        this.loading =false;
       } catch (error) {
         console.log(error)
@@ -443,7 +446,7 @@ export default {
 
     async getList(){
       try {
-       
+       console.log(this.searchValue)
         
         if(this.tableData.length <this.total){
           this.loading = true;
@@ -457,7 +460,7 @@ export default {
           })
           
           // this.tableData = res.data;
-          this.statistics = res.statistics;
+          this.statistics = res.statistics?res.statistics:{totalCost:0,totalMoney:0};
           console.log(this.tableData)
           this.total = res.total;
           this.loading =false;
@@ -467,6 +470,7 @@ export default {
         }
        
       } catch (error) {
+        this.loading =false;
         console.log(error)
       }
       

@@ -56,9 +56,9 @@
         <el-table-column prop="alreadyOutCount" align='center' label="已出库数量"></el-table-column>
         <el-table-column prop="pdUnitPrice" align='center' label="成品单价"></el-table-column>
         <el-table-column prop="pdMoney" align='center' label="成品总价"></el-table-column>
-        <el-table-column prop="odSetdate" align='center' label="是否有出库">
+        <el-table-column prop="odSetdate" align='center' label="出库状态">
           <template slot-scope="scope">
-            {{scope.row.outstockStatus?'是':'否'}}
+            {{scope.row.outstockStatus == 0?'进行中':'完成出库'}}
           </template>
         </el-table-column>
         <el-table-column align='center' label="操作">
@@ -66,7 +66,7 @@
             <el-popover
               placement="top"
               width="160"
-              v-if='scope.row.outstockStatus == 1'
+              v-if='scope.row.outstockStatus == 0'
               v-model="scope.row.visibleF">
               <p>确定完成该订单的所有出库吗？</p>
               <div style="text-align: center; margin: 0">
@@ -331,7 +331,9 @@ export default {
     };
   },
   async created(){
-   this.dict()
+   this.dict().then(()=>{
+     this.getList()
+   })
     
   },
   methods:{
@@ -549,7 +551,7 @@ export default {
           this.customerList = customer.data;
           // let account = await accountList();
           // this.merchandiserList = account.data;
-          this.getList()
+         
        this.loading =false;
       } catch (error) {
         console.log(error)
