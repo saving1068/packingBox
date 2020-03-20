@@ -326,12 +326,13 @@ export default {
     initData(){
          this.searchValue.page =1;
          this.tableData = [];
+         console.log(111)
          this.getList();
     },
     load(){
       this.searchValue.page++;
       console.log('滚动')
-      this.getList();
+      this.getList(1);
     },
     exportOrder(){
       if(this.select.length){
@@ -444,11 +445,11 @@ export default {
       }
     },
 
-    async getList(){
+    async getList(type){
       try {
        console.log(this.searchValue)
-        
-        if(this.tableData.length <this.total){
+        if(type == 1){
+          if(this.tableData.length <this.total){
           this.loading = true;
           let res = await orderList(this.searchValue);
            
@@ -465,9 +466,25 @@ export default {
           this.total = res.total;
           this.loading =false;
         }else{
+         
           // this.$message.warning('已经是最后一组数据了')
           this.loading =false;
         }
+        }else{
+           this.loading = true;
+          let res = await orderList(this.searchValue);
+           res.data.map((item)=>{
+            item.visible = false;
+            item.visibleF = false;
+            item.finishStatusStr= idChangeStr(this.orderStatus,item.finishStatus)
+          })
+          this.tableData = res.data;
+          this.statistics = res.statistics?res.statistics:{totalCost:0,totalMoney:0};
+          console.log(this.tableData)
+          this.total = res.total;
+          this.loading =false;
+        }
+        
        
       } catch (error) {
         this.loading =false;
