@@ -28,7 +28,7 @@ module.exports = {
 			filename: 'index.html',
 			// 当使用 title 选项时，
 			// template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-			title: 'Index Page',
+			title: '佛山市南海区彩雅纸箱包装有限公司管理平台',
 			// 在这个页面中包含的块，默认情况下会包含
 			// 提取出来的通用 chunk 和 vendor chunk。
 			chunks: ['chunk-vendors', 'chunk-common', 'index']
@@ -56,10 +56,10 @@ module.exports = {
 		// }
 
 		if (process.env.NODE_ENV === 'production') {
-			config.optimization.minimizer[0].options.terserOptions.compress.warnings = false
-			config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-			config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true
-			config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log']
+			// config.optimization.minimizer[0].options.terserOptions.compress.warnings = false
+			// config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+			// config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true
+			// config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log']
 
 			config.plugins.push(new CompressionWebpackPlugin({
 				algorithm: 'gzip',
@@ -68,20 +68,20 @@ module.exports = {
 				deleteOriginalAssets: false,
 				minRatio: 0.8
 			  }))
-			  config.plugins.push(new HtmlWebpackPlugin({ // 打包输出HTML
+			//   config.plugins.push(new HtmlWebpackPlugin({ // 打包输出HTML
 				
-				minify: { // 压缩HTML文件
-				  removeComments: true, // 移除HTML中的注释
-				  collapseWhitespace: true, // 删除空白符与换行符
-				  minifyCSS: true,// 压缩内联css
-				  minifyJS: true,
-				  removeComments: true,
-				  removeCommentsFromCDATA: true,
-				},
+			// 	minify: { // 压缩HTML文件
+			// 	  removeComments: true, // 移除HTML中的注释
+			// 	  collapseWhitespace: true, // 删除空白符与换行符
+			// 	  minifyCSS: true,// 压缩内联css
+			// 	  minifyJS: true,
+			// 	  removeComments: true,
+			// 	  removeCommentsFromCDATA: true,
+			// 	},
 				
-			  //   filename: 'index.html',
-			  //   template: 'index.html'
-			  }))
+			//   //   filename: 'index.html',
+			//   //   template: 'index.html'
+			//   }))
 
 				
 

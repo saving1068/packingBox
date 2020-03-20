@@ -20,14 +20,14 @@ const routes = [
 			name:'order'
 		},
 		children:[
-			{
-				path: '/home',//首页
-				name: 'home',
-				meta:{
-					title:'首页'
-				},
-				component:() => import('@/views/Home'),
-			},
+			// {
+			// 	path: '/home',//首页
+			// 	name: 'home',
+			// 	meta:{
+			// 		title:'首页'
+			// 	},
+			// 	component:() => import('@/views/Home'),
+			// },
 			{//下单
 				path:"/placeOrder",
 				name: 'placeOrder',
