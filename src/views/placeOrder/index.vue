@@ -105,13 +105,13 @@
       </el-form>
       <el-form size="mini" inline label-width="100px">
         <el-form-item label="成品长:" class="form-inline">
-          <el-input v-model.number="finishedInfo.pdLength" placeholder="请输入成品长"></el-input>
+          <el-input v-model.number="finishedInfo.pdLength" @input="ifDetail = false" placeholder="请输入成品长"></el-input>
         </el-form-item>
         <el-form-item label="成品宽:" class="form-inline">
-          <el-input v-model.number="finishedInfo.pdWidth" placeholder="请输入成品宽"></el-input>
+          <el-input v-model.number="finishedInfo.pdWidth"  @input="ifDetail = false"  placeholder="请输入成品宽"></el-input>
         </el-form-item>
         <el-form-item label="成品高:" class="form-inline">
-          <el-input v-model.number="finishedInfo.pdHigth" placeholder="请输入成品高"></el-input>
+          <el-input v-model.number="finishedInfo.pdHigth"  @input="ifDetail = false"  placeholder="请输入成品高"></el-input>
         </el-form-item>
       </el-form>
 
@@ -592,7 +592,8 @@ export default {
         customerId: { required: true, message: "内容不能为空" },
         odSetdate: { required: true, message: "内容不能为空" },
         odFinishdate: { required: true, message: "内容不能为空" }
-      }
+      },
+      ifDetail:false
     };
   },
   created() {
@@ -605,7 +606,7 @@ export default {
         let formula = this.boxTypeList.find(
           item => item.id == this.basicData.caseType
         );
-        if (this.facialTissue.length != 0) {
+        if (this.facialTissue.length != 0&&!this.ifDetail) {
           let mtWidth, mtLength;
 
           mtLength = finishedInfoFormula(
@@ -673,7 +674,7 @@ export default {
           //     area,psCount,psCostBase,psUnitPrice,psCost
           //   }
         }
-        if (this.tunnelTissue.length != 0) {
+        if (this.tunnelTissue.length != 0&&!this.ifDetail) {
           console.log(
             this.tunnelChoiseIndex,
             "this.tunnelChoiseIndex",
@@ -1276,6 +1277,7 @@ export default {
 
       // console.log(this.boxTypeList)
       if (this.$route.query.id) {
+        this.ifDetail = true;
         await this.initOrder();
       }
       this.loading = false;

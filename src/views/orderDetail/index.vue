@@ -228,7 +228,7 @@ export default {
        async getDetail(id){
             try {
                 this.loading = true;
-                let res = await orderDetail({id});
+               
                 this.tappingList = await dictApi("tapping");
                 this.beerNum = await dictApi("beerNum");
                 this.paperNum = await dictApi("paperNum");
@@ -237,7 +237,7 @@ export default {
                 this.printingList =  await dictApi("printing");
                 this.packAsk = await dictApi("packAsk");
                 this.costRemake = await dictApi("costRemake");
-
+                 let res = await orderDetail({id});
                 res.data.workProsedureStr = idChangeStr(this.tappingList,res.data.workProsedure);
                 res.data.beerCountStr = idChangeStr(this.beerNum,res.data.beerCount);
                 res.data.paperCountStr = idChangeStr(this.paperNum,res.data.paperCount);
