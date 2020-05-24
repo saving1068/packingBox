@@ -144,6 +144,7 @@ let addItemInfo = {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+            this.$refs['ruleForm'].resetFields();
           this.roleChange = false;
         }).catch(() => {
                 
@@ -154,8 +155,8 @@ let addItemInfo = {
          console.log(this.addItemInfo)
         let tips = this.addItemInfo.roleId?'是否确认修改角色?':'是否确认新增角色?';
             let success = this.addItemInfo.roleId?'修改角色成功':'新增角色成功';
-            this.$refs["ruleForm"].validate((valid) => {
-                        if (valid) {
+            // this.$refs["ruleForm"].validate((valid) => {
+                        // if (valid) {
                           this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -208,11 +209,11 @@ let addItemInfo = {
                 }).catch(() => {
                 
                 });
-                        } else {
-                          console.log('error submit!!');
-                          return false;
-                        }
-                      });
+                      //   } else {
+                      //     console.log('error submit!!');
+                      //     return false;
+                      //   }
+                      // });
            
       },
       async searchRole(row, column, event){
