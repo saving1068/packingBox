@@ -57,9 +57,19 @@
             center
             :before-close="addClose">
               <div class="space-between">
-                <el-form label-width="50px"  size='mini'>
-               <el-form-item label="名字:">
+                <el-form label-width="110px" ref="ruleForm" :rules="rules"  size='mini'>
+               <el-form-item label="名字:" prop="name">
                    <el-input  v-model="addItemInfo.name"></el-input>
+               </el-form-item>
+               <el-form-item label="订单数据权限:" prop="dataPer">
+                  <el-select v-model="addItemInfo.dataPer" placeholder="请选择">
+                    <el-option
+                      v-for="item in dataPer"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
                </el-form-item>
                <el-form-item label="描述:">
                    <el-input  v-model="addItemInfo.description"></el-input>
@@ -118,7 +128,7 @@ import {
 } from '@/api/menu'
 let addItemInfo = {
   name:'',description:'',sort:'',
-  pids:[]
+  pids:[],dataPer:0
 }
   export default {
     async created(){
@@ -144,7 +154,9 @@ let addItemInfo = {
          console.log(this.addItemInfo)
         let tips = this.addItemInfo.roleId?'是否确认修改角色?':'是否确认新增角色?';
             let success = this.addItemInfo.roleId?'修改角色成功':'新增角色成功';
-            this.$confirm(tips, '提示', {
+            this.$refs["ruleForm"].validate((valid) => {
+                        if (valid) {
+                          this.$confirm(tips, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -164,12 +176,14 @@ let addItemInfo = {
                       })
                      this.addItemInfo.pids = Array.from(new Set([...list,...this.addItemInfo.pids])) 
                        console.log(this.addItemInfo.pids)
+                       
                       //  debugger
                      if(this.addItemInfo.pids.length != 0&&this.addItemInfo.name
                      &&this.addItemInfo.description
                      &&this.addItemInfo.sort
                      ){
                        // if(this.addItemInfo.id){//修改
+                       
                             await updataRole(this.addItemInfo);
                         // }else{//新增
                             
@@ -194,6 +208,12 @@ let addItemInfo = {
                 }).catch(() => {
                 
                 });
+                        } else {
+                          console.log('error submit!!');
+                          return false;
+                        }
+                      });
+           
       },
       async searchRole(row, column, event){
         try {
@@ -353,9 +373,17 @@ let addItemInfo = {
         addItemInfo:{
 
         },
+        rules:{
+          name:[{ required: true, message: '请输入名称', trigger: 'blur' }],
+          dataPer:[{ required: true, message: '请选择订单数据权限', trigger: 'blur' },]
+        },
         list:[],
         initMenuList:[],
         itemPowerList:[],
+        dataPer:[
+          {value:0,label:"查看所属数据"},
+          {value:1,label:"查看全部属数据"},
+        ],
         defaultProps: {
           // children: 'children',
           label: 'description'

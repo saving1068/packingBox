@@ -98,6 +98,7 @@
            <div>
               <div>角色</div>
                 <el-tree
+                    v-if="userChange"
                     :data="initroleList"
                     show-checkbox
                     default-expand-all
@@ -296,7 +297,7 @@ let addItemInfo = {
              roles.push(item.roleId)
            })
 
-            this.itemPowerList = roles;
+            this.itemPowerList = [...roles];
             console.log(this.itemPowerList)
            
             this.addItemInfo = {...res.data,ifChangePassword:false}
