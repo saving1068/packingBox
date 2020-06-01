@@ -95,8 +95,12 @@
         <el-table-column prop="contractNumber" align='center' label="合同编号"  ></el-table-column>
         <el-table-column prop="customer" align='center' label="客户"></el-table-column>
         <el-table-column prop="odCount" align='center' label="数量"></el-table-column>
+        <el-table-column prop="unitPrice" align='center' label="单价(元)"></el-table-column>
+
         <el-table-column prop="odMoney" align='center' label="金额(元)"></el-table-column>
         <el-table-column prop="totalCost" align='center' label="订单成本(元)"></el-table-column>
+        <el-table-column prop="productGuige" align='center' label="产品尺寸"></el-table-column>
+        
         <el-table-column prop="odSetdate" align='center' label="订单日期"></el-table-column>
         <el-table-column prop="odFinishdate" align='center' label="交货日期"></el-table-column>
         <el-table-column prop="createTime" align='center' label="创建日期"></el-table-column>
