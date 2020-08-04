@@ -117,7 +117,7 @@
       >
         
       <el-table :data="searchData.data" fit >
-        <el-table-column prop="dgMan" align='center' label="送货人" ></el-table-column>
+        <el-table-column prop="dgManName" align='center' label="送货人" ></el-table-column>
         <el-table-column prop="dgTime" align='center' label="送货时间"></el-table-column>
         <el-table-column prop="customerName" align='center' label="客户名称"></el-table-column>
         <el-table-column prop="serialNumber" align='center' label="流水号"></el-table-column>
@@ -246,6 +246,8 @@ export default {
           customerId:'',
           dgTimeStart:"",
           dgTimeEnd:"",
+          page:1,
+          limit:10
       },
       dialogVisible:false,
       customerList:[],
@@ -397,11 +399,11 @@ export default {
 
     async getList(){
       try {
-        let obj = {
-          limit:10,
-          page:1,
-        }
-        let res = await delierList(obj);
+        // let obj = {
+        //   limit:10,
+        //   page:1,
+        // }
+        let res = await delierList(this.searchValue);
         this.tableData = res.data;
         console.log(this.tableData)
         this.total = res.total;
