@@ -15,7 +15,7 @@
     "echarts": "^4.5.0",
     "el-table-infinite-scroll": "^1.0.10",
     "element-ui": "^2.13.0",
-    "qs": "^6.9.1",
+    "qs": "^6.9.7",
     "svg-sprite-loader": "^4.1.6",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",
